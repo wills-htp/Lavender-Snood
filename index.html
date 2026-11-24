@@ -301,13 +301,20 @@ const Music=(()=>{
   }
 
   function tick(){while(next<ac.currentTime+.15){play({master:out,dly,rev,noise},ac,step,next);next+=STEP;step++}}
+  let unlockEl=null;
+  function unlock(){
+    // iPhone: play a silent media element so the ringer/silent switch doesn't mute Web Audio
+    try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}
+    try{if(!unlockEl){unlockEl=new Audio('data:audio/wav;base64,UklGRmQGAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YUAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');unlockEl.loop=true;unlockEl.setAttribute('playsinline','');unlockEl.volume=0.01}const p=unlockEl.play();if(p&&p.catch)p.catch(()=>{})}catch(e){}
+    try{if(ac){const b=ac.createBuffer(1,1,22050),s=ac.createBufferSource();s.buffer=b;s.connect(ac.destination);s.start(0)}}catch(e){}
+  }
   function start(){
     try{
       if(!ac){const C=window.AudioContext||window.webkitAudioContext;if(!C)return;ac=new C();const G=graph(ac,ac.destination);out=G.master;dly=G.dly;rev=G.rev;noise=G.noise}
-      ac.resume();if(on)return;on=true;next=ac.currentTime+.08;timer=setInterval(tick,25);
+      unlock();ac.resume();if(on)return;on=true;next=ac.currentTime+.08;timer=setInterval(tick,25);
     }catch(e){}
   }
-  function stop(){on=false;clearInterval(timer);timer=null;try{ac&&ac.suspend()}catch(e){}}
+  function stop(){on=false;clearInterval(timer);timer=null;try{ac&&ac.suspend()}catch(e){}try{unlockEl&&unlockEl.pause()}catch(e){}}
   function offline(c,seconds,fromBar=0){const G=graph(c,c.destination);let t=.05,s=fromBar*16;while(t<seconds){play(G,c,s,t);t+=STEP;s++}}
   return {start,stop,offline,get on(){return on}};
 })();
@@ -573,7 +580,7 @@ $('go').addEventListener('click',()=>{
   if(state==='won')level++;else{level=1;score=0}
   $('ov').hidden=true;document.body.classList.add('playing');if(musicOn)Music.start();startLevel();
 });
-$('restart').addEventListener('click',()=>{level=1;score=0;$('ov').hidden=true;startLevel()});
+$('restart').addEventListener('click',()=>{level=1;score=0;$('ov').hidden=true;document.body.classList.add('playing');if(musicOn)Music.start();startLevel()});
 $('swap').addEventListener('click',()=>{if(state==='play'&&!shot){[cur,nxt]=[nxt,cur]}});
 
 function cast(){
@@ -632,6 +639,7 @@ let musicOn=lsGet('lbpop-music',true);
 function musLabel(){$('mus').textContent=musicOn?'Music on':'Music off';$('mus').setAttribute('aria-pressed',String(musicOn))}
 musLabel();
 $('mus').addEventListener('click',()=>{musicOn=!musicOn;lsSet('lbpop-music',musicOn);musLabel();if(musicOn)Music.start();else Music.stop()});
+document.addEventListener('pointerdown',()=>{if(musicOn&&document.body.classList.contains('playing')&&!Music.on)Music.start()},{passive:true});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)Music.stop();else if(musicOn&&document.body.classList.contains('playing'))Music.start()});
 renderLB();
 level=1;score=0;grid=null;loop();

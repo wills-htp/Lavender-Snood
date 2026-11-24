@@ -331,7 +331,7 @@ $('go').addEventListener('click',()=>{
   if(state==='won')level++;else{level=1;score=0}
   $('ov').hidden=true;document.body.classList.add('playing');if(musicOn)Music.start();startLevel();
 });
-$('restart').addEventListener('click',()=>{level=1;score=0;$('ov').hidden=true;startLevel()});
+$('restart').addEventListener('click',()=>{level=1;score=0;$('ov').hidden=true;document.body.classList.add('playing');if(musicOn)Music.start();startLevel()});
 $('swap').addEventListener('click',()=>{if(state==='play'&&!shot){[cur,nxt]=[nxt,cur]}});
 
 function cast(){
@@ -390,6 +390,7 @@ let musicOn=lsGet('lbpop-music',true);
 function musLabel(){$('mus').textContent=musicOn?'Music on':'Music off';$('mus').setAttribute('aria-pressed',String(musicOn))}
 musLabel();
 $('mus').addEventListener('click',()=>{musicOn=!musicOn;lsSet('lbpop-music',musicOn);musLabel();if(musicOn)Music.start();else Music.stop()});
+document.addEventListener('pointerdown',()=>{if(musicOn&&document.body.classList.contains('playing')&&!Music.on)Music.start()},{passive:true});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)Music.stop();else if(musicOn&&document.body.classList.contains('playing'))Music.start()});
 renderLB();
 level=1;score=0;grid=null;loop();
