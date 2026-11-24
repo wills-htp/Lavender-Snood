@@ -1,6 +1,6 @@
 const TOONS=[
  {name:'Will',color:'#2f7de1',skin:'#e4b496',shape:'oval',hair:'swept',hc:'#3b2d24',facial:'stubble',fc:'#4a3a30',mouth:'flat',eyes:'calm',browW:6,brow:'#2e231c',nose:1.2},
- {name:'Ben',color:'#e8453c',skin:'#e0ae8e',shape:'octagon',hair:'short',hc:'#2a2420',facial:'stubble',fc:'#2a2420',mouth:'talk',eyes:'normal',browW:5,brow:'#2a2420'},
+ {name:'Ben',color:'#e8453c',skin:'#e0ae8e',shape:'octagon',hair:'crop',hc:'#2a2420',facial:'stubble',fc:'#2a2420',mouth:'talk',eyes:'normal',browW:5,brow:'#2a2420'},
  {name:'David',color:'#3fb34f',skin:'#e8b794',shape:'egg',hat:'cap',hatc:'#12284b',brimc:'#f2b51f',hatband:true,hair:'side',hc:'#6b4a2e',mouth:'grin',eyes:'happy',browW:5,brow:'#6b4a2e'},
  {name:'Nick',color:'#f5c518',skin:'#e6b38f',shape:'shield',hair:'wavy',hc:'#2e1f16',facial:'stubble',fc:'#2e1f16',mouth:'smile',eyes:'normal',browW:5,brow:'#2e1f16'},
  {name:'Louis',color:'#ec5fa8',skin:'#e8b799',shape:'egg',hat:'cap',hatc:'#ec5fa8',hair:'side',hc:'#6e655e',glasses:'round',facial:'mustache',fc:'#2a1f1a',mouth:'grin',eyes:'happy',browW:5,brow:'#2a1f1a'},
@@ -36,7 +36,7 @@ function drawToon(g,x,y,size,t){
   if(t.skin)g.scale(.9,.9);
   // long hair behind
   if(t.hair==='long'||t.hair==='longwavy'){g.fillStyle=t.hc;for(const [a,b,r] of [[-44,-4,15],[-50,16,16],[-48,36,15],[-40,52,13],[44,-4,15],[50,16,16],[48,36,15],[40,52,13]]){g.beginPath();g.arc(a,b,r,0,7);g.fill()}}
-  if(t.skin){for(const sx of [-1,1]){g.beginPath();g.ellipse(sx*({thin:31,oval:35,pill:34}[t.shape]||46),4,8,12,0,0,7);g.fillStyle=shade(base,-.08);g.fill();g.lineWidth=4;g.strokeStyle=INK;g.stroke()}}
+  if(t.skin){for(const sx of [-1,1]){g.beginPath();g.ellipse(sx*({thin:31,oval:35,pill:34,octagon:54,squircle:50}[t.shape]||46),4,8,12,0,0,7);g.fillStyle=shade(base,-.08);g.fill();g.lineWidth=4;g.strokeStyle=INK;g.stroke()}}
   // body
   toonPath(g,t.shape);
   const gr=g.createRadialGradient(-14,-18,6,0,0,58);gr.addColorStop(0,shade(base,.3));gr.addColorStop(1,shade(base,-.15));
@@ -47,6 +47,8 @@ function drawToon(g,x,y,size,t){
   if(t.facial==='beard'||t.facial==='bigbeard'){g.fillStyle=t.fc;g.beginPath();g.moveTo(-42,4);g.quadraticCurveTo(-40,t.facial==='bigbeard'?70:50,0,t.facial==='bigbeard'?72:52);g.quadraticCurveTo(40,t.facial==='bigbeard'?70:50,42,4);g.quadraticCurveTo(30,22,0,14);g.quadraticCurveTo(-30,22,-42,4);g.fill();
     g.strokeStyle=shade(t.fc,t.fc==='#8c8580'||t.fc==='#a8a29a'?.35:.25);g.lineWidth=1.6;for(let i=-30;i<=30;i+=8){g.beginPath();g.moveTo(i,26);g.quadraticCurveTo(i+3,36,i,44);g.stroke()}}
   if(t.hair==='bald'||t.hair==='buzz'){g.fillStyle='rgba(255,255,255,.35)';g.beginPath();g.ellipse(-12,-34,12,5,-.3,0,7);g.fill()}
+  if(t.hair==='crop'){g.fillStyle=t.hc;g.globalAlpha=.9;g.beginPath();g.moveTo(-60,-6);g.lineTo(-46,-4);g.quadraticCurveTo(-40,-18,-28,-21);g.quadraticCurveTo(0,-27,28,-21);g.quadraticCurveTo(40,-18,46,-4);g.lineTo(60,-6);g.lineTo(60,-70);g.lineTo(-60,-70);g.closePath();g.fill();
+    g.globalAlpha=1;g.fillStyle=shade(t.hc,.25);for(let i=0;i<90;i++){const x=-48+Math.random()*96,y=-44+Math.random()*24;g.fillRect(x,y,1.4,1.4)}}
   if(t.hair==='buzz'){g.fillStyle=t.hc;g.globalAlpha=.45;g.beginPath();g.ellipse(0,-44,44,18,0,0,7);g.fill();g.globalAlpha=1}
   g.restore();
   toonPath(g,t.shape);g.lineWidth=t.skin?6:5;g.strokeStyle=INK;g.stroke();
