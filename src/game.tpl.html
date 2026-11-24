@@ -80,8 +80,8 @@ let grid,par=0,level,score,danger=0,shot,cur,nxt,aim=Math.PI/2,falling=[],pops=[
 const sprites={};
 function sprite(k){
   if(sprites[k])return sprites[k];
-  const s=document.createElement('canvas'),sz=Math.ceil(R*2.6*3);s.width=s.height=sz;const g=s.getContext('2d');g.scale(3,3);
-  drawPiece(g,R*1.3,R*1.3,k);sprites[k]=s;return s;
+  const s=document.createElement('canvas'),sz=Math.ceil(R*3.2*3);s.width=s.height=sz;const g=s.getContext('2d');g.scale(3,3);
+  drawPiece(g,R*1.6,R*1.6,k);sprites[k]=s;return s;
 }
 function blob(g,x,y,fill){
   g.beginPath();g.arc(x,y,R-1,0,7);g.fillStyle=fill;g.fill();
@@ -262,7 +262,7 @@ function draw(){
 }
 const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
 function daisy(x,y,r){ctx.save();ctx.translate(x,y);ctx.globalAlpha=.9;ctx.fillStyle='#fff';for(let i=0;i<8;i++){ctx.rotate(Math.PI/4);ctx.beginPath();ctx.ellipse(0,r*.9,r*.38,r*.75,0,0,7);ctx.fill()}ctx.fillStyle='#ffd96a';ctx.beginPath();ctx.arc(0,0,r*.5,0,7);ctx.fill();ctx.restore()}
-function put(k,x,y,s=1){const sp=sprite(k);ctx.drawImage(sp,x-R*1.3*s,y-R*1.3*s,R*2.6*s,R*2.6*s)}
+function put(k,x,y,s=1){const sp=sprite(k);ctx.drawImage(sp,x-R*1.6*s,y-R*1.6*s,R*3.2*s,R*3.2*s)}
 function loop(){step();draw();requestAnimationFrame(loop)}
 
 const board=$('board');

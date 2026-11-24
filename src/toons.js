@@ -7,7 +7,7 @@ const TOONS=[
  {name:'Ari',color:'#8a5cf0',skin:'#dfa98a',shape:'egg',hair:'buzz',hc:'#9a948c',facial:'beard',fc:'#4a403a',mouth:'grin',eyes:'wide',browW:5,brow:'#5a524c'},
  {name:'Mike',color:'#a0683a',skin:'#efc4a8',shape:'oval',hair:'bowl',hc:'#c9a35a',mouth:'smile',eyes:'normal',browW:5,brow:'#a8844a'},
  {name:'Matt',color:'#9ad41e',skin:'#e3ad8a',shape:'egg',hair:'short',hc:'#2a1d14',glasses:'sun',rainbow:true,facial:'beard',fc:'#2a1d14',mouth:'open',eyes:'normal',browW:5,brow:'#2a1d14'},
- {name:'Karthik',color:'#c9b48a',skin:'#a8714b',shape:'oval',hat:'cap',hatc:'#552583',brimc:'#fdb927',hatband:true,hair:'long',hc:'#1c1714',facial:'bigbeard',fc:'#221c18',mouth:'oh',eyes:'wide',browW:6,brow:'#1c1714',nose:1.4},
+ {name:'Karthik',color:'#c9b48a',skin:'#a8714b',shape:'oval',hat:'cap',hatc:'#552583',brimc:'#fdb927',hatband:true,hair:'long',hc:'#1c1714',facial:'bigbeard',beardLen:84,fc:'#221c18',mouth:'oh',eyes:'wide',browW:6,brow:'#1c1714',nose:1.4},
  {name:'Holmes',color:'#a3214a',skin:'#e7b596',shape:'octagon',hat:'cap',hatc:'#a3214a',hair:'side',hc:'#3a3330',facial:'beard',fc:'#a8a29a',mouth:'open',eyes:'squint',browW:5,brow:'#5a524c'},
  {name:'Jon',color:'#ff8a1f',skin:'#d9a582',shape:'squircle',hair:'longwavy',hc:'#2b211b',glasses:'rect',glassc:'#ff4fa3',facial:'beard',fc:'#7d766f',mouth:'grin',eyes:'happy',browW:5,brow:'#2b211b'},
  {name:'Tim',color:'#14b8b0',skin:'#e6b796',shape:'bell',hair:'messy',hc:'#2a1f18',glasses:'rect',facial:'stubble',fc:'#2a1f18',mouth:'smirk',eyes:'calm',browW:5,brow:'#2a1f18'},
@@ -54,6 +54,8 @@ function drawToon(g,x,y,size,t){
   if(t.hair==='buzz'){g.fillStyle=t.hc;g.globalAlpha=.45;g.beginPath();g.ellipse(0,-44,44,18,0,0,7);g.fill();g.globalAlpha=1}
   g.restore();
   toonPath(g,t.shape);g.lineWidth=t.skin?6:5;g.strokeStyle=INK;g.stroke();
+  if(t.beardLen){g.fillStyle=t.fc;g.strokeStyle=INK;g.lineWidth=4;g.beginPath();g.moveTo(-36,28);g.bezierCurveTo(-34,60,-14,t.beardLen,0,t.beardLen+4);g.bezierCurveTo(14,t.beardLen,34,60,36,28);g.closePath();g.fill();g.stroke();
+    g.strokeStyle='rgba(200,195,190,.55)';g.lineWidth=1.8;for(let x=-24;x<=24;x+=8){g.beginPath();g.moveTo(x,38);g.quadraticCurveTo(x*1.1+3,58,x*.5,t.beardLen-6);g.stroke()}g.strokeStyle=INK}
   // hair on top
   g.save();if(!t.hat&&t.hair!=='swept'&&t.hair!=='shag'){g.translate(0,-28);g.scale(1.22,1.32);g.translate(0,28)}
   g.fillStyle=t.hc;g.strokeStyle=INK;g.lineWidth=3;
