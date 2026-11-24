@@ -1,51 +1,52 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Family Pop</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
+<title>Lavender Boys and Friends Play Snood</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Shrikhand&display=swap" rel="stylesheet">
 <style>
-/* VOICE: playful arcade toy for a family night
-   IDEA: a chunky handheld puzzle cabinet
-   PICTURE: the playfield itself, top and centre
-   COLOUR and TYPE: sunflower cabinet, deep teal well, coral accent; Fredoka
+/* VOICE: cute, summery, a little trippy
+   IDEA: a groovy lavender summer-camp arcade toy
+   PICTURE: the playfield, with slow swirling sun rays behind the crew
+   COLOUR and TYPE: lavender fields, sunshine yellow, bubblegum pink, sky blue; Shrikhand title, Fredoka text
    LAYOUT: title strip, board, controls and roster below */
-:root{color-scheme:light dark;--bg:light-dark(#ffd23f,#1d1a10);--case:light-dark(#ffbf1f,#2b2510);--well:#0c3b3f;--ink:light-dark(#2a1c00,#fff4d6);--coral:#ff5a4e}
+:root{color-scheme:light dark;--lav:light-dark(#d9c8ff,#2a1748);--lav2:light-dark(#c6aeff,#341c5a);--sun:#ffd96a;--case:light-dark(#b496ff,#4a2a7a);--ink:light-dark(#2d1556,#f6ecff);--pink:#ff6fb5;--panel:light-dark(rgba(255,255,255,.5),rgba(0,0,0,.3))}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Fredoka,system-ui,sans-serif;overflow-x:clip;-webkit-user-select:none;user-select:none}
-.wrap{max-width:520px;margin:0 auto;padding:14px 12px 28px}
-header{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:0 4px 10px}
-h1{margin:0;font-size:34px;line-height:1.05;font-weight:700}
-.stats{display:flex;gap:14px;font-size:15px;font-variant-numeric:tabular-nums}
+body{margin:0;color:var(--ink);font:16px/1.5 Fredoka,system-ui,sans-serif;overflow-x:clip;-webkit-user-select:none;user-select:none}
+html{min-height:100%;background-color:var(--lav);background-image:radial-gradient(circle at 50% -40px,#fff3b8 0 70px,var(--sun) 71px 110px,transparent 112px),repeating-conic-gradient(from 0deg at 50% -40px,var(--lav) 0 9deg,var(--lav2) 9deg 18deg)}
+.wrap{max-width:520px;margin:0 auto;padding:18px 12px 28px}
+header{display:flex;flex-direction:column;align-items:center;gap:8px;padding:0 4px 14px;text-align:center}
+h1{margin:0;font-family:Shrikhand,Fredoka,serif;font-weight:400;font-size:clamp(28px,8vw,40px);line-height:1.1;text-wrap:balance;color:#fff;-webkit-text-stroke:2px #5b2a9e;paint-order:stroke fill;text-shadow:3px 3px 0 var(--pink),6px 6px 0 #8fd9ff}
+.stats{display:flex;gap:16px;font-size:15px;font-variant-numeric:tabular-nums;background:var(--panel);padding:2px 14px;border-radius:20px}
 .stats b{font-size:20px}
-.cab{background:var(--case);border-radius:26px;padding:12px;box-shadow:inset 0 -6px 0 rgba(0,0,0,.18),0 10px 24px rgba(0,0,0,.18)}
-.danger{display:flex;align-items:center;gap:8px;margin:0 4px 10px;font-size:13px}
-.meter{flex:1;height:14px;border-radius:8px;background:rgba(0,0,0,.25);overflow:hidden}
-.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,#ffe17a,var(--coral));transition:width .25s}
-.board{position:relative;border-radius:18px;overflow:hidden;background:var(--well);aspect-ratio:400/600;touch-action:none}
+.cab{background:var(--case);border-radius:30px;padding:12px;margin:18px;box-shadow:0 0 0 6px var(--pink),0 0 0 12px var(--sun),0 0 0 18px #8fd9ff,0 14px 30px rgba(60,20,110,.35)}
+.danger{display:flex;align-items:center;gap:8px;margin:0 4px 10px;font-size:13px;color:#fff}
+.meter{flex:1;height:14px;border-radius:8px;background:rgba(40,10,80,.35);overflow:hidden}
+.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,#8fd9ff,var(--pink),#ffb36b);transition:width .25s}
+.board{position:relative;border-radius:20px;overflow:hidden;background:#2a1450;aspect-ratio:400/600;touch-action:none}
 canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
-.ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;background:rgba(6,30,32,.78);color:#fff4d6;padding:24px}
+.ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;background:rgba(42,16,84,.72);color:#fff;padding:24px}
 .ov[hidden]{display:none}
-.ov h2{margin:0;font-size:40px;line-height:1.05}
+.ov h2{margin:0;font-family:Shrikhand,Fredoka,serif;font-weight:400;font-size:36px;line-height:1.1;text-shadow:3px 3px 0 var(--pink)}
 .ov p{margin:0;max-width:30ch}
-button{font:inherit;font-weight:700;font-size:18px;min-height:48px;padding:0 26px;border:0;border-radius:24px;background:var(--coral);color:#fff;cursor:pointer;box-shadow:inset 0 -4px 0 rgba(0,0,0,.2)}
+button{font:inherit;font-weight:700;font-size:18px;min-height:48px;padding:0 26px;border:0;border-radius:24px;background:var(--pink);color:#fff;cursor:pointer;box-shadow:inset 0 -4px 0 rgba(0,0,0,.2)}
 button:focus-visible{outline:3px solid #fff;outline-offset:3px}
 .row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:12px}
-.ghost{background:rgba(0,0,0,.18);color:var(--ink);font-size:16px;padding:0 18px}
-.cast{margin-top:22px}
-.cast h3{margin:0 0 8px;font-size:20px}
+.ghost{background:rgba(255,255,255,.3);color:#fff;font-size:16px;padding:0 18px}
+.cast{margin-top:30px;background:var(--panel);border-radius:24px;padding:14px 16px}
+.cast h3{margin:0 0 8px;font-family:Shrikhand,Fredoka,serif;font-weight:400;font-size:22px}
 .pieces{display:flex;flex-wrap:wrap;gap:12px}
 .pc{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:13px;width:64px;text-align:center}
 .pc canvas{position:static;width:48px;height:48px}
-.note{font-size:13px;opacity:.75;margin-top:10px}
+.note{font-size:13px;opacity:.8;margin:10px 0 0}
 @media(prefers-reduced-motion:reduce){.meter i{transition:none}}
 </style></head><body>
 <div class="wrap">
-<header><h1>Family Pop</h1><div class="stats"><span>Level <b id="lv">1</b></span><span>Score <b id="sc">0</b></span></div></header>
+<header><h1>Lavender Boys and Friends Play Snood</h1><div class="stats"><span>Level <b id="lv">1</b></span><span>Score <b id="sc">0</b></span></div></header>
 <div class="cab">
 <div class="danger"><span>Danger</span><div class="meter"><i id="dm"></i></div></div>
 <div class="board" id="board"><canvas id="cv"></canvas>
-<div class="ov" id="ov"><h2 id="ovT">Family Pop</h2><p id="ovP">Drag to aim, let go to launch. Match 3 or more of the same face to pop them. Anything left hanging falls off.</p><button id="go">Play</button></div>
+<div class="ov" id="ov"><h2 id="ovT">Let's play!</h2><p id="ovP">Drag to aim, let go to launch. Match 3 or more of the same face to pop them. Anything left hanging falls off.</p><button id="go">Play</button></div>
 </div>
 <div class="row"><button class="ghost" id="swap">Swap piece</button><button class="ghost" id="restart">Restart</button></div>
 </div>
@@ -227,15 +228,20 @@ function draw(){
   const d=window.devicePixelRatio||1,bw=cv.clientWidth;
   if(cv.width!==Math.round(bw*d)){cv.width=Math.round(bw*d);cv.height=Math.round(bw*d*H/W)}
   ctx.setTransform(cv.width/W,0,0,cv.height/H,0,0);
-  ctx.fillStyle='#0c3b3f';ctx.fillRect(0,0,W,H);
-  ctx.fillStyle='rgba(255,255,255,.035)';for(let i=0;i<W;i+=40)ctx.fillRect(i,0,20,H);
-  ctx.strokeStyle='rgba(255,90,78,.55)';ctx.setLineDash([8,8]);ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,DEAD);ctx.lineTo(W,DEAD);ctx.stroke();ctx.setLineDash([]);
+  const bgr=ctx.createLinearGradient(0,0,0,H);bgr.addColorStop(0,'#3a1a6e');bgr.addColorStop(1,'#1f0f3d');ctx.fillStyle=bgr;ctx.fillRect(0,0,W,H);
+  const now=RM?0:performance.now(),cx=W/2,cy=H*.42;
+  ctx.save();ctx.translate(cx,cy);ctx.rotate(now/9000);
+  for(let i=0;i<24;i++){ctx.beginPath();ctx.moveTo(0,0);const a=i*Math.PI/12;ctx.arc(0,0,H,a,a+Math.PI/24);ctx.closePath();ctx.fillStyle=i%3===0?'rgba(255,111,181,.10)':i%3===1?'rgba(185,150,255,.12)':'rgba(143,217,255,.08)';ctx.fill()}
+  ctx.restore();
+  for(let k=5;k>0;k--){ctx.beginPath();ctx.arc(cx,cy,k*34+(now/60)%34,0,7);ctx.strokeStyle='rgba(255,217,106,'+(.05+.015*k)+')';ctx.lineWidth=6;ctx.stroke()}
+  DAISIES.forEach(d=>daisy(d[0],d[1],d[2]));
+  ctx.strokeStyle='rgba(255,111,181,.7)';ctx.setLineDash([8,8]);ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,DEAD);ctx.lineTo(W,DEAD);ctx.stroke();ctx.setLineDash([]);
   grid&&grid.forEach((row,r)=>row.forEach((v,c)=>{if(v!=null)put(v,px(r,c),py(r))}));
   if(state==='play'){
-    ctx.strokeStyle='rgba(255,244,214,.45)';ctx.lineWidth=3;ctx.setLineDash([2,10]);ctx.lineCap='round';
+    ctx.strokeStyle='rgba(255,255,255,.6)';ctx.lineWidth=3;ctx.setLineDash([2,10]);ctx.lineCap='round';
     ctx.beginPath();ctx.moveTo(W/2,LY);ctx.lineTo(W/2+Math.cos(aim)*150,LY-Math.sin(aim)*150);ctx.stroke();ctx.setLineDash([]);
   }
-  ctx.fillStyle='#ffbf1f';ctx.beginPath();ctx.arc(W/2,H+6,48,Math.PI,0);ctx.fill();
+  ctx.fillStyle='#ffd96a';ctx.beginPath();ctx.arc(W/2,H+6,50,Math.PI,0);ctx.fill();ctx.fillStyle='#ff6fb5';ctx.beginPath();ctx.arc(W/2,H+6,42,Math.PI,0);ctx.fill();
   if(cur!=null&&!shot&&state==='play')put(cur,W/2,LY);
   if(nxt!=null&&state==='play'){ctx.globalAlpha=.85;put(nxt,W/2+70,H-22,.7);ctx.globalAlpha=1}
   if(shot)put(shot.k,shot.x,shot.y);
@@ -244,6 +250,9 @@ function draw(){
   falling.forEach(f=>{f.vy+=.45;f.x+=f.vx;f.y+=f.vy;put(f.k,f.x,f.y)});
   falling=falling.filter(f=>f.y<H+R*2);
 }
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const DAISIES=[[24,H-60,9],[372,H-90,8],[60,H-130,6],[340,H-30,10],[200,H-140,5]];
+function daisy(x,y,r){ctx.save();ctx.translate(x,y);ctx.globalAlpha=.55;ctx.fillStyle='#fff';for(let i=0;i<8;i++){ctx.rotate(Math.PI/4);ctx.beginPath();ctx.ellipse(0,r*.9,r*.38,r*.75,0,0,7);ctx.fill()}ctx.fillStyle='#ffd96a';ctx.beginPath();ctx.arc(0,0,r*.5,0,7);ctx.fill();ctx.restore()}
 function put(k,x,y,s=1){const sp=sprite(k);ctx.drawImage(sp,x-R*1.3*s,y-R*1.3*s,R*2.6*s,R*2.6*s)}
 function loop(){step();draw();requestAnimationFrame(loop)}
 

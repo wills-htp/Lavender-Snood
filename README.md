@@ -1,7 +1,7 @@
 # Lavender-Snood
 Lavender boys and friends play snood.
 
-The game is Family Pop, a bubble shooter where the pieces are cartoon versions of the crew. Open `index.html` in a browser to play: drag to aim, let go to launch, and match 3 or more of the same face to pop them.
+The game is a lavender, psychedelic bubble shooter where the pieces are cartoon versions of the crew. Open `index.html` in a browser to play: drag to aim, let go to launch, and match 3 or more of the same face to pop them.
 
 ## Files
 
