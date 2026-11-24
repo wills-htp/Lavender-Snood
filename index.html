@@ -61,17 +61,17 @@ const TOONS=[
  {name:'Ben',color:'#e8453c',skin:'#e0ae8e',shape:'octagon',hair:'short',hc:'#2a2420',facial:'stubble',fc:'#2a2420',mouth:'talk',eyes:'normal',browW:5,brow:'#2a2420'},
  {name:'David',color:'#3fb34f',skin:'#e8b794',shape:'egg',hair:'side',hc:'#6b4a2e',mouth:'grin',eyes:'happy',browW:5,brow:'#6b4a2e'},
  {name:'Nick',color:'#f5c518',skin:'#e6b38f',shape:'shield',hair:'wavy',hc:'#2e1f16',facial:'stubble',fc:'#2e1f16',mouth:'smile',eyes:'normal',browW:5,brow:'#2e1f16'},
- {name:'Louis',color:'#ec5fa8',skin:'#e8b799',shape:'egg',hat:'cap',hatc:'#1d1d22',hair:'side',hc:'#6e655e',glasses:'round',facial:'mustache',fc:'#2a1f1a',mouth:'grin',eyes:'happy',browW:5,brow:'#2a1f1a'},
+ {name:'Louis',color:'#ec5fa8',skin:'#e8b799',shape:'egg',hat:'cap',hatc:'#ec5fa8',hair:'side',hc:'#6e655e',glasses:'round',facial:'mustache',fc:'#2a1f1a',mouth:'grin',eyes:'happy',browW:5,brow:'#2a1f1a'},
  {name:'Ari',color:'#8a5cf0',skin:'#dfa98a',shape:'egg',hair:'buzz',hc:'#9a948c',facial:'beard',fc:'#4a403a',mouth:'grin',eyes:'wide',browW:5,brow:'#5a524c'},
  {name:'Mike',color:'#a0683a',skin:'#efc4a8',shape:'oval',hair:'bowl',hc:'#c9a35a',mouth:'smile',eyes:'normal',browW:5,brow:'#a8844a'},
  {name:'Matt',color:'#9ad41e',skin:'#e3ad8a',shape:'egg',hair:'short',hc:'#2a1d14',glasses:'sun',facial:'beard',fc:'#2a1d14',mouth:'open',eyes:'normal',browW:5,brow:'#2a1d14'},
- {name:'Karthik',color:'#c9b48a',skin:'#a8714b',shape:'oval',hat:'cap',hatc:'#5a5d66',hair:'long',hc:'#1c1714',facial:'bigbeard',fc:'#221c18',mouth:'oh',eyes:'wide',browW:6,brow:'#1c1714',nose:1.4},
- {name:'Holmes',color:'#a3214a',skin:'#e7b596',shape:'octagon',hat:'cap',hatc:'#3d4a6b',hair:'side',hc:'#3a3330',facial:'beard',fc:'#a8a29a',mouth:'open',eyes:'squint',browW:5,brow:'#5a524c'},
+ {name:'Karthik',color:'#c9b48a',skin:'#a8714b',shape:'oval',hat:'cap',hatc:'#c9b48a',hair:'long',hc:'#1c1714',facial:'bigbeard',fc:'#221c18',mouth:'oh',eyes:'wide',browW:6,brow:'#1c1714',nose:1.4},
+ {name:'Holmes',color:'#a3214a',skin:'#e7b596',shape:'octagon',hat:'cap',hatc:'#a3214a',hair:'side',hc:'#3a3330',facial:'beard',fc:'#a8a29a',mouth:'open',eyes:'squint',browW:5,brow:'#5a524c'},
  {name:'Jon',color:'#ff8a1f',skin:'#d9a582',shape:'squircle',hair:'longwavy',hc:'#2b211b',glasses:'rect',facial:'beard',fc:'#7d766f',mouth:'grin',eyes:'happy',browW:5,brow:'#2b211b'},
  {name:'Tim',color:'#14b8b0',skin:'#e6b796',shape:'bell',hair:'messy',hc:'#2a1f18',glasses:'rect',facial:'stubble',fc:'#2a1f18',mouth:'smirk',eyes:'calm',browW:5,brow:'#2a1f18'},
  {name:'Andy',color:'#5cc8ff',skin:'#f0c2a5',shape:'shield',hair:'wavy',hc:'#b0532e',facial:'stubble',fc:'#8a6a4a',mouth:'toothy',eyes:'happy',browW:5,brow:'#9a4a2a'},
- {name:'Garret',color:'#e9e4d8',skin:'#d9a17c',shape:'squircle',hat:'flat',hatc:'#16161a',facial:'goatee',fc:'#9a948c',mouth:'toothy',eyes:'happy',browW:5,brow:'#3a332e'},
- {name:'Jake',color:'#8fe3c2',skin:'#eec6aa',shape:'egg',hat:'cap',hatc:'#1f2a44',hair:'side',hc:'#8a6a4a',glasses:'round',mouth:'flat',eyes:'calm',browW:5,brow:'#8a6a4a'},
+ {name:'Garret',color:'#e9e4d8',skin:'#d9a17c',shape:'squircle',hat:'flat',hatc:'#e9e4d8',facial:'goatee',fc:'#9a948c',mouth:'toothy',eyes:'happy',browW:5,brow:'#3a332e'},
+ {name:'Jake',color:'#8fe3c2',skin:'#eec6aa',shape:'egg',hat:'cap',hatc:'#8fe3c2',hair:'side',hc:'#8a6a4a',glasses:'round',mouth:'flat',eyes:'calm',browW:5,brow:'#8a6a4a'},
 ];
 function toonPath(g,shape){
   g.beginPath();
@@ -107,7 +107,7 @@ function drawToon(g,x,y,size,t){
   if(t.hair==='bald'||t.hair==='buzz'){g.fillStyle='rgba(255,255,255,.35)';g.beginPath();g.ellipse(-12,-34,12,5,-.3,0,7);g.fill()}
   if(t.hair==='buzz'){g.fillStyle=t.hc;g.globalAlpha=.45;g.beginPath();g.ellipse(0,-44,44,18,0,0,7);g.fill();g.globalAlpha=1}
   g.restore();
-  toonPath(g,t.shape);if(t.skin){g.lineWidth=12;g.strokeStyle=INK;g.stroke();g.lineWidth=5.5;g.strokeStyle=t.color;g.stroke()}else{g.lineWidth=5;g.strokeStyle=INK;g.stroke()}
+  toonPath(g,t.shape);g.lineWidth=t.skin?6:5;g.strokeStyle=INK;g.stroke();
   // hair on top
   g.fillStyle=t.hc;g.strokeStyle=INK;g.lineWidth=3;
   const blobs=(arr)=>{g.beginPath();for(const [a,b,r] of arr){g.moveTo(a+r,b);g.arc(a,b,r,0,7)}g.fill();g.stroke();g.beginPath();for(const [a,b,r] of arr){g.moveTo(a+r-3,b);g.arc(a,b,r-3,0,7)}g.fill()};
