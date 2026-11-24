@@ -3,5 +3,6 @@ from pathlib import Path
 root = Path(__file__).parent
 tpl = (root / "src/game.tpl.html").read_text()
 toons = (root / "src/toons.js").read_text()
-(root / "index.html").write_text(tpl.replace("__TOONS__", toons))
+music = (root / "src/music.js").read_text()
+(root / "index.html").write_text(tpl.replace("__TOONS__", toons).replace("__MUSIC__", music))
 print("Built index.html")
