@@ -75,6 +75,7 @@ button:focus-visible{outline:3px solid #fff;outline-offset:3px}
 const FACES=[];
 __TOONS__
 __MUSIC__
+__CONFIG__
 const COLORS=TOONS.map(t=>t.color);
 const NAMES=TOONS.map(t=>t.name);
 const SPECIAL={W:'Wildcard',T:'Stone',S:'Skull'};
@@ -93,7 +94,7 @@ const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
 const $=id=>document.getElementById(id);
 const imgs={};
 FACES.forEach((f,i)=>{const im=new Image();im.src=f.src;imgs[i]=im});
-let grid,par=0,level,score,danger=0,shot,cur,nxt,aim=Math.PI/2,falling=[],pops=[],state='menu',numColors,topY;
+let grid,par=0,level,score,danger=0,shot,cur,nxt,aim=Math.PI/2,falling=[],pops=[],state='menu',numColors,topY,roofT=0,shots=0,startCount=1,floats=[];
 
 const sprites={};
 function sprite(k){
@@ -161,9 +162,10 @@ function startLevel(){
   fitBoard();
   numColors=Math.min(4+Math.floor((level-1)/2),8,COLORS.length);
   active=[...COLORS.keys()].sort(()=>Math.random()-.5).slice(0,numColors);
-  par=0;topY=0;danger=0;grid=[];falling=[];pops=[];shot=null;
+  par=0;topY=0;roofT=0;danger=0;grid=[];falling=[];pops=[];shot=null;
   const rows=Math.min(4+level,9)+Math.floor((H-600)/RH/3);
   for(let r=0;r<rows;r++){grid.push(null);grid[r]=newRow(r,level>=3)}
+  shots=0;floats=[];startCount=Math.max(1,grid.reduce((a,row)=>a+row.filter(v=>v!=null).length,0));
   cur=pick();nxt=pick();state='play';hud();
 }
 function present(){const s=new Set();grid.forEach(row=>row.forEach(k=>{if(typeof k==='number')s.add(k)}));return[...s]}
@@ -182,6 +184,7 @@ function fire(){
   cur=nxt;nxt=pick();
 }
 function step(){
+  if(topY<roofT)topY=Math.min(roofT,topY+Math.max(.4,(roofT-topY)*.12));
   if(!shot)return;
   for(let i=0;i<4;i++){
     shot.x+=shot.vx/4;shot.y+=shot.vy/4;
@@ -205,7 +208,7 @@ function land(){
       const d=Math.hypot(px(r,c)-shot.x,py(r)-shot.y);if(d<bd){bd=d;best=[r,c]}
     }
   }
-  const k=shot.k;shot=null;
+  const k=shot.k,sx=shot.x,sy=shot.y;shot=null;shots++;
   if(!best){danger++;afterShot(0);return}
   const [r,c]=best;grid[r][c]=k;
   let cleared=0;
@@ -221,8 +224,19 @@ function land(){
     const g=group(r,c,k);
     if(g.length>=3){g.forEach(([a,b])=>popAt(a,b));cleared=g.length}
   }
-  const dropped=dropFloating();
-  if(cleared)score+=cleared*10+dropped*dropped*10;
+  const drops=dropFloating(),dropped=drops.length;
+  let pts=cleared*10;
+  if(dropped){
+    const other=typeof k==='number'?drops.filter(d=>d.k!==k).length:0;
+    const base=dropped*20+dropped*dropped*10, xb=other*30;
+    pts+=base+xb;
+    const cx=drops.reduce((a,d)=>a+d.x,0)/dropped, cy=drops.reduce((a,d)=>a+d.y,0)/dropped;
+    addFloat(cx,cy,'+'+(base+xb),dropped>=6?'#ff6fb5':'#5b2a9e',dropped>=6?26:20);
+    if(dropped>=6)addFloat(W/2,H*.48,dropped>=12?'MEGA DROP!':'BIG DROP!','#ff6fb5',34);
+    if(other>=3)addFloat(W/2,H*.48+40,'Sneaky drop bonus +'+xb,'#2e9e4f',22);
+  }
+  if(cleared&&!dropped)addFloat(sx,sy,'+'+pts,'#5b2a9e',18);
+  score+=pts;
   afterShot(cleared+dropped);
 }
 function group(r,c,k){
@@ -235,17 +249,20 @@ function dropFloating(){
   const seen=new Set(),q=[];
   if(grid[0])grid[0].forEach((v,c)=>{if(v!=null){seen.add('0,'+c);q.push([0,c])}});
   while(q.length){const [a,b]=q.pop();for(const [x,y] of nbrs(a,b)){const key=x+','+y;if(!seen.has(key)&&get(x,y)!=null){seen.add(key);q.push([x,y])}}}
-  let n=0;
-  grid.forEach((row,r)=>row.forEach((v,c)=>{if(v!=null&&!seen.has(r+','+c)){falling.push({x:px(r,c),y:py(r),vy:-2-Math.random()*2,vx:(Math.random()-.5)*3,k:v});row[c]=null;n++}}));
+  const out=[];
+  grid.forEach((row,r)=>row.forEach((v,c)=>{if(v!=null&&!seen.has(r+','+c)){falling.push({x:px(r,c),y:py(r),vy:-2-Math.random()*2,vx:(Math.random()-.5)*3,k:v});out.push({k:v,x:px(r,c),y:py(r)});row[c]=null}}));
   while(grid.length&&grid[grid.length-1].every(v=>v==null))grid.pop();
-  return n;
+  return out;
 }
 function afterShot(gain){
-  danger=gain?Math.max(0,danger-Math.ceil(gain/2)):danger+1;
-  if(danger>=DMAX){danger=0;par^=1;grid.unshift(newRow(0,level>=3))}
+  roofT+=RH*(.17+.015*Math.min(level,10));
+  let lowest=0;grid.forEach((row,r)=>{if(row.some(v=>v!=null))lowest=Math.max(lowest,roofT+R+r*RH+R)});
+  danger=Math.max(0,Math.min(DMAX,DMAX*(lowest-H*.35)/(DEAD-H*.35)));
   hud();
-  if(!grid.some(row=>row.some(v=>v!=null))){state='won';setTimeout(()=>show('Level '+level+' cleared!','Score so far: '+score,'Next level'),500);return}
-  if(grid.some((row,r)=>row.some(v=>v!=null)&&py(r)+R>DEAD)){
+  if(!grid.some(row=>row.some(v=>v!=null))){
+    const par=Math.ceil(startCount/3),bonus=Math.max(100,(2*par-shots)*100);score+=bonus;hud();
+    state='won';setTimeout(()=>show('Level '+level+' cleared!','Cleared in '+shots+' shots: +'+bonus+' bonus. Score: '+score,'Next level'),600);return}
+  if(grid.some((row,r)=>row.some(v=>v!=null)&&roofT+R+r*RH+R>DEAD)){
     state='lost';grid.forEach(row=>row.forEach((v,c)=>{if(v!=null)row[c]='S'}));
     const fin=score;setTimeout(()=>{show('Game over','You reached level '+level+' with '+fin+' points.','Play again');offerScore(fin)},700);
   }
@@ -263,6 +280,10 @@ function draw(){
   ctx.restore();
   for(let k=5;k>0;k--){ctx.beginPath();ctx.arc(cx,cy,k*34+(now/60)%34,0,7);ctx.strokeStyle='rgba(255,200,60,'+(.12+.03*k)+')';ctx.lineWidth=6;ctx.stroke()}
   DAISIES.forEach(d=>daisy(d[0],d[1],d[2]));
+  if(topY>0.5){const rg=ctx.createLinearGradient(0,0,0,topY);rg.addColorStop(0,'#7b4fd6');rg.addColorStop(1,'#a77cf0');ctx.fillStyle=rg;ctx.fillRect(0,0,W,topY);
+    ctx.fillStyle='rgba(255,111,181,.35)';for(let x=-20;x<W;x+=28){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x+14,0);ctx.lineTo(x+14-topY*.5,topY);ctx.lineTo(x-topY*.5,topY);ctx.closePath();ctx.fill()}
+    ctx.fillStyle='#ffd96a';for(let x=0;x<=W;x+=20){ctx.beginPath();ctx.arc(x+10,topY,7,0,Math.PI);ctx.fill()}
+    ctx.strokeStyle='#5b2a9e';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(0,topY);ctx.lineTo(W,topY);ctx.stroke()}
   ctx.strokeStyle='rgba(225,60,140,.75)';ctx.setLineDash([8,8]);ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,DEAD);ctx.lineTo(W,DEAD);ctx.stroke();ctx.setLineDash([]);
   grid&&grid.forEach((row,r)=>row.forEach((v,c)=>{if(v!=null)put(v,px(r,c),py(r))}));
   if(state==='play'){
@@ -277,9 +298,16 @@ function draw(){
   pops=pops.filter(p=>p.t<1);
   falling.forEach(f=>{f.vy+=.45;f.x+=f.vx;f.y+=f.vy;put(f.k,f.x,f.y)});
   falling=falling.filter(f=>f.y<H+R*2);
+  drawFloats();
 }
 const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
 function daisy(x,y,r){ctx.save();ctx.translate(x,y);ctx.globalAlpha=.9;ctx.fillStyle='#fff';for(let i=0;i<8;i++){ctx.rotate(Math.PI/4);ctx.beginPath();ctx.ellipse(0,r*.9,r*.38,r*.75,0,0,7);ctx.fill()}ctx.fillStyle='#ffd96a';ctx.beginPath();ctx.arc(0,0,r*.5,0,7);ctx.fill();ctx.restore()}
+function addFloat(x,y,txt,col,size){floats.push({x:Math.max(60,Math.min(W-60,x)),y,txt,col,size,t:0})}
+function drawFloats(){
+  floats.forEach(f=>{f.t+=.016;f.y-=.6;ctx.globalAlpha=Math.max(0,1-f.t/1.4);ctx.font='700 '+f.size+'px Fredoka, sans-serif';ctx.textAlign='center';
+    ctx.lineWidth=5;ctx.strokeStyle='#fff';ctx.strokeText(f.txt,f.x,f.y);ctx.fillStyle=f.col;ctx.fillText(f.txt,f.x,f.y)});
+  ctx.globalAlpha=1;floats=floats.filter(f=>f.t<1.4);
+}
 function put(k,x,y,s=1){const sp=sprite(k);ctx.drawImage(sp,x-R*1.6*s,y-R*1.6*s,R*3.2*s,R*3.2*s)}
 function loop(){step();draw();requestAnimationFrame(loop)}
 
@@ -318,7 +346,9 @@ Promise.all(Object.values(imgs).map(im=>im.decode?im.decode().catch(()=>{}):0)).
 const LSK='lbpop-scores',LSN='lbpop-name';
 const lsGet=(k,d)=>{try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}};
 const lsSet=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
-const LB={list:[],mine:[],shared:false,db:null,me:null,pending:0,lastAt:0};
+const LB={list:[],mine:[],shared:false,arcade:false,db:null,me:null,pending:0,lastAt:0};
+const SUPA=!!(SUPABASE_URL&&SUPABASE_KEY);
+const sbH={apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY};
 function sortTrim(a){return a.filter(e=>e&&typeof e.score==='number'&&typeof e.name==='string').slice().sort((x,y)=>y.score-x.score).slice(0,10)}
 LB.list=sortTrim(lsGet(LSK,[]));
 function renderLB(){
@@ -328,7 +358,7 @@ function renderLB(){
     const r=document.createElement('span');r.className='rk';r.textContent=(i+1)+'.';
     const n=document.createElement('span');n.className='nm';n.textContent=e.name;
     const s=document.createElement('b');s.textContent=String(e.score);li.append(r,n,s);ol.appendChild(li)});
-  $('lbNote').textContent=LB.shared?'Shared with everyone playing':'Saved on this phone';
+  $('lbNote').textContent=LB.arcade?'Arcade high scores: everyone, everywhere':LB.shared?'Shared with everyone playing':'Saved on this phone';
 }
 function qualifies(sc){return sc>0&&(LB.list.length<10||sc>LB.list[LB.list.length-1].score)}
 function offerScore(sc){
@@ -338,6 +368,10 @@ function offerScore(sc){
 }
 async function saveScore(name,sc){
   const e={name:name.slice(0,16),score:sc,at:Date.now()};LB.lastAt=e.at;lsSet(LSN,name);
+  if(SUPA){
+    try{const r=await fetch(SUPABASE_URL+'/rest/v1/scores',{method:'POST',headers:{...sbH,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({name:e.name,score:sc})});
+      if(r.ok){LB.arcade=true;LB.list=sortTrim([...LB.list,e]);renderLB();loadArcade();return}}catch(err){}
+  }
   if(LB.shared&&LB.db&&LB.me){
     const mine=sortTrim([...LB.mine,e]);
     try{await LB.db.doc('scores/'+LB.me).set({entries:mine});LB.mine=mine;LB.list=sortTrim([...LB.list,e]);renderLB();return}
@@ -348,8 +382,17 @@ async function saveScore(name,sc){
 $('hsForm').addEventListener('submit',ev=>{ev.preventDefault();
   const name=$('hsName').value.trim()||'Mystery guest';const sc=LB.pending;if(!sc)return;
   LB.pending=0;$('hsForm').hidden=true;saveScore(name,sc)});
+async function loadArcade(){
+  if(!SUPA)return false;
+  try{const r=await fetch(SUPABASE_URL+'/rest/v1/scores?select=name,score,created_at&order=score.desc&limit=10',{headers:sbH});
+    if(!r.ok)return false;const rows=await r.json();if(!Array.isArray(rows))return false;
+    LB.arcade=true;LB.list=sortTrim(rows.map(x=>({name:String(x.name||''),score:Number(x.score)||0,at:Date.parse(x.created_at)||0})));
+    if(LB.lastAt&&!LB.list.some(x=>x.at===LB.lastAt)){}renderLB();return true}catch(e){return false}
+}
+if(SUPA){loadArcade();setInterval(()=>{if(!$('ov').hidden)loadArcade()},30000)}
 (async()=>{
   try{
+    if(SUPA)return;
     if(typeof claude==='undefined'||!claude.use)return;
     const d=await claude.use('db');const u=await claude.use('user');if(!d||!u)return;
     const id=await u.id();if(!id)return;

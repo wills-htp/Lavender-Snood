@@ -4,5 +4,6 @@ root = Path(__file__).parent
 tpl = (root / "src/game.tpl.html").read_text()
 toons = (root / "src/toons.js").read_text()
 music = (root / "src/music.js").read_text()
-(root / "index.html").write_text(tpl.replace("__TOONS__", toons).replace("__MUSIC__", music))
+config = (root / "src/config.js").read_text()
+(root / "index.html").write_text(tpl.replace("__TOONS__", toons).replace("__MUSIC__", music).replace("__CONFIG__", config))
 print("Built index.html")
