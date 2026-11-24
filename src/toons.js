@@ -7,9 +7,9 @@ const TOONS=[
  {name:'Ari',color:'#8a5cf0',skin:'#dfa98a',shape:'egg',hair:'buzz',hc:'#9a948c',facial:'beard',fc:'#4a403a',mouth:'grin',eyes:'wide',browW:5,brow:'#5a524c'},
  {name:'Mike',color:'#a0683a',skin:'#efc4a8',shape:'oval',hair:'bowl',hc:'#c9a35a',mouth:'smile',eyes:'normal',browW:5,brow:'#a8844a'},
  {name:'Matt',color:'#9ad41e',skin:'#e3ad8a',shape:'egg',hair:'short',hc:'#2a1d14',glasses:'sun',rainbow:true,facial:'beard',fc:'#2a1d14',mouth:'open',eyes:'normal',browW:5,brow:'#2a1d14'},
- {name:'Karthik',color:'#c9b48a',skin:'#a8714b',shape:'oval',hat:'cap',hatc:'#552583',brimc:'#fdb927',hatband:true,hair:'long',hc:'#1c1714',facial:'bigbeard',beardLen:84,fc:'#221c18',mouth:'oh',eyes:'wide',browW:6,brow:'#1c1714',nose:1.4},
+ {name:'Karthik',color:'#c9b48a',skin:'#a8714b',shape:'oval',hat:'cap',hatc:'#552583',brimc:'#fdb927',hatband:true,hair:'long',hc:'#1c1714',facial:'bigbeard',beardLen:84,streak:'rgba(205,200,195,.9)',fc:'#221c18',mouth:'oh',eyes:'wide',browW:6,brow:'#1c1714',nose:1.4},
  {name:'Holmes',color:'#a3214a',skin:'#e7b596',shape:'octagon',hat:'cap',hatc:'#a3214a',hair:'side',hc:'#3a3330',facial:'beard',fc:'#a8a29a',mouth:'open',eyes:'squint',browW:5,brow:'#5a524c'},
- {name:'Jon',color:'#ff8a1f',skin:'#d9a582',shape:'squircle',hair:'longwavy',hc:'#2b211b',glasses:'rect',glassc:'#ff4fa3',facial:'beard',fc:'#7d766f',mouth:'grin',eyes:'happy',browW:5,brow:'#2b211b'},
+ {name:'Jon',color:'#ff8a1f',skin:'#d9a582',shape:'squircle',hair:'longwavy',hc:'#2b211b',glasses:'rect',glassc:'#ff4fa3',lens:'rgba(255,214,70,.42)',facial:'beard',fc:'#7d766f',mouth:'grin',eyes:'happy',browW:5,brow:'#2b211b'},
  {name:'Tim',color:'#14b8b0',skin:'#e6b796',shape:'bell',hair:'messy',hc:'#2a1f18',glasses:'rect',facial:'stubble',fc:'#2a1f18',mouth:'smirk',eyes:'calm',browW:5,brow:'#2a1f18'},
  {name:'Andy',color:'#5cc8ff',skin:'#f0c2a5',shape:'shield',hair:'shag',hc:'#b0532e',facial:'stubble',fc:'#8a6a4a',mouth:'toothy',eyes:'happy',browW:5,brow:'#9a4a2a'},
  {name:'Garret',color:'#e9e4d8',skin:'#d9a17c',shape:'squircle',hat:'cap',hatc:'#18181c',facial:'goatee',fc:'#9a948c',mouth:'toothy',cig:true,eyes:'happy',browW:5,brow:'#3a332e'},
@@ -47,7 +47,7 @@ function drawToon(g,x,y,size,t){
   // stubble / beard clipped to body
   if(t.facial==='stubble'){g.fillStyle=t.fc;g.globalAlpha=.28;g.beginPath();g.ellipse(0,24,32,20,0,0,7);g.fill();g.globalAlpha=.55;for(let i=0;i<60;i++){const a=Math.random()*Math.PI,r=14+Math.random()*16;g.fillRect(Math.cos(a)*r*1.5-1,22+Math.sin(a)*r*.7,1.6,1.6)}g.globalAlpha=1}
   if(t.facial==='beard'||t.facial==='bigbeard'){g.fillStyle=t.fc;g.beginPath();g.moveTo(-42,4);g.quadraticCurveTo(-40,t.facial==='bigbeard'?70:50,0,t.facial==='bigbeard'?72:52);g.quadraticCurveTo(40,t.facial==='bigbeard'?70:50,42,4);g.quadraticCurveTo(30,22,0,14);g.quadraticCurveTo(-30,22,-42,4);g.fill();
-    g.strokeStyle=shade(t.fc,t.fc==='#8c8580'||t.fc==='#a8a29a'?.35:.25);g.lineWidth=1.6;for(let i=-30;i<=30;i+=8){g.beginPath();g.moveTo(i,26);g.quadraticCurveTo(i+3,36,i,44);g.stroke()}}
+    g.strokeStyle=t.streak||shade(t.fc,t.fc==='#8c8580'||t.fc==='#a8a29a'?.35:.25);g.lineWidth=t.streak?2.6:1.6;for(let i=-30;i<=30;i+=8){g.beginPath();g.moveTo(i,26);g.quadraticCurveTo(i+3,36,i,44);g.stroke()}}
   if(t.hair==='bald'||t.hair==='buzz'){g.fillStyle='rgba(255,255,255,.35)';g.beginPath();g.ellipse(-12,-34,12,5,-.3,0,7);g.fill()}
   if(t.hair==='crop'){g.fillStyle=t.hc;g.globalAlpha=.9;g.beginPath();g.moveTo(-60,-6);g.lineTo(-46,-4);g.quadraticCurveTo(-40,-18,-28,-21);g.quadraticCurveTo(0,-27,28,-21);g.quadraticCurveTo(40,-18,46,-4);g.lineTo(60,-6);g.lineTo(60,-70);g.lineTo(-60,-70);g.closePath();g.fill();
     g.globalAlpha=1;g.fillStyle=shade(t.hc,.25);for(let i=0;i<90;i++){const x=-48+Math.random()*96,y=-44+Math.random()*24;g.fillRect(x,y,1.4,1.4)}}
@@ -55,7 +55,7 @@ function drawToon(g,x,y,size,t){
   g.restore();
   toonPath(g,t.shape);g.lineWidth=t.skin?6:5;g.strokeStyle=INK;g.stroke();
   if(t.beardLen){g.fillStyle=t.fc;g.strokeStyle=INK;g.lineWidth=4;g.beginPath();g.moveTo(-36,28);g.bezierCurveTo(-34,60,-14,t.beardLen,0,t.beardLen+4);g.bezierCurveTo(14,t.beardLen,34,60,36,28);g.closePath();g.fill();g.stroke();
-    g.strokeStyle='rgba(200,195,190,.55)';g.lineWidth=1.8;for(let x=-24;x<=24;x+=8){g.beginPath();g.moveTo(x,38);g.quadraticCurveTo(x*1.1+3,58,x*.5,t.beardLen-6);g.stroke()}g.strokeStyle=INK}
+    g.strokeStyle=t.streak||'rgba(200,195,190,.55)';g.lineWidth=t.streak?3:1.8;for(let x=-24;x<=24;x+=8){g.beginPath();g.moveTo(x,38);g.quadraticCurveTo(x*1.1+3,58,x*.5,t.beardLen-6);g.stroke()}g.strokeStyle=INK}
   // hair on top
   g.save();if(!t.hat&&t.hair!=='swept'&&t.hair!=='shag'){g.translate(0,-28);g.scale(1.22,1.32);g.translate(0,28)}
   g.fillStyle=t.hc;g.strokeStyle=INK;g.lineWidth=3;
@@ -101,7 +101,7 @@ function drawToon(g,x,y,size,t){
       if(t.eyes==='calm'){g.fillStyle=shade(base,-.05);g.beginPath();g.ellipse(sx*ex,ey-er+2,er+1,6,0,0,7);g.fill();g.lineWidth=3;g.beginPath();g.moveTo(sx*ex-er,ey-4);g.lineTo(sx*ex+er,ey-4);g.stroke()}
     }
     g.strokeStyle=t.brow?t.brow:INK;g.lineWidth=t.browW||4;g.beginPath();g.moveTo(-ex-9,ey-er-6);g.quadraticCurveTo(-ex,ey-er-10,-ex+9,ey-er-6);g.moveTo(ex-9,ey-er-6);g.quadraticCurveTo(ex,ey-er-10,ex+9,ey-er-6);g.stroke();
-    if(t.glasses==='rect'){g.fillStyle='rgba(200,120,90,.25)';g.beginPath();g.roundRect(-ex-15,ey-10,30,21,5);g.roundRect(ex-15,ey-10,30,21,5);g.fill();g.strokeStyle=t.glassc||'#26304f';g.lineWidth=4.5;g.stroke();g.beginPath();g.moveTo(-1,ey-3);g.lineTo(1,ey-3);g.moveTo(-ex-15,ey-4);g.lineTo(-44,ey-7);g.moveTo(ex+15,ey-4);g.lineTo(44,ey-7);g.stroke();g.strokeStyle=INK}
+    if(t.glasses==='rect'){g.fillStyle=t.lens||'rgba(200,120,90,.25)';g.beginPath();g.roundRect(-ex-15,ey-10,30,21,5);g.roundRect(ex-15,ey-10,30,21,5);g.fill();g.strokeStyle=t.glassc||'#26304f';g.lineWidth=4.5;g.stroke();g.beginPath();g.moveTo(-1,ey-3);g.lineTo(1,ey-3);g.moveTo(-ex-15,ey-4);g.lineTo(-44,ey-7);g.moveTo(ex+15,ey-4);g.lineTo(44,ey-7);g.stroke();g.strokeStyle=INK}
     if(t.glasses==='round'){g.strokeStyle=INK;g.lineWidth=4;g.beginPath();g.arc(-ex,ey,14,0,7);g.moveTo(ex+14,ey);g.arc(ex,ey,14,0,7);g.moveTo(-1,ey-2);g.quadraticCurveTo(0,ey-5,1,ey-2);g.moveTo(-ex-14,ey-2);g.lineTo(-44,ey-6);g.moveTo(ex+14,ey-2);g.lineTo(44,ey-6);g.stroke()}
   }
   // nose
