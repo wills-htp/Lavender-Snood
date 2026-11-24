@@ -1,0 +1,5 @@
+<!DOCTYPE html><html><body style="margin:0;background:#ffd23f"><canvas id="c" width="1520" height="1580"></canvas>
+<script src="src/toons.js"></script><script>
+const g=document.getElementById('c').getContext('2d');g.font='bold 32px sans-serif';g.textAlign='center';
+TOONS.forEach((t,i)=>{const x=190+(i%4)*380,y=170+Math.floor(i/4)*380;drawToon(g,x,y,250,t);g.fillStyle='#2a1c00';g.fillText(t.name,x,y+175)});
+</script></body></html>
