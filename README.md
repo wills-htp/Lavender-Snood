@@ -26,14 +26,14 @@ Add a line to `TOONS` in `src/toons.js`:
 | Option | Values |
 |---|---|
 | `shape` | pill, octagon, egg, shield, squircle, bell, scallop, oval, blob |
-| `hair` | curly, short, side, wavy, longwavy, long, messy, bowl, buzz, bald |
+| `hair` | curly, short, side, wavy, longwavy, long, messy, bowl, buzz, bald, fringe |
 | `hat` | cap, flat (with `hatc` for the hat color) |
 | `glasses` | round, rect, sun |
 | `facial` | stubble, mustache, goatee, beard, bigbeard (with `fc` for the color) |
 | `mouth` | flat, smile, grin, toothy, open, talk, oh, smirk |
 | `eyes` | normal, happy, calm, wide, squint |
 
-`hc` sets the hair color. Each friend's `color` should be one that isn't already taken.
+`hc` sets the hair color. `skin` sets the face tone, and the friend's game `color` becomes the disc behind the head. `brow` and `browW` set eyebrow color and thickness, and `nose` sets nose size (1 is normal). Each friend's `color` should be one that isn't already taken.
 
 ## How a level works
 

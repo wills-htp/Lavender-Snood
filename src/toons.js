@@ -1,19 +1,19 @@
 const TOONS=[
- {name:'Will',color:'#2f7de1',shape:'pill',hair:'curly',hc:'#3a2a1e',facial:'stubble',fc:'#3a2a1e',mouth:'flat',eyes:'calm'},
- {name:'Ben',color:'#e8453c',shape:'octagon',hair:'short',hc:'#2a2420',facial:'stubble',fc:'#2a2420',mouth:'talk',eyes:'normal'},
- {name:'David',color:'#3fb34f',shape:'egg',hair:'side',hc:'#6b4a2e',mouth:'grin',eyes:'happy'},
- {name:'Nick',color:'#f5c518',shape:'shield',hair:'wavy',hc:'#2e1f16',facial:'stubble',fc:'#2e1f16',mouth:'smile',eyes:'normal'},
- {name:'Louis',color:'#ec5fa8',shape:'blob',hair:'bald',glasses:'round',facial:'beard',fc:'#8c8580',mouth:'open',eyes:'normal'},
- {name:'Ari',color:'#8a5cf0',shape:'scallop',hair:'buzz',hc:'#9a948c',facial:'beard',fc:'#3b2f2a',mouth:'grin',eyes:'wide'},
- {name:'Mike',color:'#a0683a',shape:'oval',hair:'bowl',hc:'#c9a35a',mouth:'smile',eyes:'normal'},
- {name:'Matt',color:'#9ad41e',shape:'egg',hair:'short',hc:'#2a1d14',glasses:'sun',facial:'beard',fc:'#2a1d14',mouth:'open',eyes:'normal'},
- {name:'Karthik',color:'#c9b48a',shape:'pill',hat:'cap',hatc:'#54565e',hair:'long',hc:'#1c1714',facial:'bigbeard',fc:'#1c1714',mouth:'oh',eyes:'wide'},
- {name:'Holmes',color:'#a3214a',shape:'octagon',hat:'cap',hatc:'#3d4a6b',hair:'side',hc:'#3a3330',facial:'beard',fc:'#a8a29a',mouth:'open',eyes:'squint'},
- {name:'Jon',color:'#ff8a1f',shape:'squircle',hair:'longwavy',hc:'#2b211b',glasses:'rect',facial:'beard',fc:'#7d766f',mouth:'grin',eyes:'happy'},
- {name:'Tim',color:'#14b8b0',shape:'bell',hair:'messy',hc:'#2a1f18',glasses:'rect',facial:'stubble',fc:'#2a1f18',mouth:'smirk',eyes:'calm'},
- {name:'Andy',color:'#5cc8ff',shape:'shield',hair:'wavy',hc:'#b0532e',facial:'stubble',fc:'#8a6a4a',mouth:'toothy',eyes:'happy'},
- {name:'Garret',color:'#e9e4d8',shape:'squircle',hat:'flat',hatc:'#16161a',facial:'goatee',fc:'#9a948c',mouth:'toothy',eyes:'happy'},
- {name:'Jake',color:'#8fe3c2',shape:'egg',hat:'cap',hatc:'#1f2a44',hair:'side',hc:'#8a6a4a',glasses:'round',mouth:'flat',eyes:'calm'},
+ {name:'Will',color:'#2f7de1',skin:'#e4b496',shape:'oval',hair:'curly',hc:'#3b2d24',facial:'stubble',fc:'#4a3a30',mouth:'flat',eyes:'calm',browW:6,brow:'#2e231c',nose:1.2},
+ {name:'Ben',color:'#e8453c',skin:'#e0ae8e',shape:'octagon',hair:'short',hc:'#2a2420',facial:'stubble',fc:'#2a2420',mouth:'talk',eyes:'normal',browW:5,brow:'#2a2420'},
+ {name:'David',color:'#3fb34f',skin:'#e8b794',shape:'egg',hair:'side',hc:'#6b4a2e',mouth:'grin',eyes:'happy',browW:5,brow:'#6b4a2e'},
+ {name:'Nick',color:'#f5c518',skin:'#e6b38f',shape:'shield',hair:'wavy',hc:'#2e1f16',facial:'stubble',fc:'#2e1f16',mouth:'smile',eyes:'normal',browW:5,brow:'#2e1f16'},
+ {name:'Louis',color:'#ec5fa8',skin:'#e8b799',shape:'egg',hat:'cap',hatc:'#1d1d22',hair:'side',hc:'#6e655e',glasses:'round',facial:'mustache',fc:'#2a1f1a',mouth:'grin',eyes:'happy',browW:5,brow:'#2a1f1a'},
+ {name:'Ari',color:'#8a5cf0',skin:'#dfa98a',shape:'egg',hair:'buzz',hc:'#9a948c',facial:'beard',fc:'#4a403a',mouth:'grin',eyes:'wide',browW:5,brow:'#5a524c'},
+ {name:'Mike',color:'#a0683a',skin:'#efc4a8',shape:'oval',hair:'bowl',hc:'#c9a35a',mouth:'smile',eyes:'normal',browW:5,brow:'#a8844a'},
+ {name:'Matt',color:'#9ad41e',skin:'#e3ad8a',shape:'egg',hair:'short',hc:'#2a1d14',glasses:'sun',facial:'beard',fc:'#2a1d14',mouth:'open',eyes:'normal',browW:5,brow:'#2a1d14'},
+ {name:'Karthik',color:'#c9b48a',skin:'#a8714b',shape:'oval',hat:'cap',hatc:'#5a5d66',hair:'long',hc:'#1c1714',facial:'bigbeard',fc:'#221c18',mouth:'oh',eyes:'wide',browW:6,brow:'#1c1714',nose:1.4},
+ {name:'Holmes',color:'#a3214a',skin:'#e7b596',shape:'octagon',hat:'cap',hatc:'#3d4a6b',hair:'side',hc:'#3a3330',facial:'beard',fc:'#a8a29a',mouth:'open',eyes:'squint',browW:5,brow:'#5a524c'},
+ {name:'Jon',color:'#ff8a1f',skin:'#d9a582',shape:'squircle',hair:'longwavy',hc:'#2b211b',glasses:'rect',facial:'beard',fc:'#7d766f',mouth:'grin',eyes:'happy',browW:5,brow:'#2b211b'},
+ {name:'Tim',color:'#14b8b0',skin:'#e6b796',shape:'bell',hair:'messy',hc:'#2a1f18',glasses:'rect',facial:'stubble',fc:'#2a1f18',mouth:'smirk',eyes:'calm',browW:5,brow:'#2a1f18'},
+ {name:'Andy',color:'#5cc8ff',skin:'#f0c2a5',shape:'shield',hair:'wavy',hc:'#b0532e',facial:'stubble',fc:'#8a6a4a',mouth:'toothy',eyes:'happy',browW:5,brow:'#9a4a2a'},
+ {name:'Garret',color:'#e9e4d8',skin:'#d9a17c',shape:'squircle',hat:'flat',hatc:'#16161a',facial:'goatee',fc:'#9a948c',mouth:'toothy',eyes:'happy',browW:5,brow:'#3a332e'},
+ {name:'Jake',color:'#8fe3c2',skin:'#eec6aa',shape:'egg',hat:'cap',hatc:'#1f2a44',hair:'side',hc:'#8a6a4a',glasses:'round',mouth:'flat',eyes:'calm',browW:5,brow:'#8a6a4a'},
 ];
 function toonPath(g,shape){
   g.beginPath();
@@ -32,11 +32,14 @@ function shade(hex,f){const n=parseInt(hex.slice(1),16),c=[n>>16,n>>8&255,n&255]
 function drawToon(g,x,y,size,t){
   const s=size/100;g.save();g.translate(x,y);g.scale(s,s);
   const INK='#14100c';g.lineJoin='round';g.lineCap='round';
+  const base=t.skin||t.color;
+  if(t.skin){g.beginPath();g.arc(0,0,50,0,7);g.fillStyle=t.color;g.fill();g.lineWidth=5;g.strokeStyle=INK;g.stroke();g.scale(.84,.84);g.translate(0,4)}
   // long hair behind
   if(t.hair==='long'||t.hair==='longwavy'){g.fillStyle=t.hc;for(const [a,b,r] of [[-40,0,12],[-44,18,12],[-40,34,11],[40,0,12],[44,18,12],[40,34,11]]){g.beginPath();g.arc(a,b,r,0,7);g.fill()}}
+  if(t.skin){for(const sx of [-1,1]){g.beginPath();g.ellipse(sx*42,4,8,12,0,0,7);g.fillStyle=shade(base,-.08);g.fill();g.lineWidth=4;g.strokeStyle=INK;g.stroke()}}
   // body
   toonPath(g,t.shape);
-  const gr=g.createRadialGradient(-14,-18,6,0,0,58);gr.addColorStop(0,shade(t.color,.35));gr.addColorStop(1,shade(t.color,-.18));
+  const gr=g.createRadialGradient(-14,-18,6,0,0,58);gr.addColorStop(0,shade(base,.3));gr.addColorStop(1,shade(base,-.15));
   g.fillStyle=gr;g.fill();
   g.save();toonPath(g,t.shape);g.clip();
   // stubble / beard clipped to body
@@ -56,6 +59,7 @@ function drawToon(g,x,y,size,t){
   if(t.hair==='side'&&t.hat){blobs([[-40,-14,7],[40,-14,7]])}
   if(t.hair==='wavy'||t.hair==='longwavy')blobs([[-32,-30,10],[-20,-42,11],[-4,-47,11],[12,-46,11],[27,-38,10],[36,-26,8]]);
   if(t.hair==='messy'){g.beginPath();g.moveTo(-40,-14);const pts=[[-44,-28],[-38,-36],[-42,-46],[-28,-44],[-24,-56],[-10,-48],[0,-58],[12,-49],[26,-55],[28,-44],[42,-44],[38,-32],[44,-24],[38,-16]];for(const [a,b] of pts)g.lineTo(a,b);g.quadraticCurveTo(10,-34,-14,-26);g.quadraticCurveTo(-30,-22,-40,-14);g.closePath();g.fill();g.stroke()}
+  if(t.hair==='fringe'){g.save();toonPath(g,t.shape);g.clip();g.strokeStyle=t.hc;g.lineWidth=9;for(const sx of [-1,1]){g.beginPath();g.moveTo(sx*40,2);g.quadraticCurveTo(sx*41,-14,sx*33,-26);g.stroke()}g.restore();g.strokeStyle=INK}
   if(t.hair==='bowl'){g.beginPath();g.moveTo(-42,-4);g.quadraticCurveTo(-48,-56,0,-54);g.quadraticCurveTo(48,-56,42,-4);g.lineTo(34,-6);g.quadraticCurveTo(28,-22,14,-22);g.lineTo(8,-16);g.lineTo(0,-23);g.lineTo(-10,-17);g.lineTo(-18,-23);g.quadraticCurveTo(-30,-22,-34,-6);g.closePath();g.fill();g.stroke()}
   if(t.hat){g.fillStyle=t.hatc;g.beginPath();g.moveTo(-40,-22);g.quadraticCurveTo(-40,-60,0,-60);g.quadraticCurveTo(40,-60,40,-22);g.closePath();g.fill();g.stroke();
     g.fillStyle=shade(t.hatc,.15);g.beginPath();
@@ -72,16 +76,16 @@ function drawToon(g,x,y,size,t){
       g.fillStyle=INK;g.beginPath();g.arc(sx*ex+2,ey+1,t.eyes==='wide'?4:5,0,7);g.fill();
       g.fillStyle='#fff';g.beginPath();g.arc(sx*ex+3.5,ey-1,1.6,0,7);g.fill();
       if(t.eyes==='happy'){g.fillStyle=gr;g.beginPath();g.ellipse(sx*ex,ey+er+1,er+2,6,0,0,7);g.fill()}
-      if(t.eyes==='calm'){g.fillStyle=shade(t.color,-.05);g.beginPath();g.ellipse(sx*ex,ey-er+2,er+1,6,0,0,7);g.fill();g.lineWidth=3;g.beginPath();g.moveTo(sx*ex-er,ey-4);g.lineTo(sx*ex+er,ey-4);g.stroke()}
+      if(t.eyes==='calm'){g.fillStyle=shade(base,-.05);g.beginPath();g.ellipse(sx*ex,ey-er+2,er+1,6,0,0,7);g.fill();g.lineWidth=3;g.beginPath();g.moveTo(sx*ex-er,ey-4);g.lineTo(sx*ex+er,ey-4);g.stroke()}
     }
-    g.strokeStyle=INK;g.lineWidth=4;g.beginPath();g.moveTo(-ex-9,ey-er-6);g.quadraticCurveTo(-ex,ey-er-10,-ex+9,ey-er-6);g.moveTo(ex-9,ey-er-6);g.quadraticCurveTo(ex,ey-er-10,ex+9,ey-er-6);g.stroke();
+    g.strokeStyle=t.brow?t.brow:INK;g.lineWidth=t.browW||4;g.beginPath();g.moveTo(-ex-9,ey-er-6);g.quadraticCurveTo(-ex,ey-er-10,-ex+9,ey-er-6);g.moveTo(ex-9,ey-er-6);g.quadraticCurveTo(ex,ey-er-10,ex+9,ey-er-6);g.stroke();
     if(t.glasses==='rect'){g.fillStyle='rgba(200,120,90,.25)';g.beginPath();g.roundRect(-ex-15,ey-10,30,21,5);g.roundRect(ex-15,ey-10,30,21,5);g.fill();g.strokeStyle='#26304f';g.lineWidth=4.5;g.stroke();g.beginPath();g.moveTo(-1,ey-3);g.lineTo(1,ey-3);g.moveTo(-ex-15,ey-4);g.lineTo(-44,ey-7);g.moveTo(ex+15,ey-4);g.lineTo(44,ey-7);g.stroke();g.strokeStyle=INK}
-    if(t.glasses==='round'){g.lineWidth=4;g.beginPath();g.arc(-ex,ey,14,0,7);g.moveTo(ex+14,ey);g.arc(ex,ey,14,0,7);g.moveTo(-1,ey-2);g.quadraticCurveTo(0,ey-5,1,ey-2);g.moveTo(-ex-14,ey-2);g.lineTo(-44,ey-6);g.moveTo(ex+14,ey-2);g.lineTo(44,ey-6);g.stroke()}
+    if(t.glasses==='round'){g.strokeStyle=INK;g.lineWidth=4;g.beginPath();g.arc(-ex,ey,14,0,7);g.moveTo(ex+14,ey);g.arc(ex,ey,14,0,7);g.moveTo(-1,ey-2);g.quadraticCurveTo(0,ey-5,1,ey-2);g.moveTo(-ex-14,ey-2);g.lineTo(-44,ey-6);g.moveTo(ex+14,ey-2);g.lineTo(44,ey-6);g.stroke()}
   }
   // nose
-  g.fillStyle=shade(t.color,-.25);g.beginPath();g.ellipse(0,9,5,4,0,0,7);g.fill();
+  if(t.skin){g.strokeStyle=shade(base,-.4);g.lineWidth=3;g.beginPath();g.moveTo(-2,0);g.quadraticCurveTo(-7*(t.nose||1),12,0,13);g.quadraticCurveTo(5,13,7,10);g.stroke()}else{g.fillStyle=shade(t.color,-.25);g.beginPath();g.ellipse(0,9,5,4,0,0,7);g.fill()}
   // mustache
-  if(t.facial==='mustache'||t.facial==='beard'||t.facial==='bigbeard'||t.facial==='goatee'){g.fillStyle=t.fc;g.beginPath();g.moveTo(-17,19);g.quadraticCurveTo(-8,10,0,15);g.quadraticCurveTo(8,10,17,19);g.quadraticCurveTo(8,17,0,19);g.quadraticCurveTo(-8,17,-17,19);g.fill();g.strokeStyle=INK;g.lineWidth=1.5;g.stroke()}
+  if(t.stache||t.facial==='mustache'||t.facial==='beard'||t.facial==='bigbeard'||t.facial==='goatee'){g.fillStyle=t.sc||t.fc;g.save();if(t.facial==='mustache'){g.translate(0,17);g.scale(1.4,1.5);g.translate(0,-17)}g.beginPath();g.moveTo(-17,19);g.quadraticCurveTo(-8,10,0,15);g.quadraticCurveTo(8,10,17,19);g.quadraticCurveTo(8,17,0,19);g.quadraticCurveTo(-8,17,-17,19);g.fill();g.strokeStyle=INK;g.lineWidth=1.5;g.stroke();g.restore()}
   if(t.facial==='goatee'){g.fillStyle=t.fc;g.beginPath();g.moveTo(-9,32);g.quadraticCurveTo(0,48,9,32);g.closePath();g.fill()}
   // mouth
   const my=24;g.strokeStyle=INK;g.lineWidth=3.5;
