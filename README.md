@@ -28,7 +28,7 @@ Add a line to `TOONS` in `src/toons.js`:
 | `shape` | pill, octagon, egg, shield, squircle, bell, scallop, oval, thin, chisel, blob |
 | `hair` | curly, swept, crop, shag, wisps, short, side, wavy, medwavy, longwavy, long, messy, bowl, buzz, bald, fringe |
 | `hat` | cap, flat, beret (with `hatc` for the hat color, `brimc` for a contrasting brim) |
-| `glasses` | round, rect, sun |
+| `glasses` | round, rect, thick, sun |
 | `facial` | stubble, mustache, goatee, beard, bigbeard (with `fc` for the color) |
 | `mouth` | flat, smile, grin, toothy, open, talk, oh, smirk |
 | `eyes` | normal, happy, calm, wide, squint |

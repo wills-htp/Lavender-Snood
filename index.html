@@ -80,7 +80,7 @@ const TOONS=[
  {name:'Nick',color:'#e8b92c',face:'#e8b92c',accent:'#1f7a3e',shape:'shield',hair:'medwavy',hc:'#2e1f16',facial:'stubble',fc:'#2e1f16',mouth:'smile',eyes:'normal',browW:5,brow:'#2e1f16'},
  {name:'Louis',color:'#ff6fb5',face:'#ff6fb5',accent:'#ffffff',shape:'egg',hat:'beret',hatc:'#ec5fa8',hair:'side',hc:'#6e655e',glasses:'round',facial:'mustache',fc:'#2a1f1a',mouth:'grin',eyes:'happy',browW:5,brow:'#2a1f1a'},
  {name:'Ari',color:'#b97a3e',face:'#b97a3e',accent:'#dcb889',pattern:'wood',shape:'egg',hair:'wisps',hc:'#a9a49e',facial:'beard',fc:'#4a403a',mouth:'grin',eyes:'wide',browW:5,brow:'#5a524c'},
- {name:'Mike',color:'#c3cad2',face:'#c3cad2',accent:'#e5b627',pattern:'metal',shape:'oval',hair:'bowl',hc:'#c9a35a',mouth:'smile',eyes:'normal',browW:5,brow:'#a8844a'},
+ {name:'Mike',color:'#c3cad2',face:'#c3cad2',accent:'#e5b627',pattern:'metal',shape:'oval',hair:'crop',hc:'#ecc95e',glasses:'thick',mouth:'smile',eyes:'normal',browW:5,brow:'#a8844a'},
  {name:'Matt',color:'#ffd34d',face:'#ffd34d',accent:'#ffffff',pattern:'rainbow',shape:'egg',hair:'short',hc:'#2a1d14',glasses:'sun',rainbow:true,facial:'beard',fc:'#2a1d14',mouth:'open',eyes:'normal',browW:5,brow:'#2a1d14'},
  {name:'Karthik',color:'#6a2fb0',face:'#6a2fb0',accent:'#fdb927',shape:'oval',hat:'cap',hatc:'#552583',brimc:'#fdb927',hatband:true,hair:'long',hc:'#1c1714',facial:'bigbeard',beardLen:84,streak:'rgba(205,200,195,.9)',fc:'#221c18',mouth:'oh',eyes:'wide',browW:6,brow:'#1c1714',nose:1.4},
  {name:'Holmes',color:'#f5d31f',face:'#f5d31f',accent:'#2e9e4f',shape:'octagon',hat:'cap',hatc:'#a3214a',hair:'side',hc:'#3a3330',facial:'beard',fc:'#f4f2ec',streak:'rgba(160,155,150,.85)',mouth:'open',eyes:'squint',browW:5,brow:'#5a524c'},
@@ -127,7 +127,7 @@ function drawToon(g,x,y,size,t){
   if(t.facial==='beard'||t.facial==='bigbeard'){g.fillStyle=t.fc;g.beginPath();g.moveTo(-42,4);g.quadraticCurveTo(-40,t.facial==='bigbeard'?70:50,0,t.facial==='bigbeard'?72:52);g.quadraticCurveTo(40,t.facial==='bigbeard'?70:50,42,4);g.quadraticCurveTo(30,22,0,14);g.quadraticCurveTo(-30,22,-42,4);g.fill();
     g.strokeStyle=t.streak||shade(t.fc,t.fc==='#8c8580'||t.fc==='#a8a29a'?.35:.25);g.lineWidth=t.streak?2.6:1.6;for(let i=-30;i<=30;i+=8){g.beginPath();g.moveTo(i,26);g.quadraticCurveTo(i+3,36,i,44);g.stroke()}}
   if(t.hair==='bald'||t.hair==='buzz'){g.fillStyle='rgba(255,255,255,.35)';g.beginPath();g.ellipse(-12,-34,12,5,-.3,0,7);g.fill()}
-  if(t.hair==='crop'){g.fillStyle=t.hc;g.globalAlpha=.9;g.beginPath();g.moveTo(-60,-6);g.lineTo(-46,-4);g.quadraticCurveTo(-40,-18,-28,-21);g.quadraticCurveTo(0,-27,28,-21);g.quadraticCurveTo(40,-18,46,-4);g.lineTo(60,-6);g.lineTo(60,-70);g.lineTo(-60,-70);g.closePath();g.fill();
+  if(t.hair==='crop'||t.hair==='blondshort'){g.fillStyle=t.hc;g.globalAlpha=.9;g.beginPath();g.moveTo(-60,-6);g.lineTo(-46,-4);g.quadraticCurveTo(-40,-18,-28,-21);g.quadraticCurveTo(0,-27,28,-21);g.quadraticCurveTo(40,-18,46,-4);g.lineTo(60,-6);g.lineTo(60,-70);g.lineTo(-60,-70);g.closePath();g.fill();
     g.globalAlpha=1;g.fillStyle=shade(t.hc,.25);for(let i=0;i<90;i++){const x=-48+Math.random()*96,y=-44+Math.random()*24;g.fillRect(x,y,1.4,1.4)}}
   if(t.hair==='buzz'){g.fillStyle=t.hc;g.globalAlpha=.45;g.beginPath();g.ellipse(0,-44,44,18,0,0,7);g.fill();g.globalAlpha=1}
   g.restore();
@@ -136,7 +136,7 @@ function drawToon(g,x,y,size,t){
   if(t.beardLen){g.fillStyle=t.fc;g.strokeStyle=INK;g.lineWidth=4;g.beginPath();g.moveTo(-36,28);g.bezierCurveTo(-34,60,-14,t.beardLen,0,t.beardLen+4);g.bezierCurveTo(14,t.beardLen,34,60,36,28);g.closePath();g.fill();g.stroke();
     g.strokeStyle=t.streak||'rgba(200,195,190,.55)';g.lineWidth=t.streak?3:1.8;for(let x=-24;x<=24;x+=8){g.beginPath();g.moveTo(x,38);g.quadraticCurveTo(x*1.1+3,58,x*.5,t.beardLen-6);g.stroke()}g.strokeStyle=INK}
   // hair on top
-  g.save();if(!t.hat&&t.hair!=='swept'&&t.hair!=='shag'&&t.hair!=='wisps'){g.translate(0,-28);g.scale(1.22,1.32);g.translate(0,28)}
+  g.save();if(!t.hat&&t.hair!=='swept'&&t.hair!=='shag'&&t.hair!=='wisps'&&t.hair!=='blondshort'){g.translate(0,-28);g.scale(1.22,1.32);g.translate(0,28)}
   g.fillStyle=t.hc;g.strokeStyle=INK;g.lineWidth=3;
   const blobs=(arr)=>{g.beginPath();for(const [a,b,r] of arr){g.moveTo(a+r,b);g.arc(a,b,r,0,7)}g.fill();g.stroke();g.beginPath();for(const [a,b,r] of arr){g.moveTo(a+r-3,b);g.arc(a,b,r-3,0,7)}g.fill()};
   if(t.hair==='swept'){g.save();g.translate(0,-12);g.scale(.98,.66);g.translate(0,12);
@@ -154,6 +154,7 @@ function drawToon(g,x,y,size,t){
   if(t.hair==='wisps'){g.strokeStyle=t.hc;g.lineWidth=2.4;g.lineCap='round';
     for(const [x,h,c] of [[-14,12,-8],[-7,16,6],[0,14,-6],[7,17,7],[14,12,-5],[-3,10,9],[10,9,-7]]){g.beginPath();g.moveTo(x,-44);g.bezierCurveTo(x+c,-44-h*.5,x-c,-44-h*.8,x+c*.6,-44-h);g.stroke()}
     g.strokeStyle=INK;g.lineWidth=3}
+  if(t.hair==='blondshort'){g.beginPath();g.moveTo(-30,-36);const tp=[[-24,-50],[-16,-44],[-8,-54],[0,-46],[8,-55],[16,-46],[24,-51],[30,-38]];for(const [x,y] of tp)g.lineTo(x,y);g.quadraticCurveTo(0,-44,-30,-36);g.closePath();g.fill();g.stroke()}
   if(t.hair==='curly')blobs([[-30,-36,11],[-16,-46,12],[0,-50,12],[16,-46,12],[30,-36,11],[-38,-22,9],[38,-22,9]]);
   if(t.hair==='short'&&!t.hat){g.beginPath();g.moveTo(-38,-22);g.quadraticCurveTo(-36,-54,0,-52);g.quadraticCurveTo(36,-54,38,-22);g.quadraticCurveTo(20,-36,0,-34);g.quadraticCurveTo(-20,-36,-38,-22);g.fill();g.stroke()}
   if(t.hair==='side'&&!t.hat){g.beginPath();g.moveTo(-40,-16);g.quadraticCurveTo(-42,-52,4,-50);g.quadraticCurveTo(40,-48,40,-20);g.quadraticCurveTo(14,-40,-14,-28);g.quadraticCurveTo(-30,-22,-40,-16);g.fill();g.stroke()}
@@ -184,6 +185,7 @@ function drawToon(g,x,y,size,t){
     }
     g.strokeStyle=t.brow?t.brow:INK;g.lineWidth=t.browW||4;g.beginPath();g.moveTo(-ex-9,ey-er-6);g.quadraticCurveTo(-ex,ey-er-10,-ex+9,ey-er-6);g.moveTo(ex-9,ey-er-6);g.quadraticCurveTo(ex,ey-er-10,ex+9,ey-er-6);g.stroke();
     if(t.glasses==='rect'){g.fillStyle=t.lens||'rgba(200,120,90,.25)';g.beginPath();g.roundRect(-ex-15,ey-10,30,21,5);g.roundRect(ex-15,ey-10,30,21,5);g.fill();g.strokeStyle=t.glassc||'#26304f';g.lineWidth=4.5;g.stroke();g.beginPath();g.moveTo(-1,ey-3);g.lineTo(1,ey-3);g.moveTo(-ex-15,ey-4);g.lineTo(-44,ey-7);g.moveTo(ex+15,ey-4);g.lineTo(44,ey-7);g.stroke();g.strokeStyle=INK}
+    if(t.glasses==='thick'){g.fillStyle='rgba(255,255,255,.15)';g.beginPath();g.roundRect(-ex-16,ey-12,32,23,6);g.roundRect(ex-16,ey-12,32,23,6);g.fill();g.strokeStyle='#141010';g.lineWidth=7.5;g.stroke();g.lineWidth=6;g.beginPath();g.moveTo(-1,ey-5);g.lineTo(1,ey-5);g.moveTo(-ex-16,ey-6);g.lineTo(-46,ey-9);g.moveTo(ex+16,ey-6);g.lineTo(46,ey-9);g.stroke();g.strokeStyle=INK}
     if(t.glasses==='round'){g.strokeStyle=INK;g.lineWidth=4;g.beginPath();g.arc(-ex,ey,14,0,7);g.moveTo(ex+14,ey);g.arc(ex,ey,14,0,7);g.moveTo(-1,ey-2);g.quadraticCurveTo(0,ey-5,1,ey-2);g.moveTo(-ex-14,ey-2);g.lineTo(-44,ey-6);g.moveTo(ex+14,ey-2);g.lineTo(44,ey-6);g.stroke()}
   }
   // nose
