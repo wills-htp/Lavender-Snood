@@ -1,14 +1,14 @@
 const TOONS=[
  {name:'Will',color:'#3cc46a',face:'#3cc46a',accent:'#ffffff',shape:'oval',hair:'swept',hc:'#3b2d24',mouth:'flat',eyes:'calm',browW:6,brow:'#2e231c',nose:1.2},
- {name:'Ben',color:'#2f6fe0',face:'#2f6fe0',accent:'#e8453c',shape:'chisel',hair:'crop',hc:'#2a2420',facial:'stubble',fc:'#2a2420',mouth:'smirk',eyes:'calm',browW:6.5,brow:'#2a2420'},
+ {name:'Ben',color:'#2f6fe0',face:'#2f6fe0',accent:'#e8453c',shape:'chisel',hair:'crop',hc:'#2a2420',facial:'stubble',fc:'#2a2420',mouth:'smirk',mask:true,eyes:'calm',browW:6.5,brow:'#2a2420'},
  {name:'David',color:'#2456c8',face:'#2456c8',accent:'#f5c518',shape:'egg',hat:'cap',hatc:'#12284b',brimc:'#f2b51f',hatband:true,hair:'side',hc:'#6b4a2e',mouth:'grin',eyes:'happy',browW:5,brow:'#6b4a2e'},
  {name:'Nick',color:'#1f7a3e',face:'#1f7a3e',accent:'#e0b12a',shape:'shield',hair:'medwavy',hc:'#2e1f16',facial:'stubble',fc:'#2e1f16',mouth:'smile',eyes:'normal',browW:5,brow:'#2e1f16'},
  {name:'Louis',color:'#ff6fb5',face:'#ff6fb5',accent:'#ffffff',shape:'egg',hat:'beret',hatc:'#ec5fa8',hair:'side',hc:'#6e655e',glasses:'round',facial:'mustache',fc:'#2a1f1a',mouth:'grin',eyes:'happy',browW:5,brow:'#2a1f1a'},
- {name:'Ari',color:'#b97a3e',face:'#b97a3e',accent:'#7a4a1e',pattern:'wood',shape:'egg',hair:'buzz',hc:'#9a948c',facial:'beard',fc:'#4a403a',mouth:'grin',eyes:'wide',browW:5,brow:'#5a524c'},
+ {name:'Ari',color:'#b97a3e',face:'#b97a3e',accent:'#c2925a',pattern:'wood',shape:'egg',hair:'buzz',hc:'#9a948c',facial:'beard',fc:'#4a403a',mouth:'grin',eyes:'wide',browW:5,brow:'#5a524c'},
  {name:'Mike',color:'#c3cad2',face:'#c3cad2',accent:'#e5b627',pattern:'metal',shape:'oval',hair:'bowl',hc:'#c9a35a',mouth:'smile',eyes:'normal',browW:5,brow:'#a8844a'},
  {name:'Matt',color:'#ffd34d',face:'#ffd34d',accent:'#ffffff',pattern:'rainbow',shape:'egg',hair:'short',hc:'#2a1d14',glasses:'sun',rainbow:true,facial:'beard',fc:'#2a1d14',mouth:'open',eyes:'normal',browW:5,brow:'#2a1d14'},
  {name:'Karthik',color:'#6a2fb0',face:'#6a2fb0',accent:'#fdb927',shape:'oval',hat:'cap',hatc:'#552583',brimc:'#fdb927',hatband:true,hair:'long',hc:'#1c1714',facial:'bigbeard',beardLen:84,streak:'rgba(205,200,195,.9)',fc:'#221c18',mouth:'oh',eyes:'wide',browW:6,brow:'#1c1714',nose:1.4},
- {name:'Holmes',color:'#f5d31f',face:'#f5d31f',accent:'#2e9e4f',shape:'octagon',hat:'cap',hatc:'#a3214a',hair:'side',hc:'#3a3330',facial:'beard',fc:'#a8a29a',mouth:'open',eyes:'squint',browW:5,brow:'#5a524c'},
+ {name:'Holmes',color:'#f5d31f',face:'#f5d31f',accent:'#2e9e4f',shape:'octagon',hat:'cap',hatc:'#a3214a',hair:'side',hc:'#3a3330',facial:'beard',fc:'#f4f2ec',streak:'rgba(160,155,150,.85)',mouth:'open',eyes:'squint',browW:5,brow:'#5a524c'},
  {name:'Jon',color:'#c3cad2',face:'#c3cad2',accent:'#2f6fe0',pattern:'metal',shape:'squircle',hair:'longwavy',hc:'#2b211b',glasses:'rect',glassc:'#ff4fa3',lens:'rgba(255,214,70,.42)',facial:'beard',fc:'#7d766f',mouth:'grin',eyes:'happy',browW:5,brow:'#2b211b'},
  {name:'Andy',color:'#4aa8ff',face:'#4aa8ff',accent:'#ffffff',shape:'shield',hair:'shag',hc:'#b0532e',facial:'stubble',fc:'#8a6a4a',mouth:'toothy',eyes:'happy',browW:5,brow:'#9a4a2a'},
  {name:'Garret',color:'#2b2b30',face:'#2b2b30',accent:'#e5b627',shape:'squircle',hat:'cap',hatc:'#18181c',facial:'goatee',fc:'#9a948c',mouth:'toothy',cig:true,eyes:'happy',browW:5,brow:'#e5b627'},
@@ -43,10 +43,10 @@ function drawToon(g,x,y,size,t){
   let gr=g.createRadialGradient(-14,-18,6,0,0,58);gr.addColorStop(0,shade(base,.3));gr.addColorStop(1,shade(base,-.15));
   if(t.pattern==='rainbow'){gr=g.createLinearGradient(-40,-50,40,50);['#ff4d6d','#ff9f1c','#ffe14d','#4dd97a','#4db8ff','#9b6bff'].forEach((c,i)=>gr.addColorStop(i/5,c))}
   else if(t.pattern==='metal'){gr=g.createLinearGradient(-45,-50,45,50);[['#f7f9fb',0],['#b9c1c9',.35],['#eef1f4',.55],['#8f98a2',1]].forEach(([c,o])=>gr.addColorStop(o,c))}
-  else if(t.pattern==='wood'){gr=g.createLinearGradient(-45,0,45,0);gr.addColorStop(0,'#a8692f');gr.addColorStop(.5,'#c98a4b');gr.addColorStop(1,'#a0622b')}
+  else if(t.pattern==='wood'){gr=g.createLinearGradient(-45,0,45,0);gr.addColorStop(0,'#d6ad78');gr.addColorStop(.5,'#ecd0a4');gr.addColorStop(1,'#d1a670')}
   g.fillStyle=gr;g.fill();
   g.save();toonPath(g,t.shape);g.clip();
-  if(t.pattern==='wood'){g.strokeStyle='rgba(90,48,18,.45)';g.lineWidth=2;for(let x=-50;x<=50;x+=9){g.beginPath();g.moveTo(x,-60);g.bezierCurveTo(x+6,-20,x-6,20,x+3,60);g.stroke()}g.beginPath();g.ellipse(-18,-28,5,9,0,0,7);g.ellipse(22,16,4,7,0,0,7);g.stroke()}
+  if(t.pattern==='wood'){g.strokeStyle='rgba(150,100,55,.45)';g.lineWidth=2;for(let x=-50;x<=50;x+=9){g.beginPath();g.moveTo(x,-60);g.bezierCurveTo(x+6,-20,x-6,20,x+3,60);g.stroke()}g.beginPath();g.ellipse(-18,-28,5,9,0,0,7);g.ellipse(22,16,4,7,0,0,7);g.stroke()}
   // stubble / beard clipped to body
   if(t.facial==='stubble'){g.fillStyle=t.fc;g.globalAlpha=.28;g.beginPath();g.ellipse(0,24,32,20,0,0,7);g.fill();g.globalAlpha=.55;for(let i=0;i<60;i++){const a=Math.random()*Math.PI,r=14+Math.random()*16;g.fillRect(Math.cos(a)*r*1.5-1,22+Math.sin(a)*r*.7,1.6,1.6)}g.globalAlpha=1}
   if(t.facial==='beard'||t.facial==='bigbeard'){g.fillStyle=t.fc;g.beginPath();g.moveTo(-42,4);g.quadraticCurveTo(-40,t.facial==='bigbeard'?70:50,0,t.facial==='bigbeard'?72:52);g.quadraticCurveTo(40,t.facial==='bigbeard'?70:50,42,4);g.quadraticCurveTo(30,22,0,14);g.quadraticCurveTo(-30,22,-42,4);g.fill();
@@ -132,6 +132,11 @@ function drawToon(g,x,y,size,t){
     g.fillStyle='#d9a066';g.fillRect(0,-3,8,6);g.fillStyle='#ff5a1f';g.beginPath();g.roundRect(24,-3,4,6,1.5);g.fill();g.fillStyle='#8a8580';g.fillRect(23,-3,2,6);g.restore();
     g.strokeStyle='rgba(235,235,240,.85)';g.lineWidth=3;g.lineCap='round';g.beginPath();g.moveTo(44,22);g.bezierCurveTo(52,12,40,4,48,-6);g.bezierCurveTo(54,-14,46,-22,52,-30);g.stroke();
     g.lineWidth=2;g.strokeStyle='rgba(235,235,240,.6)';g.beginPath();g.moveTo(42,20);g.bezierCurveTo(36,10,46,2,40,-8);g.stroke();g.strokeStyle=INK}
+  if(t.mask){g.save();toonPath(g,t.shape);g.clip();
+    const mk=new Path2D();mk.moveTo(-50,14);mk.quadraticCurveTo(0,6,50,14);mk.lineTo(50,40);mk.quadraticCurveTo(0,60,-50,40);mk.closePath();
+    g.fillStyle='#9fd6ea';g.fill(mk);g.strokeStyle='rgba(60,120,150,.55)';g.lineWidth=2;for(const y of [22,29,36]){g.beginPath();g.moveTo(-40,y);g.quadraticCurveTo(0,y+6,40,y);g.stroke()}
+    g.strokeStyle=INK;g.lineWidth=2.5;g.stroke(mk);g.restore();
+    g.strokeStyle='#ffffff';g.lineWidth=2.5;for(const sx of [-1,1]){g.beginPath();g.moveTo(sx*44,17);g.quadraticCurveTo(sx*54,10,sx*52,0);g.moveTo(sx*44,36);g.quadraticCurveTo(sx*58,26,sx*52,8);g.stroke()}g.strokeStyle=INK}
   // shine
   g.fillStyle='rgba(255,255,255,.35)';g.beginPath();g.ellipse(-24,-20,7,4,-.6,0,7);g.fill();
   g.restore();
