@@ -315,8 +315,8 @@ const Music=(()=>{
 // Game-wide top scores (arcade board). Paste your Supabase project URL and
 // anon public key here. The anon key is meant to be public; the database
 // rules only let people read scores and add new ones.
-const SUPABASE_URL = "";
-const SUPABASE_KEY = "";
+const SUPABASE_URL = "https://dptxwlbsezmlrolettja.supabase.co";
+const SUPABASE_KEY = "sb_publishable_0AX4Cpt47HFyswTlrrAnQQ_vUobXKEu";
 
 const COLORS=TOONS.map(t=>t.color);
 const NAMES=TOONS.map(t=>t.name);
@@ -590,7 +590,7 @@ const lsGet=(k,d)=>{try{const v=localStorage.getItem(k);return v==null?d:JSON.pa
 const lsSet=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
 const LB={list:[],mine:[],shared:false,arcade:false,db:null,me:null,pending:0,lastAt:0};
 const SUPA=!!(SUPABASE_URL&&SUPABASE_KEY);
-const sbH={apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY};
+const sbH=SUPABASE_KEY.startsWith('sb_')?{apikey:SUPABASE_KEY}:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY};
 function sortTrim(a){return a.filter(e=>e&&typeof e.score==='number'&&typeof e.name==='string').slice().sort((x,y)=>y.score-x.score).slice(0,10)}
 LB.list=sortTrim(lsGet(LSK,[]));
 function renderLB(){
@@ -631,10 +631,10 @@ async function loadArcade(){
     LB.arcade=true;LB.list=sortTrim(rows.map(x=>({name:String(x.name||''),score:Number(x.score)||0,at:Date.parse(x.created_at)||0})));
     if(LB.lastAt&&!LB.list.some(x=>x.at===LB.lastAt)){}renderLB();return true}catch(e){return false}
 }
-if(SUPA){loadArcade();setInterval(()=>{if(!$('ov').hidden)loadArcade()},30000)}
+if(SUPA)setInterval(()=>{if(!$('ov').hidden&&LB.arcade)loadArcade()},30000);
 (async()=>{
   try{
-    if(SUPA)return;
+    if(SUPA&&await loadArcade())return;
     if(typeof claude==='undefined'||!claude.use)return;
     const d=await claude.use('db');const u=await claude.use('user');if(!d||!u)return;
     const id=await u.id();if(!id)return;

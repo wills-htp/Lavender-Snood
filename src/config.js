@@ -1,5 +1,5 @@
 // Game-wide top scores (arcade board). Paste your Supabase project URL and
 // anon public key here. The anon key is meant to be public; the database
 // rules only let people read scores and add new ones.
-const SUPABASE_URL = "";
-const SUPABASE_KEY = "";
+const SUPABASE_URL = "https://dptxwlbsezmlrolettja.supabase.co";
+const SUPABASE_KEY = "sb_publishable_0AX4Cpt47HFyswTlrrAnQQ_vUobXKEu";
