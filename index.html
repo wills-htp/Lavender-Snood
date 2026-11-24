@@ -91,10 +91,10 @@ function drawToon(g,x,y,size,t){
   const s=size/100;g.save();g.translate(x,y);g.scale(s,s);
   const INK='#14100c';g.lineJoin='round';g.lineCap='round';
   const base=t.skin||t.color;
-  if(t.skin){g.beginPath();g.arc(0,0,50,0,7);g.fillStyle=t.color;g.fill();g.lineWidth=5;g.strokeStyle=INK;g.stroke();g.scale(.84,.84);g.translate(0,4)}
+  if(t.skin)g.scale(.9,.9);
   // long hair behind
   if(t.hair==='long'||t.hair==='longwavy'){g.fillStyle=t.hc;for(const [a,b,r] of [[-40,0,12],[-44,18,12],[-40,34,11],[40,0,12],[44,18,12],[40,34,11]]){g.beginPath();g.arc(a,b,r,0,7);g.fill()}}
-  if(t.skin){for(const sx of [-1,1]){g.beginPath();g.ellipse(sx*42,4,8,12,0,0,7);g.fillStyle=shade(base,-.08);g.fill();g.lineWidth=4;g.strokeStyle=INK;g.stroke()}}
+  if(t.skin){for(const sx of [-1,1]){g.beginPath();g.ellipse(sx*46,4,8,12,0,0,7);g.fillStyle=shade(base,-.08);g.fill();g.lineWidth=4;g.strokeStyle=INK;g.stroke()}}
   // body
   toonPath(g,t.shape);
   const gr=g.createRadialGradient(-14,-18,6,0,0,58);gr.addColorStop(0,shade(base,.3));gr.addColorStop(1,shade(base,-.15));
@@ -107,7 +107,7 @@ function drawToon(g,x,y,size,t){
   if(t.hair==='bald'||t.hair==='buzz'){g.fillStyle='rgba(255,255,255,.35)';g.beginPath();g.ellipse(-12,-34,12,5,-.3,0,7);g.fill()}
   if(t.hair==='buzz'){g.fillStyle=t.hc;g.globalAlpha=.45;g.beginPath();g.ellipse(0,-44,44,18,0,0,7);g.fill();g.globalAlpha=1}
   g.restore();
-  toonPath(g,t.shape);g.lineWidth=5;g.strokeStyle=INK;g.stroke();
+  toonPath(g,t.shape);if(t.skin){g.lineWidth=12;g.strokeStyle=INK;g.stroke();g.lineWidth=5.5;g.strokeStyle=t.color;g.stroke()}else{g.lineWidth=5;g.strokeStyle=INK;g.stroke()}
   // hair on top
   g.fillStyle=t.hc;g.strokeStyle=INK;g.lineWidth=3;
   const blobs=(arr)=>{g.beginPath();for(const [a,b,r] of arr){g.moveTo(a+r,b);g.arc(a,b,r,0,7)}g.fill();g.stroke();g.beginPath();for(const [a,b,r] of arr){g.moveTo(a+r-3,b);g.arc(a,b,r-3,0,7)}g.fill()};
