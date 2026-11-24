@@ -1,8 +1,8 @@
 const TOONS=[
  {name:'Will',color:'#3cc46a',face:'#3cc46a',accent:'#ffffff',shape:'oval',hair:'swept',hc:'#3b2d24',mouth:'flat',eyes:'calm',browW:6,brow:'#2e231c',nose:1.2},
  {name:'Ben',color:'#2f6fe0',face:'#2f6fe0',accent:'#e8453c',shape:'chisel',hair:'crop',hc:'#2a2420',facial:'stubble',fc:'#2a2420',mouth:'smirk',mask:true,eyes:'calm',browW:6.5,brow:'#2a2420'},
- {name:'David',color:'#2456c8',face:'#2456c8',accent:'#f5c518',shape:'egg',hat:'cap',hatc:'#12284b',brimc:'#f2b51f',hatband:true,hair:'side',hc:'#6b4a2e',mouth:'grin',eyes:'happy',browW:5,brow:'#6b4a2e'},
- {name:'Nick',color:'#1f7a3e',face:'#1f7a3e',accent:'#e0b12a',shape:'shield',hair:'medwavy',hc:'#2e1f16',facial:'stubble',fc:'#2e1f16',mouth:'smile',eyes:'normal',browW:5,brow:'#2e1f16'},
+ {name:'David',color:'#f5c518',face:'#f5c518',accent:'#2456c8',shape:'egg',hat:'cap',hatc:'#12284b',brimc:'#f2b51f',hatband:true,hair:'side',hc:'#6b4a2e',mouth:'grin',eyes:'happy',browW:5,brow:'#6b4a2e'},
+ {name:'Nick',color:'#e8b92c',face:'#e8b92c',accent:'#1f7a3e',shape:'shield',hair:'medwavy',hc:'#2e1f16',facial:'stubble',fc:'#2e1f16',mouth:'smile',eyes:'normal',browW:5,brow:'#2e1f16'},
  {name:'Louis',color:'#ff6fb5',face:'#ff6fb5',accent:'#ffffff',shape:'egg',hat:'beret',hatc:'#ec5fa8',hair:'side',hc:'#6e655e',glasses:'round',facial:'mustache',fc:'#2a1f1a',mouth:'grin',eyes:'happy',browW:5,brow:'#2a1f1a'},
  {name:'Ari',color:'#b97a3e',face:'#b97a3e',accent:'#dcb889',pattern:'wood',shape:'egg',hair:'wisps',hc:'#a9a49e',facial:'beard',fc:'#4a403a',mouth:'grin',eyes:'wide',browW:5,brow:'#5a524c'},
  {name:'Mike',color:'#c3cad2',face:'#c3cad2',accent:'#e5b627',pattern:'metal',shape:'oval',hair:'bowl',hc:'#c9a35a',mouth:'smile',eyes:'normal',browW:5,brow:'#a8844a'},
