@@ -188,7 +188,16 @@ const COLORS=TOONS.map(t=>t.color);
 const NAMES=TOONS.map(t=>t.name);
 const SPECIAL={W:'Wildcard',T:'Stone',S:'Skull'};
 const SPECIAL_TIP={W:'Matches anything it touches',T:'Smashes its neighbors',S:'Can only be knocked loose'};
-const COLS=10,R=20,W=400,H=600,RH=R*Math.sqrt(3),LY=H-34,DEAD=H-80,DMAX=8;
+const COLS=10,R=20,W=400,RH=R*Math.sqrt(3),DMAX=8;
+let H=600,LY=H-34,DEAD=H-80,DAISIES=[];
+function fitBoard(){
+  const vw=document.documentElement.clientWidth,vh=window.innerHeight;
+  const bw=Math.min(vw-56,560),bh=vh-150;
+  H=Math.round(Math.min(Math.max(W*bh/bw,600),900));LY=H-34;DEAD=H-80;
+  DAISIES=[[24,H-60,9],[372,H-90,8],[60,H-130,6],[340,H-30,10],[200,H-140,5],[30,H*.55,6],[370,H*.62,7]];
+  const b=document.getElementById('board');b.style.aspectRatio=W+'/'+H;b.style.width='min(calc(100vw - 56px),calc((100dvh - 150px)*'+(W/H).toFixed(4)+'),560px)';
+}
+fitBoard();
 const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
 const $=id=>document.getElementById(id);
 const imgs={};
@@ -258,10 +267,11 @@ function randColor(){return active[Math.floor(Math.random()*active.length)]}
 function newRow(r,allowSkull){return Array.from({length:rowLen(r)},()=>allowSkull&&Math.random()<.06?'S':randColor())}
 
 function startLevel(){
+  fitBoard();
   numColors=Math.min(4+Math.floor((level-1)/2),8,COLORS.length);
   active=[...COLORS.keys()].sort(()=>Math.random()-.5).slice(0,numColors);
   par=0;topY=0;danger=0;grid=[];falling=[];pops=[];shot=null;
-  const rows=Math.min(4+level,9);
+  const rows=Math.min(4+level,9)+Math.floor((H-600)/RH/2);
   for(let r=0;r<rows;r++){grid.push(null);grid[r]=newRow(r,level>=3)}
   cur=pick();nxt=pick();state='play';hud();
 }
@@ -378,7 +388,6 @@ function draw(){
   falling=falling.filter(f=>f.y<H+R*2);
 }
 const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
-const DAISIES=[[24,H-60,9],[372,H-90,8],[60,H-130,6],[340,H-30,10],[200,H-140,5]];
 function daisy(x,y,r){ctx.save();ctx.translate(x,y);ctx.globalAlpha=.55;ctx.fillStyle='#fff';for(let i=0;i<8;i++){ctx.rotate(Math.PI/4);ctx.beginPath();ctx.ellipse(0,r*.9,r*.38,r*.75,0,0,7);ctx.fill()}ctx.fillStyle='#ffd96a';ctx.beginPath();ctx.arc(0,0,r*.5,0,7);ctx.fill();ctx.restore()}
 function put(k,x,y,s=1){const sp=sprite(k);ctx.drawImage(sp,x-R*1.3*s,y-R*1.3*s,R*2.6*s,R*2.6*s)}
 function loop(){step();draw();requestAnimationFrame(loop)}
