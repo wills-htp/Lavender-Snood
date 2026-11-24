@@ -1,5 +1,5 @@
 const TOONS=[
- {name:'Will',color:'#2f7de1',skin:'#e4b496',shape:'oval',hair:'swept',hc:'#3b2d24',facial:'stubble',fc:'#4a3a30',mouth:'flat',eyes:'calm',browW:6,brow:'#2e231c',nose:1.2},
+ {name:'Will',color:'#2f7de1',skin:'#e4b496',shape:'oval',hair:'swept',hc:'#3b2d24',mouth:'flat',eyes:'calm',browW:6,brow:'#2e231c',nose:1.2},
  {name:'Ben',color:'#e8453c',skin:'#e0ae8e',shape:'octagon',hair:'crop',hc:'#2a2420',facial:'stubble',fc:'#2a2420',mouth:'talk',eyes:'normal',browW:5,brow:'#2a2420'},
  {name:'David',color:'#3fb34f',skin:'#e8b794',shape:'egg',hat:'cap',hatc:'#12284b',brimc:'#f2b51f',hatband:true,hair:'side',hc:'#6b4a2e',mouth:'grin',eyes:'happy',browW:5,brow:'#6b4a2e'},
  {name:'Nick',color:'#f5c518',skin:'#e6b38f',shape:'shield',hair:'medwavy',hc:'#2e1f16',facial:'stubble',fc:'#2e1f16',mouth:'smile',eyes:'normal',browW:5,brow:'#2e1f16'},
