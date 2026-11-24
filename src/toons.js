@@ -14,7 +14,7 @@ const TOONS=[
  {name:'Garret',color:'#2b2b30',face:'#2b2b30',accent:'#e5b627',shape:'squircle',hat:'cap',hatc:'#18181c',facial:'goatee',fc:'#9a948c',mouth:'toothy',cig:true,eyes:'happy',browW:5,brow:'#e5b627'},
  {name:'Jake',color:'#ff8a1f',face:'#ff8a1f',accent:'#ffffff',shape:'thin',hat:'cap',hatc:'#8fe3c2',hair:'side',hc:'#8a6a4a',glasses:'round',mouth:'flat',eyes:'calm',browW:5,brow:'#8a6a4a'},
  {name:'Tim',color:'#1f2f6b',face:'#1f2f6b',accent:'#e8453c',shape:'thin',hair:'tousled',hc:'#2a1f18',glasses:'round',glassc:'#d9dee6',glassW:2.6,mouth:'tongue',eyes:'wide',browW:5,brow:'#c9d1de'},
- {name:'James',color:'#2b2b30',face:'#2b2b30',accent:'#c9ced6',shape:'blob',hat:'cap',hatc:'#141416',brimc:'#c9ced6',hatband:true,hair:'long',hc:'#1a1614',stache:true,sc:'#5c5651',fc:'#5c5651',mouth:'flat',eyes:'calm',browW:5,brow:'#c9ced6'},
+ {name:'James',color:'#c3cad2',face:'#c3cad2',accent:'#2b2b30',pattern:'metal',shape:'blob',hat:'cap',hatc:'#141416',brimc:'#c9ced6',hatband:true,hair:'long',hc:'#1a1614',stache:true,sc:'#5c5651',fc:'#5c5651',mouth:'flat',eyes:'calm',browW:5,brow:'#1a1614'},
 ];
 function toonPath(g,shape){
   g.beginPath();
