@@ -1,14 +1,14 @@
 const TOONS=[
  {name:'Will',color:'#3cc46a',face:'#3cc46a',accent:'#ffffff',shape:'oval',hair:'swept',hc:'#3b2d24',mouth:'flat',eyes:'calm',browW:6,brow:'#2e231c',nose:1.2},
  {name:'Ben',color:'#2f6fe0',face:'#2f6fe0',accent:'#e8453c',shape:'chisel',hair:'crop',hc:'#2a2420',facial:'stubble',fc:'#2a2420',mouth:'smirk',eyes:'calm',browW:6.5,brow:'#2a2420'},
- {name:'David',color:'#f5c518',face:'#f5c518',accent:'#2456c8',shape:'egg',hat:'cap',hatc:'#12284b',brimc:'#f2b51f',hatband:true,hair:'side',hc:'#6b4a2e',mouth:'grin',eyes:'happy',browW:5,brow:'#6b4a2e'},
- {name:'Nick',color:'#e8b92c',face:'#e8b92c',accent:'#1f7a3e',shape:'shield',hair:'medwavy',hc:'#2e1f16',facial:'stubble',fc:'#2e1f16',mouth:'smile',eyes:'normal',browW:5,brow:'#2e1f16'},
+ {name:'David',color:'#f5c518',face:'#f5c518',earc:'#f5c518',accent:'#2456c8',shape:'egg',hat:'cap',hatc:'#12284b',brimc:'#f2b51f',hatband:true,hair:'side',hc:'#6b4a2e',mouth:'grin',eyes:'happy',browW:5,brow:'#6b4a2e'},
+ {name:'Nick',color:'#e8b92c',face:'#e8b92c',earc:'#e8b92c',accent:'#1f7a3e',shape:'shield',hair:'medwavy',hc:'#2e1f16',facial:'stubble',fc:'#2e1f16',mouth:'smile',eyes:'normal',browW:5,brow:'#2e1f16'},
  {name:'Louis',color:'#ff6fb5',face:'#ff6fb5',accent:'#ffffff',shape:'egg',hat:'beret',hatc:'#ec5fa8',hair:'side',hc:'#6e655e',glasses:'round',facial:'mustache',fc:'#2a1f1a',mouth:'grin',eyes:'happy',browW:5,brow:'#2a1f1a'},
  {name:'Ari',color:'#b97a3e',face:'#b97a3e',accent:'#dcb889',pattern:'wood',shape:'egg',hair:'wisps',hc:'#a9a49e',facial:'beard',fc:'#4a403a',mouth:'grin',eyes:'wide',browW:5,brow:'#5a524c'},
  {name:'Mike',color:'#c3cad2',face:'#c3cad2',accent:'#e5b627',pattern:'metal',shape:'chisel',hair:'blondtop',hc:'#f4dc84',glasses:'thick',mouth:'smile',eyes:'normal',browW:5,brow:'#a8844a'},
  {name:'Matt',color:'#ffd34d',face:'#ffd34d',accent:'#ffffff',pattern:'rainbow',shape:'egg',hair:'short',hc:'#2a1d14',glasses:'sun',rainbow:true,facial:'beard',fc:'#2a1d14',mouth:'open',eyes:'normal',browW:5,brow:'#2a1d14'},
  {name:'Karthik',color:'#6a2fb0',face:'#6a2fb0',accent:'#fdb927',shape:'oval',hat:'cap',hatc:'#552583',brimc:'#fdb927',hatband:true,hair:'long',hc:'#1c1714',facial:'bigbeard',beardLen:84,streak:'rgba(205,200,195,.9)',fc:'#221c18',mouth:'oh',eyes:'wide',browW:6,brow:'#1c1714',nose:1.4},
- {name:'Holmes',color:'#f5d31f',face:'#f5d31f',accent:'#2e9e4f',shape:'octagon',hat:'cap',hatc:'#a3214a',hair:'side',hc:'#3a3330',facial:'beard',fc:'#f4f2ec',streak:'rgba(160,155,150,.85)',mouth:'open',eyes:'squint',browW:5,brow:'#5a524c'},
+ {name:'Holmes',color:'#f5d31f',face:'#f5d31f',earc:'#f5d31f',accent:'#2e9e4f',shape:'octagon',hat:'cap',hatc:'#a3214a',hair:'side',hc:'#3a3330',facial:'beard',fc:'#f4f2ec',streak:'rgba(160,155,150,.85)',mouth:'open',eyes:'squint',browW:5,brow:'#5a524c'},
  {name:'Jon',color:'#c3cad2',face:'#c3cad2',accent:'#2f6fe0',pattern:'metal',shape:'squircle',hair:'longwavy',hc:'#2b211b',glasses:'rect',glassc:'#ff4fa3',lens:'rgba(255,214,70,.42)',facial:'beard',fc:'#7d766f',mouth:'grin',eyes:'happy',browW:5,brow:'#2b211b'},
  {name:'Andy',color:'#4aa8ff',face:'#4aa8ff',accent:'#ffffff',shape:'shield',hair:'shag',hc:'#b0532e',facial:'stubble',fc:'#8a6a4a',mouth:'toothy',eyes:'happy',browW:5,brow:'#9a4a2a'},
  {name:'Garret',color:'#2b2b30',face:'#2b2b30',accent:'#e5b627',shape:'squircle',hat:'cap',hatc:'#18181c',facial:'goatee',fc:'#9a948c',mouth:'toothy',cig:true,eyes:'happy',browW:5,brow:'#e5b627'},
@@ -40,7 +40,7 @@ function drawToon(g,x,y,size,t){
   // long hair behind
   if(t.hair==='medwavy'){g.fillStyle=t.hc;g.strokeStyle=INK;g.lineWidth=3;for(const [a,b,r] of [[-44,-6,14],[-48,12,14],[-44,28,12],[44,-6,14],[48,12,14],[44,28,12]]){g.beginPath();g.arc(a,b,r,0,7);g.fill();g.stroke()}}
   if(t.hair==='long'||t.hair==='longwavy'){g.fillStyle=t.hc;for(const [a,b,r] of [[-44,-4,15],[-50,16,16],[-48,36,15],[-40,52,13],[44,-4,15],[50,16,16],[48,36,15],[40,52,13]]){g.beginPath();g.arc(a,b,r,0,7);g.fill()}}
-  if(t.face){for(const sx of [-1,1]){g.beginPath();g.ellipse(sx*({thin:31,oval:35,pill:34,octagon:54,squircle:50,chisel:47,rect:42}[t.shape]||46),4,8,12,0,0,7);g.fillStyle=acc||shade(base,-.08);g.fill();g.lineWidth=4;g.strokeStyle=INK;g.stroke()}}
+  if(t.face){for(const sx of [-1,1]){g.beginPath();g.ellipse(sx*({thin:31,oval:35,pill:34,octagon:54,squircle:50,chisel:47,rect:42}[t.shape]||46),4,8,12,0,0,7);g.fillStyle=t.earc||acc||shade(base,-.08);g.fill();g.lineWidth=4;g.strokeStyle=INK;g.stroke()}}
   // body
   toonPath(g,t.shape);
   let gr=g.createRadialGradient(-14,-18,6,0,0,58);gr.addColorStop(0,shade(base,.3));gr.addColorStop(1,shade(base,-.15));
