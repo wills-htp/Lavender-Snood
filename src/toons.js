@@ -12,8 +12,8 @@ const TOONS=[
  {name:'Jon',color:'#ff8a1f',skin:'#d9a582',shape:'squircle',hair:'longwavy',hc:'#2b211b',glasses:'rect',facial:'beard',fc:'#7d766f',mouth:'grin',eyes:'happy',browW:5,brow:'#2b211b'},
  {name:'Tim',color:'#14b8b0',skin:'#e6b796',shape:'bell',hair:'messy',hc:'#2a1f18',glasses:'rect',facial:'stubble',fc:'#2a1f18',mouth:'smirk',eyes:'calm',browW:5,brow:'#2a1f18'},
  {name:'Andy',color:'#5cc8ff',skin:'#f0c2a5',shape:'shield',hair:'wavy',hc:'#b0532e',facial:'stubble',fc:'#8a6a4a',mouth:'toothy',eyes:'happy',browW:5,brow:'#9a4a2a'},
- {name:'Garret',color:'#e9e4d8',skin:'#d9a17c',shape:'squircle',hat:'flat',hatc:'#e9e4d8',facial:'goatee',fc:'#9a948c',mouth:'toothy',eyes:'happy',browW:5,brow:'#3a332e'},
- {name:'Jake',color:'#8fe3c2',skin:'#eec6aa',shape:'egg',hat:'cap',hatc:'#8fe3c2',hair:'side',hc:'#8a6a4a',glasses:'round',mouth:'flat',eyes:'calm',browW:5,brow:'#8a6a4a'},
+ {name:'Garret',color:'#e9e4d8',skin:'#d9a17c',shape:'squircle',hat:'cap',hatc:'#18181c',facial:'goatee',fc:'#9a948c',mouth:'toothy',eyes:'happy',browW:5,brow:'#3a332e'},
+ {name:'Jake',color:'#8fe3c2',skin:'#eec6aa',shape:'thin',hat:'cap',hatc:'#8fe3c2',hair:'side',hc:'#8a6a4a',glasses:'round',mouth:'flat',eyes:'calm',browW:5,brow:'#8a6a4a'},
 ];
 function toonPath(g,shape){
   g.beginPath();
@@ -25,6 +25,7 @@ function toonPath(g,shape){
   else if(shape==='bell'){g.moveTo(-26,-34);g.quadraticCurveTo(0,-60,26,-34);g.quadraticCurveTo(36,10,52,42);g.quadraticCurveTo(0,54,-52,42);g.quadraticCurveTo(-36,10,-26,-34);g.closePath()}
   else if(shape==='scallop'){for(let i=0;i<=72;i++){const a=i/72*2*Math.PI,r=42+5*Math.cos(a*10);g.lineTo(Math.cos(a)*r,Math.sin(a)*r)}g.closePath()}
   else if(shape==='oval')g.ellipse(0,2,32,51,0,0,7);
+  else if(shape==='thin'){g.moveTo(0,-50);g.bezierCurveTo(30,-50,30,-10,28,14);g.bezierCurveTo(26,40,14,54,0,54);g.bezierCurveTo(-14,54,-26,40,-28,14);g.bezierCurveTo(-30,-10,-30,-50,0,-50);g.closePath()}
   else g.arc(0,0,47,0,7);
 }
 function shade(hex,f){const n=parseInt(hex.slice(1),16),c=[n>>16,n>>8&255,n&255].map(v=>Math.round(f<0?v*(1+f):v+(255-v)*f));return'rgb('+c+')'}
@@ -35,7 +36,7 @@ function drawToon(g,x,y,size,t){
   if(t.skin)g.scale(.9,.9);
   // long hair behind
   if(t.hair==='long'||t.hair==='longwavy'){g.fillStyle=t.hc;for(const [a,b,r] of [[-44,-4,15],[-50,16,16],[-48,36,15],[-40,52,13],[44,-4,15],[50,16,16],[48,36,15],[40,52,13]]){g.beginPath();g.arc(a,b,r,0,7);g.fill()}}
-  if(t.skin){for(const sx of [-1,1]){g.beginPath();g.ellipse(sx*46,4,8,12,0,0,7);g.fillStyle=shade(base,-.08);g.fill();g.lineWidth=4;g.strokeStyle=INK;g.stroke()}}
+  if(t.skin){for(const sx of [-1,1]){g.beginPath();g.ellipse(sx*({thin:31,oval:35,pill:34}[t.shape]||46),4,8,12,0,0,7);g.fillStyle=shade(base,-.08);g.fill();g.lineWidth=4;g.strokeStyle=INK;g.stroke()}}
   // body
   toonPath(g,t.shape);
   const gr=g.createRadialGradient(-14,-18,6,0,0,58);gr.addColorStop(0,shade(base,.3));gr.addColorStop(1,shade(base,-.15));
@@ -65,16 +66,16 @@ function drawToon(g,x,y,size,t){
   if(t.hair==='curly')blobs([[-30,-36,11],[-16,-46,12],[0,-50,12],[16,-46,12],[30,-36,11],[-38,-22,9],[38,-22,9]]);
   if(t.hair==='short'&&!t.hat){g.beginPath();g.moveTo(-38,-22);g.quadraticCurveTo(-36,-54,0,-52);g.quadraticCurveTo(36,-54,38,-22);g.quadraticCurveTo(20,-36,0,-34);g.quadraticCurveTo(-20,-36,-38,-22);g.fill();g.stroke()}
   if(t.hair==='side'&&!t.hat){g.beginPath();g.moveTo(-40,-16);g.quadraticCurveTo(-42,-52,4,-50);g.quadraticCurveTo(40,-48,40,-20);g.quadraticCurveTo(14,-40,-14,-28);g.quadraticCurveTo(-30,-22,-40,-16);g.fill();g.stroke()}
-  if(t.hair==='side'&&t.hat){blobs([[-40,-14,7],[40,-14,7]])}
+  if(t.hair==='side'&&t.hat){const hx=t.shape==='thin'?30:40;blobs([[-hx,-14,7],[hx,-14,7]])}
   if(t.hair==='wavy'||t.hair==='longwavy')blobs([[-32,-30,10],[-20,-42,11],[-4,-47,11],[12,-46,11],[27,-38,10],[36,-26,8]]);
   if(t.hair==='messy'){g.beginPath();g.moveTo(-40,-14);const pts=[[-44,-28],[-38,-36],[-42,-46],[-28,-44],[-24,-56],[-10,-48],[0,-58],[12,-49],[26,-55],[28,-44],[42,-44],[38,-32],[44,-24],[38,-16]];for(const [a,b] of pts)g.lineTo(a,b);g.quadraticCurveTo(10,-34,-14,-26);g.quadraticCurveTo(-30,-22,-40,-14);g.closePath();g.fill();g.stroke()}
   if(t.hair==='fringe'){g.save();toonPath(g,t.shape);g.clip();g.strokeStyle=t.hc;g.lineWidth=9;for(const sx of [-1,1]){g.beginPath();g.moveTo(sx*40,2);g.quadraticCurveTo(sx*41,-14,sx*33,-26);g.stroke()}g.restore();g.strokeStyle=INK}
   if(t.hair==='bowl'){g.beginPath();g.moveTo(-42,-4);g.quadraticCurveTo(-48,-56,0,-54);g.quadraticCurveTo(48,-56,42,-4);g.lineTo(34,-6);g.quadraticCurveTo(28,-22,14,-22);g.lineTo(8,-16);g.lineTo(0,-23);g.lineTo(-10,-17);g.lineTo(-18,-23);g.quadraticCurveTo(-30,-22,-34,-6);g.closePath();g.fill();g.stroke()}
   g.restore();g.fillStyle=t.hc;g.strokeStyle=INK;g.lineWidth=3;
-  if(t.hat){g.fillStyle=t.hatc;g.beginPath();g.moveTo(-40,-22);g.quadraticCurveTo(-40,-60,0,-60);g.quadraticCurveTo(40,-60,40,-22);g.closePath();g.fill();g.stroke();
+  if(t.hat){g.save();if(t.shape==='thin')g.scale(.8,1);g.fillStyle=t.hatc;g.beginPath();g.moveTo(-40,-22);g.quadraticCurveTo(-40,-60,0,-60);g.quadraticCurveTo(40,-60,40,-22);g.closePath();g.fill();g.stroke();
     g.fillStyle=t.brimc||shade(t.hatc,.15);g.beginPath();
     if(t.hat==='flat'){g.roundRect(-48,-26,96,9,4)}else{g.moveTo(-42,-22);g.quadraticCurveTo(0,-34,46,-22);g.quadraticCurveTo(30,-12,-30,-14);g.closePath()}
-    g.fill();g.stroke();g.fillStyle=t.brimc||shade(t.hatc,.25);g.beginPath();g.arc(0,-59,3,0,7);g.fill();if(t.hatband){g.strokeStyle=t.brimc;g.lineWidth=3;g.beginPath();g.moveTo(-38,-26);g.quadraticCurveTo(0,-34,38,-26);g.stroke();g.strokeStyle=INK}}
+    g.fill();g.stroke();g.fillStyle=t.brimc||shade(t.hatc,.25);g.beginPath();g.arc(0,-59,3,0,7);g.fill();if(t.hatband){g.strokeStyle=t.brimc;g.lineWidth=3;g.beginPath();g.moveTo(-38,-26);g.quadraticCurveTo(0,-34,38,-26);g.stroke();g.strokeStyle=INK}g.restore()}
   // eyes
   const ey=-4,ex=15;
   if(t.glasses==='sun'){g.fillStyle='#1a1410';g.beginPath();g.roundRect(-34,ey-11,28,22,8);g.roundRect(6,ey-11,28,22,8);g.fill();g.lineWidth=4;g.beginPath();g.moveTo(-6,ey-4);g.lineTo(6,ey-4);g.moveTo(-34,ey-6);g.lineTo(-44,ey-9);g.moveTo(34,ey-6);g.lineTo(44,ey-9);g.stroke();
