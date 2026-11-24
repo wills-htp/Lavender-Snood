@@ -17,16 +17,15 @@ const TOONS=[
 ];
 function toonPath(g,shape){
   g.beginPath();
-  const poly=(n,r,rot)=>{for(let i=0;i<n;i++){const a=rot+i*2*Math.PI/n;g.lineTo(Math.cos(a)*r,Math.sin(a)*r)}g.closePath()};
-  if(shape==='pill')g.roundRect(-37,-45,74,90,34);
-  else if(shape==='octagon')poly(8,46,Math.PI/8);
-  else if(shape==='egg')g.ellipse(0,3,40,45,0,0,7);
-  else if(shape==='shield'){g.moveTo(-42,-36);g.quadraticCurveTo(0,-50,42,-36);g.lineTo(40,6);g.quadraticCurveTo(34,40,0,47);g.quadraticCurveTo(-34,40,-40,6);g.closePath()}
-  else if(shape==='squircle')g.roundRect(-43,-42,86,86,28);
-  else if(shape==='bell'){g.moveTo(-30,-30);g.quadraticCurveTo(0,-58,30,-30);g.quadraticCurveTo(38,10,46,40);g.quadraticCurveTo(0,52,-46,40);g.quadraticCurveTo(-38,10,-30,-30);g.closePath()}
-  else if(shape==='scallop'){for(let i=0;i<=72;i++){const a=i/72*2*Math.PI,r=42+3.5*Math.cos(a*10);g.lineTo(Math.cos(a)*r,Math.sin(a)*r)}g.closePath()}
-  else if(shape==='oval')g.ellipse(0,2,37,46,0,0,7);
-  else g.arc(0,0,45,0,7);
+  if(shape==='pill')g.roundRect(-31,-50,62,100,30);
+  else if(shape==='octagon'){for(let i=0;i<8;i++){const a=Math.PI/8+i*Math.PI/4;g.lineTo(Math.cos(a)*53,Math.sin(a)*42)}g.closePath()}
+  else if(shape==='egg'){g.moveTo(0,-48);g.bezierCurveTo(30,-48,34,-20,40,8);g.bezierCurveTo(48,40,26,50,0,50);g.bezierCurveTo(-26,50,-48,40,-40,8);g.bezierCurveTo(-34,-20,-30,-48,0,-48);g.closePath()}
+  else if(shape==='shield'){g.moveTo(-43,-40);g.quadraticCurveTo(0,-50,43,-40);g.lineTo(41,0);g.quadraticCurveTo(36,34,0,56);g.quadraticCurveTo(-36,34,-41,0);g.closePath()}
+  else if(shape==='squircle')g.roundRect(-48,-39,96,80,20);
+  else if(shape==='bell'){g.moveTo(-26,-34);g.quadraticCurveTo(0,-60,26,-34);g.quadraticCurveTo(36,10,52,42);g.quadraticCurveTo(0,54,-52,42);g.quadraticCurveTo(-36,10,-26,-34);g.closePath()}
+  else if(shape==='scallop'){for(let i=0;i<=72;i++){const a=i/72*2*Math.PI,r=42+5*Math.cos(a*10);g.lineTo(Math.cos(a)*r,Math.sin(a)*r)}g.closePath()}
+  else if(shape==='oval')g.ellipse(0,2,32,51,0,0,7);
+  else g.arc(0,0,47,0,7);
 }
 function shade(hex,f){const n=parseInt(hex.slice(1),16),c=[n>>16,n>>8&255,n&255].map(v=>Math.round(f<0?v*(1+f):v+(255-v)*f));return'rgb('+c+')'}
 function drawToon(g,x,y,size,t){
@@ -35,7 +34,7 @@ function drawToon(g,x,y,size,t){
   const base=t.skin||t.color;
   if(t.skin)g.scale(.9,.9);
   // long hair behind
-  if(t.hair==='long'||t.hair==='longwavy'){g.fillStyle=t.hc;for(const [a,b,r] of [[-40,0,12],[-44,18,12],[-40,34,11],[40,0,12],[44,18,12],[40,34,11]]){g.beginPath();g.arc(a,b,r,0,7);g.fill()}}
+  if(t.hair==='long'||t.hair==='longwavy'){g.fillStyle=t.hc;for(const [a,b,r] of [[-44,-4,15],[-50,16,16],[-48,36,15],[-40,52,13],[44,-4,15],[50,16,16],[48,36,15],[40,52,13]]){g.beginPath();g.arc(a,b,r,0,7);g.fill()}}
   if(t.skin){for(const sx of [-1,1]){g.beginPath();g.ellipse(sx*46,4,8,12,0,0,7);g.fillStyle=shade(base,-.08);g.fill();g.lineWidth=4;g.strokeStyle=INK;g.stroke()}}
   // body
   toonPath(g,t.shape);
@@ -51,6 +50,7 @@ function drawToon(g,x,y,size,t){
   g.restore();
   toonPath(g,t.shape);g.lineWidth=t.skin?6:5;g.strokeStyle=INK;g.stroke();
   // hair on top
+  g.save();if(!t.hat){g.translate(0,-28);g.scale(1.22,1.32);g.translate(0,28)}
   g.fillStyle=t.hc;g.strokeStyle=INK;g.lineWidth=3;
   const blobs=(arr)=>{g.beginPath();for(const [a,b,r] of arr){g.moveTo(a+r,b);g.arc(a,b,r,0,7)}g.fill();g.stroke();g.beginPath();for(const [a,b,r] of arr){g.moveTo(a+r-3,b);g.arc(a,b,r-3,0,7)}g.fill()};
   if(t.hair==='curly')blobs([[-30,-36,11],[-16,-46,12],[0,-50,12],[16,-46,12],[30,-36,11],[-38,-22,9],[38,-22,9]]);
@@ -61,6 +61,7 @@ function drawToon(g,x,y,size,t){
   if(t.hair==='messy'){g.beginPath();g.moveTo(-40,-14);const pts=[[-44,-28],[-38,-36],[-42,-46],[-28,-44],[-24,-56],[-10,-48],[0,-58],[12,-49],[26,-55],[28,-44],[42,-44],[38,-32],[44,-24],[38,-16]];for(const [a,b] of pts)g.lineTo(a,b);g.quadraticCurveTo(10,-34,-14,-26);g.quadraticCurveTo(-30,-22,-40,-14);g.closePath();g.fill();g.stroke()}
   if(t.hair==='fringe'){g.save();toonPath(g,t.shape);g.clip();g.strokeStyle=t.hc;g.lineWidth=9;for(const sx of [-1,1]){g.beginPath();g.moveTo(sx*40,2);g.quadraticCurveTo(sx*41,-14,sx*33,-26);g.stroke()}g.restore();g.strokeStyle=INK}
   if(t.hair==='bowl'){g.beginPath();g.moveTo(-42,-4);g.quadraticCurveTo(-48,-56,0,-54);g.quadraticCurveTo(48,-56,42,-4);g.lineTo(34,-6);g.quadraticCurveTo(28,-22,14,-22);g.lineTo(8,-16);g.lineTo(0,-23);g.lineTo(-10,-17);g.lineTo(-18,-23);g.quadraticCurveTo(-30,-22,-34,-6);g.closePath();g.fill();g.stroke()}
+  g.restore();g.fillStyle=t.hc;g.strokeStyle=INK;g.lineWidth=3;
   if(t.hat){g.fillStyle=t.hatc;g.beginPath();g.moveTo(-40,-22);g.quadraticCurveTo(-40,-60,0,-60);g.quadraticCurveTo(40,-60,40,-22);g.closePath();g.fill();g.stroke();
     g.fillStyle=shade(t.hatc,.15);g.beginPath();
     if(t.hat==='flat'){g.roundRect(-48,-26,96,9,4)}else{g.moveTo(-42,-22);g.quadraticCurveTo(0,-34,46,-22);g.quadraticCurveTo(30,-12,-30,-14);g.closePath()}
