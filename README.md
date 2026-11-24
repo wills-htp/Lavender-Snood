@@ -1,7 +1,7 @@
 # Lavender-Snood
 Lavender boys and friends play snood.
 
-The game is a lavender, psychedelic bubble shooter where the pieces are cartoon versions of the crew. Open `index.html` in a browser to play: drag to aim, let go to launch, and match 3 or more of the same face to pop them.
+The game is a lavender, psychedelic bubble shooter where the pieces are cartoon versions of the crew. Play it at **https://wills-htp.github.io/Lavender-Snood/** (GitHub Pages), or open `index.html` in a browser: drag to aim, let go to launch, and match 3 or more of the same face to pop them.
 
 ## Files
 
@@ -39,3 +39,7 @@ Add a line to `TOONS` in `src/toons.js`:
 ## How a level works
 
 Each level uses a random lineup of up to 8 friends. It starts with 4 and adds one every two levels. Specials (Wildcard, Stone) show up from level 2, and Skull blockers from level 3.
+
+## Top scores
+
+Scores go to a shared arcade board in Supabase. The project URL and public key live in `src/config.js`. If Supabase can't be reached, scores save on the player's phone instead.

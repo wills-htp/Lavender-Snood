@@ -358,7 +358,7 @@ function renderLB(){
     const r=document.createElement('span');r.className='rk';r.textContent=(i+1)+'.';
     const n=document.createElement('span');n.className='nm';n.textContent=e.name;
     const s=document.createElement('b');s.textContent=String(e.score);li.append(r,n,s);ol.appendChild(li)});
-  $('lbNote').textContent=LB.arcade?'Arcade high scores: everyone, everywhere':LB.shared?'Shared with everyone playing':'Saved on this phone';
+  $('lbNote').textContent=LB.arcade?'Arcade high scores: everyone, everywhere':'Saved on this phone';
 }
 function qualifies(sc){return sc>0&&(LB.list.length<10||sc>LB.list[LB.list.length-1].score)}
 function offerScore(sc){
@@ -371,11 +371,6 @@ async function saveScore(name,sc){
   if(SUPA){
     try{const r=await fetch(SUPABASE_URL+'/rest/v1/scores',{method:'POST',headers:{...sbH,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({name:e.name,score:sc})});
       if(r.ok){LB.arcade=true;LB.list=sortTrim([...LB.list,e]);renderLB();loadArcade();return}}catch(err){}
-  }
-  if(LB.shared&&LB.db&&LB.me){
-    const mine=sortTrim([...LB.mine,e]);
-    try{await LB.db.doc('scores/'+LB.me).set({entries:mine});LB.mine=mine;LB.list=sortTrim([...LB.list,e]);renderLB();return}
-    catch(err){LB.shared=false}
   }
   const loc=sortTrim([...lsGet(LSK,[]),e]);lsSet(LSK,loc);LB.list=loc;renderLB();
 }
@@ -390,22 +385,7 @@ async function loadArcade(){
     if(LB.lastAt&&!LB.list.some(x=>x.at===LB.lastAt)){}renderLB();return true}catch(e){return false}
 }
 if(SUPA)setInterval(()=>{if(!$('ov').hidden&&LB.arcade)loadArcade()},30000);
-(async()=>{
-  try{
-    if(SUPA&&await loadArcade())return;
-    if(typeof claude==='undefined'||!claude.use)return;
-    const d=await claude.use('db');const u=await claude.use('user');if(!d||!u)return;
-    const id=await u.id();if(!id)return;
-    const w=await u.can('data.write');if(w===false)return;
-    LB.db=d;LB.me=id;
-    d.collection('scores').onSnapshot(snap=>{
-      const all=[];
-      snap.docs.forEach(doc=>{const v=doc.data();if(!v||!Array.isArray(v.entries))return;
-        v.entries.forEach(e=>all.push(e));if(doc.id===id)LB.mine=sortTrim(v.entries)});
-      LB.shared=true;LB.list=sortTrim(all);renderLB();
-    },()=>{LB.shared=false;LB.list=sortTrim(lsGet(LSK,[]));renderLB()});
-  }catch(e){}
-})();
+if(SUPA)loadArcade();
 let musicOn=lsGet('lbpop-music',true);
 function musLabel(){$('mus').textContent=musicOn?'Music on':'Music off';$('mus').setAttribute('aria-pressed',String(musicOn))}
 musLabel();
