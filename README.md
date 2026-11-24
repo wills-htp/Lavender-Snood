@@ -20,7 +20,7 @@ After editing anything in `src/`, run `python3 build.py`.
 Add a line to `TOONS` in `src/toons.js`:
 
 ```js
-{name:'Sam', color:'#ff8a1f', shape:'egg', hair:'curly', hc:'#3a2a1e', glasses:'round', facial:'beard', fc:'#3a2a1e', mouth:'grin', eyes:'happy'},
+{name:'Sam', color:'#ff8a1f', face:'#ff8a1f', accent:'#ffffff', shape:'egg', hair:'curly', hc:'#3a2a1e', glasses:'round', facial:'beard', fc:'#3a2a1e', mouth:'grin', eyes:'happy'},
 ```
 
 | Option | Values |
@@ -33,7 +33,7 @@ Add a line to `TOONS` in `src/toons.js`:
 | `mouth` | flat, smile, grin, toothy, open, talk, oh, smirk |
 | `eyes` | normal, happy, calm, wide, squint |
 
-`hc` sets the hair color. `skin` sets the face tone, and the friend's game `color` becomes the disc behind the head. `brow` and `browW` set eyebrow color and thickness, and `nose` sets nose size (1 is normal). Each friend's `color` should be one that isn't already taken.
+`hc` sets the hair color. `face` sets the main face color and `accent` the second color (ears, nose, inner rim). `pattern` can be wood, metal or rainbow. `brow` and `browW` set eyebrow color and thickness, and `nose` sets nose size (1 is normal). Each friend's `color` should be one that isn't already taken.
 
 ## How a level works
 
