@@ -1,7 +1,7 @@
 const TOONS=[
  {name:'Will',color:'#2f7de1',skin:'#e4b496',shape:'oval',hair:'curly',hc:'#3b2d24',facial:'stubble',fc:'#4a3a30',mouth:'flat',eyes:'calm',browW:6,brow:'#2e231c',nose:1.2},
  {name:'Ben',color:'#e8453c',skin:'#e0ae8e',shape:'octagon',hair:'short',hc:'#2a2420',facial:'stubble',fc:'#2a2420',mouth:'talk',eyes:'normal',browW:5,brow:'#2a2420'},
- {name:'David',color:'#3fb34f',skin:'#e8b794',shape:'egg',hair:'side',hc:'#6b4a2e',mouth:'grin',eyes:'happy',browW:5,brow:'#6b4a2e'},
+ {name:'David',color:'#3fb34f',skin:'#e8b794',shape:'egg',hat:'cap',hatc:'#12284b',brimc:'#f2b51f',hatband:true,hair:'side',hc:'#6b4a2e',mouth:'grin',eyes:'happy',browW:5,brow:'#6b4a2e'},
  {name:'Nick',color:'#f5c518',skin:'#e6b38f',shape:'shield',hair:'wavy',hc:'#2e1f16',facial:'stubble',fc:'#2e1f16',mouth:'smile',eyes:'normal',browW:5,brow:'#2e1f16'},
  {name:'Louis',color:'#ec5fa8',skin:'#e8b799',shape:'egg',hat:'cap',hatc:'#ec5fa8',hair:'side',hc:'#6e655e',glasses:'round',facial:'mustache',fc:'#2a1f1a',mouth:'grin',eyes:'happy',browW:5,brow:'#2a1f1a'},
  {name:'Ari',color:'#8a5cf0',skin:'#dfa98a',shape:'egg',hair:'buzz',hc:'#9a948c',facial:'beard',fc:'#4a403a',mouth:'grin',eyes:'wide',browW:5,brow:'#5a524c'},
@@ -63,9 +63,9 @@ function drawToon(g,x,y,size,t){
   if(t.hair==='bowl'){g.beginPath();g.moveTo(-42,-4);g.quadraticCurveTo(-48,-56,0,-54);g.quadraticCurveTo(48,-56,42,-4);g.lineTo(34,-6);g.quadraticCurveTo(28,-22,14,-22);g.lineTo(8,-16);g.lineTo(0,-23);g.lineTo(-10,-17);g.lineTo(-18,-23);g.quadraticCurveTo(-30,-22,-34,-6);g.closePath();g.fill();g.stroke()}
   g.restore();g.fillStyle=t.hc;g.strokeStyle=INK;g.lineWidth=3;
   if(t.hat){g.fillStyle=t.hatc;g.beginPath();g.moveTo(-40,-22);g.quadraticCurveTo(-40,-60,0,-60);g.quadraticCurveTo(40,-60,40,-22);g.closePath();g.fill();g.stroke();
-    g.fillStyle=shade(t.hatc,.15);g.beginPath();
+    g.fillStyle=t.brimc||shade(t.hatc,.15);g.beginPath();
     if(t.hat==='flat'){g.roundRect(-48,-26,96,9,4)}else{g.moveTo(-42,-22);g.quadraticCurveTo(0,-34,46,-22);g.quadraticCurveTo(30,-12,-30,-14);g.closePath()}
-    g.fill();g.stroke();g.fillStyle=shade(t.hatc,.25);g.beginPath();g.arc(0,-59,3,0,7);g.fill()}
+    g.fill();g.stroke();g.fillStyle=t.brimc||shade(t.hatc,.25);g.beginPath();g.arc(0,-59,3,0,7);g.fill();if(t.hatband){g.strokeStyle=t.brimc;g.lineWidth=3;g.beginPath();g.moveTo(-38,-26);g.quadraticCurveTo(0,-34,38,-26);g.stroke();g.strokeStyle=INK}}
   // eyes
   const ey=-4,ex=15;
   if(t.glasses==='sun'){g.fillStyle='#1a1410';g.beginPath();g.roundRect(-34,ey-11,28,22,8);g.roundRect(6,ey-11,28,22,8);g.fill();g.lineWidth=4;g.beginPath();g.moveTo(-6,ey-4);g.lineTo(6,ey-4);g.moveTo(-34,ey-6);g.lineTo(-44,ey-9);g.moveTo(34,ey-6);g.lineTo(44,ey-9);g.stroke();
