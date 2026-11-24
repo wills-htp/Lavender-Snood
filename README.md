@@ -26,7 +26,7 @@ Add a line to `TOONS` in `src/toons.js`:
 | Option | Values |
 |---|---|
 | `shape` | pill, octagon, egg, shield, squircle, bell, scallop, oval, thin, blob |
-| `hair` | curly, swept, crop, shag, short, side, wavy, longwavy, long, messy, bowl, buzz, bald, fringe |
+| `hair` | curly, swept, crop, shag, short, side, wavy, medwavy, longwavy, long, messy, bowl, buzz, bald, fringe |
 | `hat` | cap, flat, beret (with `hatc` for the hat color, `brimc` for a contrasting brim) |
 | `glasses` | round, rect, sun |
 | `facial` | stubble, mustache, goatee, beard, bigbeard (with `fc` for the color) |
