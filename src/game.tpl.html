@@ -9,31 +9,32 @@
    PICTURE: the playfield, with slow swirling sun rays behind the crew
    COLOUR and TYPE: lavender fields, sunshine yellow, bubblegum pink, sky blue; Shrikhand title, Fredoka text
    LAYOUT: title strip, board, controls and roster below */
-:root{color-scheme:light dark;--lav:light-dark(#d9c8ff,#2a1748);--lav2:light-dark(#c6aeff,#341c5a);--sun:#ffd96a;--case:light-dark(#b496ff,#4a2a7a);--ink:light-dark(#2d1556,#f6ecff);--pink:#ff6fb5;--panel:light-dark(rgba(255,255,255,.5),rgba(0,0,0,.3))}
+:root{color-scheme:light dark;--lav:light-dark(#b597f2,#2a1550);--lav2:light-dark(#a283ea,#331a62);--sun:#ffd96a;--case:light-dark(#8e66e6,#4a2a7a);--ink:light-dark(#2d1556,#f6ecff);--pink:#ff6fb5;--panel:light-dark(rgba(255,255,255,.5),rgba(0,0,0,.3))}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0}
 body{margin:0;color:var(--ink);font:16px/1.5 Fredoka,system-ui,sans-serif;overflow-x:clip;-webkit-user-select:none;user-select:none}
 html{min-height:100%;background-color:var(--lav);background-image:radial-gradient(circle at 50% -40px,#fff3b8 0 70px,var(--sun) 71px 110px,transparent 112px),repeating-conic-gradient(from 0deg at 50% -40px,var(--lav) 0 9deg,var(--lav2) 9deg 18deg)}
-.wrap{max-width:520px;margin:0 auto;padding:18px 12px 28px}
+.wrap{margin:0 auto;padding:4px 0 28px;display:flex;flex-direction:column;align-items:center}
 header{display:flex;flex-direction:column;align-items:center;gap:8px;padding:0 4px 14px;text-align:center}
 h1{margin:0;font-family:Shrikhand,Fredoka,serif;font-weight:400;font-size:clamp(28px,8vw,40px);line-height:1.1;text-wrap:balance;color:#fff;-webkit-text-stroke:2px #5b2a9e;paint-order:stroke fill;text-shadow:3px 3px 0 var(--pink),6px 6px 0 #8fd9ff}
 .stats{display:flex;gap:16px;font-size:15px;font-variant-numeric:tabular-nums;background:var(--panel);padding:2px 14px;border-radius:20px}
 .stats b{font-size:20px}
-.cab{background:var(--case);border-radius:30px;padding:12px;margin:18px;box-shadow:0 0 0 6px var(--pink),0 0 0 12px var(--sun),0 0 0 18px #8fd9ff,0 14px 30px rgba(60,20,110,.35)}
-.danger{display:flex;align-items:center;gap:8px;margin:0 4px 10px;font-size:13px;color:#fff}
+.cab{background:var(--case);border-radius:30px;padding:8px;margin:16px 12px 14px;width:fit-content;box-shadow:0 0 0 4px var(--pink),0 0 0 8px var(--sun),0 0 0 12px #8fd9ff,0 14px 30px rgba(60,20,110,.35)}
+.danger{display:flex;align-items:center;gap:10px;margin:0 4px 8px;font-size:14px;color:#fff;font-variant-numeric:tabular-nums;white-space:nowrap}.danger b{font-size:17px}
 .meter{flex:1;height:14px;border-radius:8px;background:rgba(40,10,80,.35);overflow:hidden}
 .meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,#8fd9ff,var(--pink),#ffb36b);transition:width .25s}
-.board{position:relative;border-radius:20px;overflow:hidden;background:#2a1450;aspect-ratio:400/600;touch-action:none}
+.board{position:relative;border-radius:20px;overflow:hidden;background:#2a1450;aspect-ratio:400/600;touch-action:none;width:min(calc(100vw - 56px),calc((100dvh - 150px)*2/3),560px)}
 canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 .ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;background:rgba(42,16,84,.72);color:#fff;padding:24px}
 .ov[hidden]{display:none}
-.ov h2{margin:0;font-family:Shrikhand,Fredoka,serif;font-weight:400;font-size:36px;line-height:1.1;text-shadow:3px 3px 0 var(--pink)}
+.ov h2{margin:0;font-family:Shrikhand,Fredoka,serif;font-weight:400;font-size:clamp(28px,8vw,40px);line-height:1.1;text-wrap:balance;color:#fff;-webkit-text-stroke:2px #5b2a9e;paint-order:stroke fill;text-shadow:3px 3px 0 var(--pink),6px 6px 0 #8fd9ff}
+body.playing .cast{display:none}
 .ov p{margin:0;max-width:30ch}
 button{font:inherit;font-weight:700;font-size:18px;min-height:48px;padding:0 26px;border:0;border-radius:24px;background:var(--pink);color:#fff;cursor:pointer;box-shadow:inset 0 -4px 0 rgba(0,0,0,.2)}
 button:focus-visible{outline:3px solid #fff;outline-offset:3px}
 .row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:12px}
 .ghost{background:rgba(255,255,255,.3);color:#fff;font-size:16px;padding:0 18px}
-.cast{margin-top:30px;background:var(--panel);border-radius:24px;padding:14px 16px}
+.cast{width:min(520px,calc(100vw - 24px));margin-top:24px;background:var(--panel);border-radius:24px;padding:14px 16px}
 .cast h3{margin:0 0 8px;font-family:Shrikhand,Fredoka,serif;font-weight:400;font-size:22px}
 .pieces{display:flex;flex-wrap:wrap;gap:12px}
 .pc{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:13px;width:64px;text-align:center}
@@ -42,11 +43,10 @@ button:focus-visible{outline:3px solid #fff;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.meter i{transition:none}}
 </style></head><body>
 <div class="wrap">
-<header><h1>Lavender Boys and Friends Play Snood</h1><div class="stats"><span>Level <b id="lv">1</b></span><span>Score <b id="sc">0</b></span></div></header>
 <div class="cab">
-<div class="danger"><span>Danger</span><div class="meter"><i id="dm"></i></div></div>
+<div class="danger"><span>Level <b id="lv">1</b></span><span>Score <b id="sc">0</b></span><div class="meter" aria-label="Danger"><i id="dm"></i></div></div>
 <div class="board" id="board"><canvas id="cv"></canvas>
-<div class="ov" id="ov"><h2 id="ovT">Let's play!</h2><p id="ovP">Drag to aim, let go to launch. Match 3 or more of the same face to pop them. Anything left hanging falls off.</p><button id="go">Play</button></div>
+<div class="ov" id="ov"><h2 id="ovT">Lavender Boys and Friends Play Snood</h2><p id="ovP">Drag to aim, let go to launch. Match 3 or more of the same face to pop them. Anything left hanging falls off.</p><button id="go">Play</button></div>
 </div>
 <div class="row"><button class="ghost" id="swap">Swap piece</button><button class="ghost" id="restart">Restart</button></div>
 </div>
@@ -274,7 +274,7 @@ document.addEventListener('keydown',e=>{
 });
 $('go').addEventListener('click',()=>{
   if(state==='won')level++;else{level=1;score=0}
-  $('ov').hidden=true;startLevel();
+  $('ov').hidden=true;document.body.classList.add('playing');startLevel();
 });
 $('restart').addEventListener('click',()=>{level=1;score=0;$('ov').hidden=true;startLevel()});
 $('swap').addEventListener('click',()=>{if(state==='play'&&!shot){[cur,nxt]=[nxt,cur]}});
