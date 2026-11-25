@@ -296,7 +296,7 @@ function draw(){
   }
   ctx.fillStyle='#ffd96a';ctx.beginPath();ctx.arc(W/2,H+6,50,Math.PI,0);ctx.fill();ctx.fillStyle='#ff6fb5';ctx.beginPath();ctx.arc(W/2,H+6,42,Math.PI,0);ctx.fill();
   if(cur!=null&&!shot&&state==='play')put(cur,W/2,LY);
-  if(nxt!=null&&state==='play'){ctx.globalAlpha=.85;put(nxt,W/2+70,H-22,.7);ctx.globalAlpha=1}
+  {const wait=shot?cur:nxt;if(wait!=null&&state==='play'){ctx.globalAlpha=.85;put(wait,W/2+70,H-22,.7);ctx.globalAlpha=1}}
   if(shot)put(shot.k,shot.x,shot.y);
   pops.forEach(p=>{p.t+=.08;ctx.globalAlpha=Math.max(0,1-p.t);put(p.k,p.x,p.y,1+p.t*.6);ctx.globalAlpha=1});
   pops=pops.filter(p=>p.t<1);
