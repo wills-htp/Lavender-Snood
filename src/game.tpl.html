@@ -51,7 +51,7 @@ body.playing .cast{display:none}
 .ov p{margin:0;max-width:30ch}
 button{font:inherit;font-weight:700;font-size:18px;min-height:48px;padding:0 26px;border:0;border-radius:24px;background:var(--pink);color:#fff;cursor:pointer;box-shadow:inset 0 -4px 0 rgba(0,0,0,.2)}
 button:focus-visible{outline:3px solid #fff;outline-offset:3px}
-.row{display:flex;justify-content:center;gap:14px;align-items:center;gap:8px;margin:8px 10px 6px}.row button{padding:0 14px;font-size:15px}
+.row{display:flex;justify-content:space-between;gap:8px;align-items:center;gap:8px;margin:8px 10px 6px}.row button{padding:0 14px;font-size:15px}
 .ghost{background:rgba(255,255,255,.3);color:#fff;font-size:16px;padding:0 18px}
 .cast{width:min(520px,calc(100vw - 24px));margin-top:24px;background:var(--panel);border-radius:24px;padding:14px 16px}
 .cast h3{margin:0 0 8px;font-family:Shrikhand,Fredoka,serif;font-weight:400;font-size:22px}
@@ -67,7 +67,7 @@ button:focus-visible{outline:3px solid #fff;outline-offset:3px}
 <div class="board" id="board"><canvas id="cv"></canvas>
 <div class="ov" id="ov"><h2 id="ovT">Lavender Boys and Friends Play Snood</h2><p id="ovP">Drag to aim, let go to launch. Match 3 or more of the same face to pop them. Anything left hanging falls off.</p><form id="hsForm" hidden><label for="hsName">New top score! Enter your name</label><div class="hsrow"><input id="hsName" maxlength="16" autocomplete="nickname" enterkeyhint="done"><button type="submit">Save</button></div></form><button id="go">Play</button><div class="lb"><h3>Top scores</h3><ol id="lbList"></ol><small id="lbNote"></small></div></div>
 </div>
-<div class="row"><button class="ghost" id="mus" aria-pressed="true">Music on</button><button class="ghost" id="restart">Restart</button></div>
+<div class="row"><button class="ghost" id="swap">Swap</button><button class="ghost" id="mus" aria-pressed="true">Music on</button><button class="ghost" id="restart">Restart</button></div>
 </div>
 <section class="cast"><h3>The pieces</h3><div class="pieces" id="cast"></div>
 <p class="note">Each level picks a random lineup, up to 8 faces at once. Specials join from level 2.</p></section>
@@ -88,7 +88,7 @@ function fitBoard(){
   const vw=document.documentElement.clientWidth,vh=window.innerHeight;
   const bw=Math.min(vw,560),bh=vh-108;
   H=Math.round(Math.min(Math.max(W*bh/bw,600),900));LY=H-34;DEAD=H-80;
-  DAISIES=[[24,H-60,9],[372,H-90,8],[60,H-130,6],[340,H-30,10],[200,H-140,5],[30,H*.55,6],[370,H*.62,7]];
+  DAISIES=[[24,H-60,9],[372,H-120,8],[60,H-130,6],[300,H-28,9],[200,H-140,5],[30,H*.55,6],[370,H*.62,7]];
   const b=document.getElementById('board');b.style.aspectRatio=W+'/'+H;b.style.width='min(100vw,calc((100dvh - 108px)*'+(W/H).toFixed(4)+'),560px)';
 }
 fitBoard();
@@ -296,7 +296,7 @@ function draw(){
   }
   ctx.fillStyle='#ffd96a';ctx.beginPath();ctx.arc(W/2,H+6,50,Math.PI,0);ctx.fill();ctx.fillStyle='#ff6fb5';ctx.beginPath();ctx.arc(W/2,H+6,42,Math.PI,0);ctx.fill();
   if(cur!=null&&!shot&&state==='play')put(cur,W/2,LY);
-  {const wait=shot?cur:nxt;if(wait!=null&&state==='play'){ctx.globalAlpha=.85;put(wait,W/2+70,H-22,.7);ctx.globalAlpha=1}}
+  {const wait=shot?cur:nxt;if(wait!=null&&state==='play'){ctx.globalAlpha=.85;put(wait,WX,H-24,.8);ctx.globalAlpha=1;ctx.font='600 11px Fredoka, sans-serif';ctx.textAlign='center';ctx.fillStyle='#3a1470';ctx.fillText('next',WX,H-46)}}
   if(shot)put(shot.k,shot.x,shot.y);
   pops.forEach(p=>{p.t+=.08;ctx.globalAlpha=Math.max(0,1-p.t);put(p.k,p.x,p.y,1+p.t*.6);ctx.globalAlpha=1});
   pops=pops.filter(p=>p.t<1);
@@ -312,6 +312,8 @@ function drawFloats(){
     ctx.lineWidth=5;ctx.strokeStyle='#fff';ctx.strokeText(f.txt,f.x,f.y);ctx.fillStyle=f.col;ctx.fillText(f.txt,f.x,f.y)});
   ctx.globalAlpha=1;floats=floats.filter(f=>f.t<1.4);
 }
+const WX=W-44;
+function swapPieces(){if(state==='play'&&!shot&&cur!=null&&nxt!=null){[cur,nxt]=[nxt,cur]}}
 function put(k,x,y,s=1){const sp=sprite(k);ctx.drawImage(sp,x-R*1.6*s,y-R*1.6*s,R*3.2*s,R*3.2*s)}
 function loop(){step();draw();requestAnimationFrame(loop)}
 
@@ -321,7 +323,9 @@ function setAim(e){
   aim=Math.min(Math.PI-.15,Math.max(.15,Math.atan2(LY-y,x-W/2)));
 }
 let down=false;
-board.addEventListener('pointerdown',e=>{if(state!=='play')return;down=true;setAim(e)});
+function boardXY(e){const b=cv.getBoundingClientRect();return [(e.clientX-b.left)*W/b.width,(e.clientY-b.top)*H/b.height]}
+function onWait(e){const [x,y]=boardXY(e);return Math.hypot(x-WX,y-(H-24))<30}
+board.addEventListener('pointerdown',e=>{if(state!=='play')return;if(onWait(e)){swapPieces();down=false;return}down=true;setAim(e)});
 board.addEventListener('pointermove',e=>{if(state==='play'&&(down||e.pointerType==='mouse'))setAim(e)});
 board.addEventListener('pointerup',e=>{if(!down)return;down=false;setAim(e);fire()});
 board.addEventListener('pointercancel',()=>{down=false});
@@ -397,6 +401,7 @@ if(SUPA)loadArcade();
 let musicOn=lsGet('lbpop-music',true);
 function musLabel(){$('mus').textContent=musicOn?'Music on':'Music off';$('mus').setAttribute('aria-pressed',String(musicOn))}
 musLabel();
+$('swap').addEventListener('click',swapPieces);
 $('mus').addEventListener('click',()=>{musicOn=!musicOn;lsSet('lbpop-music',musicOn);musLabel();if(musicOn)Music.start();else Music.stop()});
 document.addEventListener('pointerdown',()=>{if(musicOn&&document.body.classList.contains('playing')&&!Music.on)Music.start()},{passive:true});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)Music.stop();else if(musicOn&&document.body.classList.contains('playing'))Music.start()});
