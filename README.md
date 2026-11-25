@@ -36,6 +36,10 @@ Add a line to `TOONS` in `src/toons.js`:
 
 `hc` sets the hair color. `face` sets the main face color and `accent` the second color (ears, nose, inner rim). `pattern` can be wood, metal or rainbow. `brow` and `browW` set eyebrow color and thickness, and `nose` sets nose size (1 is normal). Each friend's `color` should be one that isn't already taken.
 
+## Scoring
+
+Pops are 10 each. Drops score much more and grow with how many fall at once; dropped faces of a different color than your shot earn extra. Bouncing your shot off a wall first is a bank shot: +50% for one bounce, double for two or more. Clearing a board in fewer shots earns a bonus.
+
 ## How a level works
 
 Each level uses a random lineup of up to 8 friends. It starts with 4 and adds one every two levels. Specials (Wildcard, Stone) show up from level 2, and Skull blockers from level 3.
