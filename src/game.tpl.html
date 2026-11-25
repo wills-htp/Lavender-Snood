@@ -335,7 +335,11 @@ $('go').addEventListener('click',()=>{
   if(state==='won')level++;else{level=1;score=0}
   $('ov').hidden=true;document.body.classList.add('playing');if(musicOn)Music.start();startLevel();
 });
-$('restart').addEventListener('click',()=>{level=1;score=0;$('ov').hidden=true;document.body.classList.add('playing');if(musicOn)Music.start();startLevel()});
+$('restart').addEventListener('click',()=>{
+  if(score>0&&qualifies(score)&&(state==='play'||state==='won')){
+    const fin=score;state='lost';shot=null;
+    show('Game over','You ended on level '+level+' with '+fin+' points.','Play again');offerScore(fin);return}
+  level=1;score=0;$('ov').hidden=true;document.body.classList.add('playing');if(musicOn)Music.start();startLevel()});
 
 
 function cast(){
