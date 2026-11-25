@@ -16,6 +16,7 @@ const TOONS=[
  {name:'Tim',color:'#1f2f6b',face:'#1f2f6b',accent:'#e8453c',shape:'thin',hair:'tousled',hc:'#2a1f18',glasses:'round',glassc:'#d9dee6',glassW:2.6,mouth:'tongue',eyes:'wide',browW:5,brow:'#c9d1de'},
  {name:'James',color:'#c3cad2',face:'#c3cad2',accent:'#2b2b30',pattern:'metal',shape:'blob',hat:'cap',hatc:'#141416',brimc:'#c9ced6',hatband:true,hair:'side',hc:'#1a1614',mouth:'flat',eyes:'squint',browW:5,brow:'#1a1614'},
  {name:'Gus',color:'#8fd3ff',face:'#8fd3ff',accent:'#c3cad2',shape:'egg',hair:'bald',facial:'beard',fc:'#5a3a26',streak:'rgba(170,160,150,.7)',mouth:'toothy',eyes:'happy',browW:5,brow:'#4a3020'},
+ {name:'Steve',color:'#2fb35a',face:'#2fb35a',accent:'#1a1a1d',shape:'egg',hat:'cap',hatc:'#1d1d22',hair:'side',hc:'#6e6660',facial:'beard',fc:'#7d766f',streak:'rgba(225,222,218,.85)',mouth:'grin',eyes:'happy',browW:5.5,brow:'#1a1614'},
 ];
 function toonPath(g,shape){
   g.beginPath();
