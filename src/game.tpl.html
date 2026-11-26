@@ -158,7 +158,7 @@ function nbrs(r,c){
 const get=(r,c)=>grid[r]&&grid[r][c];
 let active=[0,1,2,3];
 function randColor(){return active[Math.floor(Math.random()*active.length)]}
-function newRow(r,allowSkull){return Array.from({length:rowLen(r)},()=>allowSkull&&Math.random()<.06?'S':randColor())}
+function newRow(r,allowSkull){return Array.from({length:rowLen(r)},()=>allowSkull&&r>0&&Math.random()<.06?'S':randColor())}
 
 function startLevel(){
   fitBoard();
