@@ -96,7 +96,7 @@ const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
 const $=id=>document.getElementById(id);
 const imgs={};
 FACES.forEach((f,i)=>{const im=new Image();im.src=f.src;imgs[i]=im});
-let grid,par=0,level,score,danger=0,shot,cur,nxt,aim=Math.PI/2,falling=[],pops=[],state='menu',numColors,topY,roofT=0,shots=0,startCount=1,floats=[];
+let grid,par=0,level,score,danger=0,shot,cur,nxt,aim=Math.PI/2,falling=[],pops=[],state='menu',numColors,topY,roofT=0,roofMsg='',shots=0,startCount=1,floats=[];
 
 const sprites={};
 function sprite(k){
@@ -164,7 +164,7 @@ function startLevel(){
   fitBoard();
   numColors=Math.min(4+Math.floor((level-1)/2),8,COLORS.length);
   active=[...COLORS.keys()].sort(()=>Math.random()-.5).slice(0,numColors);
-  par=0;topY=0;roofT=0;danger=0;grid=[];falling=[];pops=[];shot=null;
+  par=0;topY=0;roofT=0;danger=0;roofMsg=ROOF_MSGS[Math.floor(Math.random()*ROOF_MSGS.length)];grid=[];falling=[];pops=[];shot=null;
   const rows=Math.min(4+level,9)+Math.floor((H-600)/RH/3);
   for(let r=0;r<rows;r++){grid.push(null);grid[r]=newRow(r,level>=3)}
   shots=0;floats=[];startCount=Math.max(1,grid.reduce((a,row)=>a+row.filter(v=>v!=null).length,0));
@@ -287,6 +287,10 @@ function draw(){
   if(topY>0.5){const rg=ctx.createLinearGradient(0,0,0,topY);rg.addColorStop(0,'#7b4fd6');rg.addColorStop(1,'#a77cf0');ctx.fillStyle=rg;ctx.fillRect(0,0,W,topY);
     ctx.fillStyle='rgba(255,111,181,.35)';for(let x=-20;x<W;x+=28){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x+14,0);ctx.lineTo(x+14-topY*.5,topY);ctx.lineTo(x-topY*.5,topY);ctx.closePath();ctx.fill()}
     ctx.fillStyle='#ffd96a';for(let x=0;x<=W;x+=20){ctx.beginPath();ctx.arc(x+10,topY,7,0,Math.PI);ctx.fill()}
+    if(roofMsg){ctx.save();ctx.beginPath();ctx.rect(0,0,W,topY-2);ctx.clip();
+      let fs=30;ctx.font=fs+"px Shrikhand, Fredoka, serif";const mw=ctx.measureText(roofMsg).width;if(mw>W-36){fs=Math.floor(fs*(W-36)/mw);ctx.font=fs+"px Shrikhand, Fredoka, serif"}
+      ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';ctx.lineWidth=5;ctx.strokeStyle='#3a1470';ctx.strokeText(roofMsg,W/2,34);
+      ctx.fillStyle='#fff';ctx.fillText(roofMsg,W/2,34);ctx.fillStyle='#ff6fb5';ctx.globalAlpha=.0;ctx.restore()}
     ctx.strokeStyle='#5b2a9e';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(0,topY);ctx.lineTo(W,topY);ctx.stroke()}
   if(danger/DMAX>.6){ctx.globalAlpha=Math.min(1,(danger/DMAX-.6)/.25)*(RM?1:.65+.35*Math.sin(performance.now()/180));ctx.strokeStyle='rgba(225,60,140,.85)';ctx.setLineDash([8,8]);ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,DEAD);ctx.lineTo(W,DEAD);ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=1}
   grid&&grid.forEach((row,r)=>row.forEach((v,c)=>{if(v!=null)put(v,px(r,c),py(r))}));
@@ -313,6 +317,7 @@ function drawFloats(){
   ctx.globalAlpha=1;floats=floats.filter(f=>f.t<1.4);
 }
 const WX=W-44;
+const ROOF_MSGS=['Deleuze would say','Let\u2019s Go Celtics','Will Rules','Techno','Tolstoy','Let\u2019s launch over it','I don\u2019t even have Facebook'];
 function swapPieces(){if(state==='play'&&!shot&&cur!=null&&nxt!=null){[cur,nxt]=[nxt,cur]}}
 function put(k,x,y,s=1){const sp=sprite(k);ctx.drawImage(sp,x-R*1.6*s,y-R*1.6*s,R*3.2*s,R*3.2*s)}
 function loop(){step();draw();requestAnimationFrame(loop)}
