@@ -287,10 +287,7 @@ function draw(){
   if(topY>0.5){const rg=ctx.createLinearGradient(0,0,0,topY);rg.addColorStop(0,'#7b4fd6');rg.addColorStop(1,'#a77cf0');ctx.fillStyle=rg;ctx.fillRect(0,0,W,topY);
     ctx.fillStyle='rgba(255,111,181,.35)';for(let x=-20;x<W;x+=28){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x+14,0);ctx.lineTo(x+14-topY*.5,topY);ctx.lineTo(x-topY*.5,topY);ctx.closePath();ctx.fill()}
     ctx.fillStyle='#ffd96a';for(let x=0;x<=W;x+=20){ctx.beginPath();ctx.arc(x+10,topY,7,0,Math.PI);ctx.fill()}
-    if(roofMsg){ctx.save();ctx.beginPath();ctx.rect(0,0,W,topY-2);ctx.clip();
-      let fs=30;ctx.font=fs+"px Shrikhand, Fredoka, serif";const mw=ctx.measureText(roofMsg).width;if(mw>W-36){fs=Math.floor(fs*(W-36)/mw);ctx.font=fs+"px Shrikhand, Fredoka, serif"}
-      ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';ctx.lineWidth=5;ctx.strokeStyle='#3a1470';ctx.strokeText(roofMsg,W/2,34);
-      ctx.fillStyle='#fff';ctx.fillText(roofMsg,W/2,34);ctx.fillStyle='#ff6fb5';ctx.globalAlpha=.0;ctx.restore()}
+    if(roofMsg){ctx.save();ctx.beginPath();ctx.rect(0,0,W,topY-2);ctx.clip();drawRoofMsg();ctx.restore()}
     ctx.strokeStyle='#5b2a9e';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(0,topY);ctx.lineTo(W,topY);ctx.stroke()}
   if(danger/DMAX>.6){ctx.globalAlpha=Math.min(1,(danger/DMAX-.6)/.25)*(RM?1:.65+.35*Math.sin(performance.now()/180));ctx.strokeStyle='rgba(225,60,140,.85)';ctx.setLineDash([8,8]);ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,DEAD);ctx.lineTo(W,DEAD);ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=1}
   grid&&grid.forEach((row,r)=>row.forEach((v,c)=>{if(v!=null)put(v,px(r,c),py(r))}));
@@ -316,7 +313,21 @@ function drawFloats(){
     ctx.lineWidth=5;ctx.strokeStyle='#fff';ctx.strokeText(f.txt,f.x,f.y);ctx.fillStyle=f.col;ctx.fillText(f.txt,f.x,f.y)});
   ctx.globalAlpha=1;floats=floats.filter(f=>f.t<1.4);
 }
-const WX=W-44;
+const WX=W-44,ROOF_TOP=26;
+let roofLines=null,roofFs=40,roofFor='';
+try{document.fonts&&document.fonts.ready.then(()=>{roofFor=''})}catch(e){}
+function layoutRoof(){
+  const words=roofMsg.split(' ');let lines=[roofMsg];
+  if(roofMsg.length>11&&words.length>1){let best=null;for(let k=1;k<words.length;k++){const a=words.slice(0,k).join(' '),b=words.slice(k).join(' '),d=Math.abs(a.length-b.length);if(!best||d<best.d)best={d,l:[a,b]}}lines=best.l}
+  ctx.font='100px Shrikhand, Fredoka, serif';const mw=Math.max(...lines.map(l=>ctx.measureText(l).width));
+  roofFs=Math.min(96,Math.floor(100*(W-28)/mw));roofLines=lines;roofFor=roofMsg;
+}
+function drawRoofMsg(){
+  if(roofFor!==roofMsg)layoutRoof();
+  ctx.font=roofFs+'px Shrikhand, Fredoka, serif';ctx.textAlign='center';ctx.textBaseline='top';ctx.lineJoin='round';
+  ctx.lineWidth=Math.max(5,roofFs*.12);ctx.strokeStyle='#3a1470';ctx.fillStyle='#fff';
+  roofLines.forEach((l,n)=>{const y=ROOF_TOP+n*roofFs*1.02;ctx.strokeText(l,W/2,y);ctx.fillText(l,W/2,y)});
+}
 const ROOF_MSGS=['Deleuze would say','Let\u2019s Go Celtics','Will Rules','Techno','Tolstoy','Let\u2019s launch over it','I don\u2019t even have Facebook'];
 function swapPieces(){if(state==='play'&&!shot&&cur!=null&&nxt!=null){[cur,nxt]=[nxt,cur]}}
 function put(k,x,y,s=1){const sp=sprite(k);ctx.drawImage(sp,x-R*1.6*s,y-R*1.6*s,R*3.2*s,R*3.2*s)}
