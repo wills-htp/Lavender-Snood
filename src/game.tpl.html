@@ -333,7 +333,8 @@ function layoutRoof(){
 }
 function drawRoofMsg(){
   if(roofFor!==roofMsg)layoutRoof();
-  const n=roofLines.length,lh=roofFs*1.0,top=roofBottom-n*lh;
+  // printed on the curtain: moves down with it, so the bottom of the text appears first
+  const n=roofLines.length,lh=roofFs*1.0,top=roofBottom-n*lh+(topY-(roofBottom+14));
   ctx.font=roofFs+'px '+ROOF_FONT;ctx.textAlign='center';ctx.textBaseline='top';ctx.lineJoin='round';
   ctx.lineWidth=Math.max(4,roofFs*.07);ctx.strokeStyle='#3a1470';ctx.fillStyle='#fff';
   roofLines.forEach((l,k)=>{const y=top+k*lh+roofFs*.04;ctx.strokeText(l,W/2,y);ctx.fillText(l,W/2,y)});
