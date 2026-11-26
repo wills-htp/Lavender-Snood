@@ -339,7 +339,7 @@ function fitBoard(){
   const vw=document.documentElement.clientWidth,vh=window.innerHeight;
   const bw=Math.min(vw,560),bh=vh-108;
   H=Math.round(Math.min(Math.max(W*bh/bw,600),900));LY=H-34;DEAD=H-80;
-  DAISIES=[[24,H-60,9],[372,H-120,8],[60,H-130,6],[300,H-28,9],[200,H-140,5],[30,H*.55,6],[370,H*.62,7]];
+  DAISIES=[[372,H-60,9],[372,H-120,8],[40,H-130,6],[300,H-28,9],[200,H-140,5],[30,H*.55,6],[370,H*.62,7]];
   const b=document.getElementById('board');b.style.aspectRatio=W+'/'+H;b.style.width='min(100vw,calc((100dvh - 108px)*'+(W/H).toFixed(4)+'),560px)';
 }
 fitBoard();
@@ -564,7 +564,7 @@ function drawFloats(){
     ctx.lineWidth=5;ctx.strokeStyle='#fff';ctx.strokeText(f.txt,f.x,f.y);ctx.fillStyle=f.col;ctx.fillText(f.txt,f.x,f.y)});
   ctx.globalAlpha=1;floats=floats.filter(f=>f.t<1.4);
 }
-const WX=W-44,ROOF_TOP=26;
+const WX=44,ROOF_TOP=26;
 let roofLines=null,roofFs=40,roofFor='';
 try{document.fonts&&document.fonts.ready.then(()=>{roofFor=''})}catch(e){}
 const ROOF_FONT="Impact, Anton, 'Arial Narrow', sans-serif";
