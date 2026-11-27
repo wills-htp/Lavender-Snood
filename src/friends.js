@@ -9,7 +9,7 @@ function frClean(f){
   const pick=(v,ok,d)=>ok.includes(v)?v:d,col=(v,d)=>HEX.test(v||'')?v:d;
   return {name:String(f.name||'Friend').slice(0,16),color:col(f.face,'#ff6fb5'),face:col(f.face,'#ff6fb5'),accent:col(f.accent,'#ffffff'),
     shape:pick(f.shape,['pill','octagon','egg','shield','squircle','bell','oval','thin','chisel','rect','blob'],'egg'),
-    hair:pick(f.hair,['short','long','curly','bald','buzz','crop','side','wavy','medwavy','tousled'],'short'),hc:col(f.hc,'#3a2a1e'),
+    hair:pick(f.hair,['short','blondshort','long','curly','bald','buzz','crop','side','wavy','medwavy','tousled','swept'],'short'),hc:col(f.hc,'#3a2a1e'),
     facial:pick(f.facial==='longbeard'?'bigbeard':f.facial,['','stubble','mustache','goatee','beard','bigbeard'],''),beardLen:f.facial==='longbeard'?80:f.facial==='bigbeard'?66:undefined,fc:col(f.fc,'#3a2a1e'),
     glasses:pick(f.glasses,['','round','rect','thick','sun'],''),hat:pick(f.hat,['','cap','knit','beret'],''),hatc:col(f.hatc,'#1d1d22'),
     mouth:pick(f.mouth,['grin','smile','toothy','flat','smirk','open'],'grin'),eyes:pick(f.eyes,['happy','normal','calm','wide','squint'],'happy'),
@@ -32,14 +32,21 @@ function frList(){
     row.append(c,n,b);box.appendChild(row)});
   $('ed-listwrap').hidden=!frLoad().length;
 }
-$('ed-file').addEventListener('change',e=>{
-  const f=e.target.files&&e.target.files[0];if(!f)return;
+function frLoadImage(f){
+  if(!f||!/^image\//.test(f.type||''))return;
   const url=URL.createObjectURL(f),im=new Image();
   im.onload=()=>{const sc=Math.min(1,640/Math.max(im.width,im.height));ED.cw=Math.round(im.width*sc);ED.ch=Math.round(im.height*sc);
     const c=$('ed-pic');c.width=ED.cw;c.height=ED.ch;const g=c.getContext('2d');g.drawImage(im,0,0,ED.cw,ED.ch);
     ED.px=g.getImageData(0,0,ED.cw,ED.ch);ED.img=im;ED.pts=[];URL.revokeObjectURL(url);frStep('tap');frTapHint()};
-  im.src=url;e.target.value='';
-});
+  im.src=url;
+}
+$('ed-file').addEventListener('change',e=>{frLoadImage(e.target.files&&e.target.files[0]);e.target.value=''});
+document.addEventListener('paste',e=>{if($('ed').hidden||$('ed-photo').hidden)return;const it=[...(e.clipboardData&&e.clipboardData.items||[])].find(i=>i.type.startsWith('image/'));if(it){e.preventDefault();frLoadImage(it.getAsFile())}});
+const drop=$('ed-drop');
+['dragenter','dragover'].forEach(k=>drop.addEventListener(k,e=>{e.preventDefault();drop.classList.add('over')}));
+['dragleave','drop'].forEach(k=>drop.addEventListener(k,e=>{e.preventDefault();drop.classList.remove('over')}));
+drop.addEventListener('drop',e=>frLoadImage(e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0]));
+for(const [m,c] of [['ed-face0m','ed-face0'],['ed-acc0m','ed-acc0']])$(m).addEventListener('change',()=>{$(c).hidden=$(m).value!=='me'});
 const TAPS=['Tap their left eye','Tap their right eye','Tap the bottom of their chin'];
 function frTapHint(){$('ed-taphint').textContent=TAPS[ED.pts.length]||'';frDrawPhoto()}
 function frDrawPhoto(){const c=$('ed-pic'),g=c.getContext('2d');g.putImageData(ED.px,0,0);
@@ -47,7 +54,10 @@ function frDrawPhoto(){const c=$('ed-pic'),g=c.getContext('2d');g.putImageData(E
 $('ed-pic').addEventListener('click',e=>{
   if(ED.pts.length>=3)return;const b=e.target.getBoundingClientRect();
   ED.pts.push([(e.clientX-b.left)*ED.cw/b.width,(e.clientY-b.top)*ED.ch/b.height]);frTapHint();
-  if(ED.pts.length===3){ED.rec=frMeasure();frFill(ED.rec);frStep('tune');frPreview()}
+  if(ED.pts.length===3){ED.rec=frMeasure();
+    if($('ed-face0m').value==='me'){ED.rec.face=$('ed-face0').value;if($('ed-acc0m').value!=='me')ED.rec.accent=lum(hexRGB(ED.rec.face))>150?'#2b2b30':'#ffffff'}
+    if($('ed-acc0m').value==='me')ED.rec.accent=$('ed-acc0').value;
+    frFill(ED.rec);frStep('tune');frPreview();frQuickLabels()}
 });
 $('ed-redo').addEventListener('click',()=>{ED.pts=[];frTapHint()});
 
@@ -99,11 +109,21 @@ function frMeasure(){
   const bald=!hat&&lowMean<45&&topBright>-10&&!darkTop;
   let hc;
   if(hat){const side=region(grid(-.15,.15,1.0,1.2,5).concat(grid(-.15,.15,-1.2,-1.0,5)));const hs=side.g.filter(p=>cdist(p.c,skin)>50&&p.l<skl);hc=hs.length>4?medC(hs):[58,42,30]}
-  else{const hl=prof.find(p=>p.dist>60);hc=hl?medC(hl.g):[110,104,98]}
+  else{const hl=prof.find(p=>p.dist>60&&lum(medC(p.g))<skl+15);hc=hl?medC(hl.g):[110,104,98]}
   if(bald){const side=grid(-.15,.15,1.05,1.25,5).concat(grid(-.15,.15,-1.25,-1.05,5)).filter(p=>cdist(p.c,skin)>45&&p.l<skl);hc=side.length>4?medC(side):[120,114,108]}
   r.hc=toHex(hc);
-  const longG=grid(.6,1.0,1.25,1.4,5).concat(grid(.6,1.0,-1.4,-1.25,5)),longHair=!bald&&longG.length&&longG.filter(p=>cdist(p.c,hc)<45&&cdist(p.c,skin)>45).length/longG.length>.55;
-  r.hair=bald?'bald':longHair?'long':'short';
+  const sideF=(b0,b1,bb0,bb1,a0=.4,a1=1.3)=>{const g=grid(a0,a1,b0,b1,6),bg=grid(a0,a1,bb0,bb1,4);if(!g.length)return 0;
+    const isHair=p=>(cdist(p.c,hc)<50||skl-p.l>45)&&cdist(p.c,skin)>45;const f=g.filter(isHair).length/g.length;
+    if(!bg.length)return g.filter(p=>cdist(p.c,hc)<40&&cdist(p.c,skin)>45).length/g.length;const bgF=bg.filter(isHair).length/bg.length;return bgF>.7?0:f};
+  const longF=Math.max(sideF(-1.45,-1.05,-2.4,-2.0),sideF(1.05,1.45,2.0,2.4)),templeF=Math.max(sideF(-1.35,-1.0,-2.4,-2.0,-.5,0),sideF(1.0,1.35,2.0,2.4,-.5,0)),longHair=!bald&&!hat&&longF>.5&&templeF>.5;
+  // tall hair: walk up from the hairline while the color stays hair-colored
+  let hairTop=null;
+  if(!hat&&!bald){const hl=prof.find(p=>p.dist>60&&lum(medC(p.g))<skl+15);if(hl){for(let a=hl.a;a>=-2.8;a-=.1){const g=grid(a,a,-.25,.25,5);if(!g.length)break;const m=medC(g);if(cdist(m,hc)<38&&cdist(m,skin)>45)hairTop=a;else if(hairTop!=null&&a<hairTop-.15)break}}}
+  // if the area well beside the head matches too, it's a dark background, not tall hair
+  if(hairTop!=null){const a=hairTop+.25,sideL=grid(a,a,-1.7,-1.5,3),sideR=grid(a,a,1.5,1.7,3);
+    const seen=[sideL,sideR].filter(g=>g.length),bgLike=seen.filter(g=>cdist(medC(g),hc)<60).length;if(!seen.length||bgLike===seen.length)hairTop=null}
+  const hairH=hairTop!=null?-(hairTop):0;
+  r.hair=bald?'bald':longHair?'long':hairH>=2.25?'swept':'crop';
   // beard: darkness of chin, jaw, cheeks and lip area compared with the upper cheeks
   const chin=region(grid(len*.82,len*1.0,-.3,.3)),jaw=region(grid(len*.6,len*.85,.45,.75).concat(grid(len*.6,len*.85,-.75,-.45)));
   const st=region(grid(len*.38,len*.46,-.3,.3)),ch=region(grid(len*.5,len*.65,.4,.7).concat(grid(len*.5,len*.65,-.7,-.4)));
@@ -145,7 +165,7 @@ function frMeasure(){
   else{const pickF=open.filter(f=>counts[f.k]===minC);const f=pickF[Math.round(skin[0]+skin[1]*3+len*97)%pickF.length];face=f.c}
   r.face=toHex(face);r.accent=lum(face)>150?'#2b2b30':'#ffffff';
   r.brow=bald?r.fc:r.hc;r.mouth='grin';r.eyes='happy';r.name='';
-  ED.dbg={satR:+satR.toFixed(2),gscore:+gscore.toFixed(1),p145:p145&&Math.round(p145.dist),p160:P(-1.6)&&Math.round(P(-1.6).dist),p130:P(-1.3)&&Math.round(P(-1.3).dist),topBright:Math.round(topBright),t145:p145&&+p145.tex.toFixed(1),len:+len.toFixed(2),hatDist:Math.round(hatDist),hatTex:+hatTex.toFixed(2),lowMean:Math.round(lowMean),score:+score.toFixed(2)};
+  ED.dbg={templeF:+templeF.toFixed(2),longF:+longF.toFixed(2),hairH:+hairH.toFixed(2),satR:+satR.toFixed(2),gscore:+gscore.toFixed(1),p145:p145&&Math.round(p145.dist),p160:P(-1.6)&&Math.round(P(-1.6).dist),p130:P(-1.3)&&Math.round(P(-1.3).dist),topBright:Math.round(topBright),t145:p145&&+p145.tex.toFixed(1),len:+len.toFixed(2),hatDist:Math.round(hatDist),hatTex:+hatTex.toFixed(2),lowMean:Math.round(lowMean),score:+score.toFixed(2)};
   return r;
 }
 function frFill(r){
@@ -157,7 +177,24 @@ function frRead(){return {name:$('ed-name').value.trim()||'Friend',face:$('ed-fa
   hair:$('ed-hair').value,hc:$('ed-hc').value,facial:$('ed-facial').value,fc:$('ed-fc').value,glasses:$('ed-glasses').value,
   hat:$('ed-hat').value,hatc:$('ed-hatc').value,mouth:'grin',eyes:'happy',brow:$('ed-hair').value==='bald'?$('ed-fc').value:$('ed-hc').value}}
 function frPreview(){const c=$('ed-prev'),g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);drawToon(g,c.width/2,c.height/2+6,c.width*.62,frClean(frRead()))}
-document.querySelectorAll('#ed-tune input,#ed-tune select').forEach(el=>el.addEventListener('input',()=>{$('ed-hatcrow').hidden=!$('ed-hat').value;frPreview()}));
+document.querySelectorAll('#ed-tune input,#ed-tune select').forEach(el=>el.addEventListener('input',()=>{$('ed-hatcrow').hidden=!$('ed-hat').value;frPreview();frQuickLabels()}));
+const QCYCLE={hat:['ed-hat',['','cap','knit','beret']],beard:['ed-facial',['','stubble','beard','bigbeard','longbeard']],glasses:['ed-glasses',['','round','rect','thick','sun']]};
+const HAIRLEN=['bald','crop','short','side','wavy','medwavy','long'];
+function frQuickLabels(){
+  const hat=$('ed-hat').value,fac=$('ed-facial').value,gl=$('ed-glasses').value,hr=$('ed-hair').value;
+  const lab={hat:hat?({cap:'Hat: cap',knit:'Hat: knit',beret:'Hat: beret'})[hat]:'Add hat',beard:fac&&fac!=='mustache'?({stubble:'Beard: stubble',beard:'Beard: full',bigbeard:'Beard: big',longbeard:'Beard: long',goatee:'Beard: goatee'})[fac]:'Add beard',
+    stache:fac==='mustache'?'Remove mustache':'Add mustache',glasses:gl?({round:'Glasses: round',rect:'Glasses: rectangle',thick:'Glasses: thick',sun:'Sunglasses'})[gl]:'Add glasses'};
+  document.querySelectorAll('.ed-quick button').forEach(b=>{const q=b.dataset.q;if(lab[q])b.textContent=lab[q];
+    b.classList.toggle('on',(q==='hat'&&!!hat)||(q==='beard'&&!!fac&&fac!=='mustache')||(q==='stache'&&fac==='mustache')||(q==='glasses'&&!!gl))});
+  document.querySelector('.ed-quick [data-q=longer]').disabled=hr==='long';document.querySelector('.ed-quick [data-q=shorter]').disabled=hr==='bald';
+}
+document.querySelectorAll('.ed-quick button').forEach(b=>b.addEventListener('click',()=>{
+  const q=b.dataset.q;
+  if(QCYCLE[q]){const [id,list]=QCYCLE[q],el=$(id);let i=list.indexOf(el.value);el.value=list[(i+1)%list.length]}
+  else if(q==='stache'){$('ed-facial').value=$('ed-facial').value==='mustache'?'':'mustache'}
+  else{const el=$('ed-hair');let i=HAIRLEN.indexOf(el.value);if(i<0)i=2;el.value=HAIRLEN[Math.max(0,Math.min(HAIRLEN.length-1,i+(q==='longer'?1:-1)))]}
+  if(q==='hat'&&$('ed-hat').value&&$('ed-hatc').value==='#1d1d22'&&ED.rec&&ED.rec.hatc)$('ed-hatc').value=ED.rec.hatc;
+  $('ed-hatcrow').hidden=!$('ed-hat').value;frPreview();frQuickLabels()}));
 $('ed-save').addEventListener('click',()=>{const f=frRead();const a=frLoad();a.push(f);frSave(a);frAdd(f);for(const k in sprites)delete sprites[k];cast();frList();frStep('photo')});
 $('ed-back').addEventListener('click',()=>frStep('photo'));
 $('ed-close').addEventListener('click',frClose);

@@ -61,6 +61,15 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 .ed-grid .wide{grid-column:1/-1}
 .ed input[type=text],.ed select{font:inherit;font-size:16px;min-height:44px;border-radius:12px;border:2px solid #c9b6f2;padding:0 10px;background:#fff;color:#2d1556}
 .ed input[type=color]{width:100%;min-height:44px;border:2px solid #c9b6f2;border-radius:12px;padding:2px;background:#fff}
+.ed-tip{font-weight:700;font-size:17px}
+.ed-small{font-size:13px;opacity:.75;margin:12px 0 0}
+.ed-drop{border:3px dashed #c9b6f2;border-radius:16px;padding:18px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;background:#fff}
+.ed-drop.over{border-color:var(--pink);background:#fff0f8}
+.ed-quick{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:4px 0 12px}
+.ed-quick button{min-height:44px;font-size:15px;padding:0 14px}
+.ed-quick button.on{background:var(--pink);color:#fff}
+.ed-more{margin-top:12px}.ed-more summary{cursor:pointer;font-weight:700;min-height:40px;display:flex;align-items:center}
+.ed-more .ed-grid{margin-top:8px}
 .ed-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
 .ed .pick{display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;min-height:48px;padding:0 26px;border-radius:24px;background:var(--pink);color:#fff;cursor:pointer}
 .ed-row{display:flex;align-items:center;gap:10px;padding:4px 0}
@@ -88,24 +97,44 @@ button:focus-visible{outline:3px solid #fff;outline-offset:3px}
 <div class="cab">
 <div class="danger"><span>Level <b id="lv">1</b></span><span>Score <b id="sc">0</b></span><div class="meter" aria-label="Danger"><i id="dm"></i></div></div>
 <div class="board" id="board"><canvas id="cv"></canvas>
-<div class="ov" id="ov"><h2 id="ovT">Lavender Boys and Friends Play Snood</h2><p id="ovP">Drag to aim, let go to launch. Match 3 or more of the same face to pop them. Anything left hanging falls off.</p><form id="hsForm" hidden><label for="hsName">New top score! Enter your name</label><div class="hsrow"><input id="hsName" maxlength="16" autocomplete="nickname" enterkeyhint="done"><button type="submit">Save</button></div></form><button id="go">Play</button><button class="addfriend" type="button">Add a friend</button><div class="lb"><h3>Top scores</h3><ol id="lbList"></ol><small id="lbNote"></small></div></div>
+<div class="ov" id="ov"><h2 id="ovT">Lavender Boys and Friends Play Snood</h2><p id="ovP">Drag to aim, let go to launch. Match 3 or more of the same face to pop them. Anything left hanging falls off.</p><form id="hsForm" hidden><label for="hsName">New top score! Enter your name</label><div class="hsrow"><input id="hsName" maxlength="16" autocomplete="nickname" enterkeyhint="done"><button type="submit">Save</button></div></form><button id="go">Play</button><button class="addfriend" type="button">Add character</button><div class="lb"><h3>Top scores</h3><ol id="lbList"></ol><small id="lbNote"></small></div></div>
 </div>
 <div class="row"><button class="ghost" id="swap">Swap</button><button class="ghost" id="mus" aria-pressed="true">Music on</button><button class="ghost" id="restart">Restart</button></div>
 </div>
-<section class="cast"><h3>The pieces</h3><div class="pieces" id="cast"></div><button class="addfriend" type="button">Add a friend</button>
+<section class="cast"><h3>The pieces</h3><div class="pieces" id="cast"></div><button class="addfriend" type="button">Add character</button>
 <p class="note">Each level picks a random lineup, up to 8 faces at once. Specials join from level 2.</p></section>
 </div>
 <div class="ed" id="ed" hidden><div class="panel">
-<div class="ed-head"><h3>Add a friend</h3><button type="button" class="ghost" id="ed-close">Close</button></div>
-<div id="ed-photo"><p>Pick a clear, front-facing photo of your friend. It's only used on this phone to make the cartoon, then thrown away.</p><label class="pick">Choose photo<input type="file" id="ed-file" accept="image/*" hidden></label></div>
+<div class="ed-head"><h3>Add character</h3><button type="button" class="ghost" id="ed-close">Close</button></div>
+<div id="ed-photo">
+<p class="ed-tip">Works best with a good, clear photo of their face: looking at the camera, decent light, no sunglasses.</p>
+<div class="ed-drop" id="ed-drop" tabindex="0"><strong>Paste a photo here</strong><span>or</span><label class="pick">Choose photo<input type="file" id="ed-file" accept="image/*" hidden></label></div>
+<h4>Colors</h4>
+<div class="ed-grid">
+<label>Face color<select id="ed-face0m"><option value="auto">Game picks</option><option value="me">I'll choose</option></select><input type="color" id="ed-face0" value="#ff6fb5" hidden></label>
+<label>Trim color<select id="ed-acc0m"><option value="auto">Game picks</option><option value="me">I'll choose</option></select><input type="color" id="ed-acc0" value="#ffffff" hidden></label>
+</div>
+<p class="ed-small">The photo stays on this phone and is only used to make the cartoon.</p>
+</div>
 <div id="ed-tap" hidden><p id="ed-taphint" style="font-weight:700"></p><canvas id="ed-pic"></canvas><div class="ed-btns"><button type="button" class="ghost" id="ed-redo">Start taps over</button></div></div>
 <div id="ed-tune" hidden><canvas id="ed-prev" width="360" height="360"></canvas>
-<div class="ed-grid">
+<div class="ed-quick">
+<button type="button" class="ghost" data-q="hat">Add hat</button>
+<button type="button" class="ghost" data-q="beard">Add beard</button>
+<button type="button" class="ghost" data-q="stache">Add mustache</button>
+<button type="button" class="ghost" data-q="longer">Hair longer</button>
+<button type="button" class="ghost" data-q="shorter">Hair shorter</button>
+<button type="button" class="ghost" data-q="glasses">Glasses</button>
+</div>
+<div class="ed-grid ed-colors">
 <label class="wide">Name<input type="text" id="ed-name" maxlength="16" placeholder="Friend's name"></label>
 <label>Face color<input type="color" id="ed-face"></label>
 <label>Trim color<input type="color" id="ed-accent"></label>
+</div>
+<details class="ed-more"><summary>More options</summary>
+<div class="ed-grid">
 <label class="wide">Face shape<select id="ed-shape"><option value="oval">Long oval</option><option value="thin">Thin</option><option value="egg">Egg</option><option value="pill">Pill</option><option value="squircle">Wide square</option><option value="chisel">Chiseled</option><option value="octagon">Octagon</option><option value="shield">Shield</option><option value="bell">Bell</option><option value="blob">Round</option></select></label>
-<label>Hair<select id="ed-hair"><option value="short">Short</option><option value="crop">Buzz</option><option value="side">Side part</option><option value="curly">Curly</option><option value="wavy">Wavy</option><option value="medwavy">Medium wavy</option><option value="long">Long</option><option value="tousled">Messy</option><option value="bald">Bald</option></select></label>
+<label>Hair<select id="ed-hair"><option value="short">Short</option><option value="swept">Tall, swept up</option><option value="crop">Buzz</option><option value="side">Side part</option><option value="curly">Curly</option><option value="wavy">Wavy</option><option value="medwavy">Medium wavy</option><option value="long">Long</option><option value="tousled">Messy</option><option value="bald">Bald</option></select></label>
 <label>Hair color<input type="color" id="ed-hc"></label>
 <label>Beard<select id="ed-facial"><option value="">None</option><option value="stubble">Stubble</option><option value="mustache">Mustache</option><option value="goatee">Goatee</option><option value="beard">Beard</option><option value="bigbeard">Big beard</option><option value="longbeard">Long beard</option></select></label>
 <label>Beard color<input type="color" id="ed-fc"></label>
@@ -113,7 +142,8 @@ button:focus-visible{outline:3px solid #fff;outline-offset:3px}
 <label>Hat<select id="ed-hat"><option value="">No hat</option><option value="cap">Baseball cap</option><option value="knit">Knit hat</option><option value="beret">Beret</option></select></label>
 <label id="ed-hatcrow">Hat color<input type="color" id="ed-hatc"></label>
 </div>
-<div class="ed-btns"><button type="button" class="ghost" id="ed-back">Different photo</button><button type="button" id="ed-save">Save friend</button></div></div>
+</details>
+<div class="ed-btns"><button type="button" class="ghost" id="ed-back">Different photo</button><button type="button" id="ed-save">Save character</button></div></div>
 <div id="ed-listwrap" hidden><h4>Friends you've added</h4><div id="ed-list"></div></div>
 </div></div>
 <script>
