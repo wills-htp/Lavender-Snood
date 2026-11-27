@@ -108,12 +108,18 @@ function frMeasure(){
   const chin=region(grid(len*.82,len*1.0,-.3,.3)),jaw=region(grid(len*.6,len*.85,.45,.75).concat(grid(len*.6,len*.85,-.75,-.45)));
   const st=region(grid(len*.38,len*.46,-.3,.3)),ch=region(grid(len*.5,len*.65,.4,.7).concat(grid(len*.5,len*.65,-.7,-.4)));
   const score=(chin.dark+jaw.dark+st.dark+ch.dark)/4;
+  // beard hair is grayer than skin; dark-but-skin-colored areas are usually shadow
+  const chromaOf=g=>med(g.map(p=>Math.max(...p.c)-Math.min(...p.c))),satR=chromaOf(chin.g.concat(jaw.g))/Math.max(1,chromaOf(ref));
+  const depth=g=>g.length?(skl-med(g.map(p=>p.l)))/skl:0;
   if(st.dark>.7&&chin.dark<.25)r.facial='mustache';
   else if(chin.dark>.5&&ch.dark<.3&&st.dark<.35)r.facial='goatee';
-  else if(score>=.8&&jaw.dark>.85)r.facial='longbeard';
-  else if(score>=.45&&jaw.dark>=.65&&chin.dark>=.4)r.facial='bigbeard';
-  else if(score>=.45)r.facial='beard';
-  else if(score>=.27)r.facial='stubble';
+  else if(score>=.45){
+    if(satR>.78&&score<.7)r.facial='';
+    else if(depth(chin.g)>.7&&satR<.15)r.facial='longbeard';
+    else if(satR<.5&&jaw.dark>=.65&&score<.8)r.facial='bigbeard';
+    else r.facial='beard';
+  }
+  else if(score>=.27&&satR<=.9)r.facial='stubble';
   else r.facial='';
   const bp=[].concat(chin.g,jaw.g,st.g).filter(p=>skl-p.l>30);
   r.fc=toHex(bp.length>5?medC(bp):hc);
@@ -139,7 +145,7 @@ function frMeasure(){
   else{const pickF=open.filter(f=>counts[f.k]===minC);const f=pickF[Math.round(skin[0]+skin[1]*3+len*97)%pickF.length];face=f.c}
   r.face=toHex(face);r.accent=lum(face)>150?'#2b2b30':'#ffffff';
   r.brow=bald?r.fc:r.hc;r.mouth='grin';r.eyes='happy';r.name='';
-  ED.dbg={gscore:+gscore.toFixed(1),p145:p145&&Math.round(p145.dist),p160:P(-1.6)&&Math.round(P(-1.6).dist),p130:P(-1.3)&&Math.round(P(-1.3).dist),topBright:Math.round(topBright),t145:p145&&+p145.tex.toFixed(1),len:+len.toFixed(2),hatDist:Math.round(hatDist),hatTex:+hatTex.toFixed(2),lowMean:Math.round(lowMean),score:+score.toFixed(2)};
+  ED.dbg={satR:+satR.toFixed(2),gscore:+gscore.toFixed(1),p145:p145&&Math.round(p145.dist),p160:P(-1.6)&&Math.round(P(-1.6).dist),p130:P(-1.3)&&Math.round(P(-1.3).dist),topBright:Math.round(topBright),t145:p145&&+p145.tex.toFixed(1),len:+len.toFixed(2),hatDist:Math.round(hatDist),hatTex:+hatTex.toFixed(2),lowMean:Math.round(lowMean),score:+score.toFixed(2)};
   return r;
 }
 function frFill(r){
