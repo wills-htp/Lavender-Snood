@@ -805,34 +805,68 @@ const toHex=c=>'#'+c.map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16)
 function vivid(c){const m=Math.max(...c),n=Math.min(...c);if(m-n<25)return c;const k=255/Math.max(1,m);return c.map(v=>n+(v-n)*1.25*Math.min(1.4,k))}
 
 function frMeasure(){
-  const [L,Rt,C]=ED.pts,d=Math.max(8,Math.hypot(Rt[0]-L[0],Rt[1]-L[1])),M=[(L[0]+Rt[0])/2,(L[1]+Rt[1])/2];
-  let ux=C[0]-M[0],uy=C[1]-M[1];const ul=Math.hypot(ux,uy)||1;ux/=ul;uy/=ul;const vx=-uy,vy=ux;
-  const at=(a,b)=>[M[0]+ux*a*d+vx*b*d,M[1]+uy*a*d+vy*b*d];
-  const S=(a,b,r=.15)=>{const p=at(a,b);return frSample(p[0],p[1],r*d)};
-  const len=ul/d,r={};
-  const fh=S(-.5,0,.12),cb=S(.35,.55,.1)||S(.35,-.55,.1),skin=fh&&cb?fh.map((v,i)=>(v+cb[i])/2):(fh||cb),hairTop=S(-1.3,0,.18),hairSide=S(-.6,1.2)||S(-.6,-1.2);
-  const chinP=at(len*.9,0),jawP=at(len*.78,.62),jawQ=at(len*.78,-.62),lipP=at(len*.5,0);
-  const low=frSample(chinP[0],chinP[1],.16*d),jaw=frSample(jawP[0],jawP[1],.12*d)||frSample(jawQ[0],jawQ[1],.12*d),stache=frSample(lipP[0],lipP[1],.08*d);
-  const shirt=S(len+1.5,0,.3)||S(len+1.1,0,.25);
-  const skE=Math.min(frEdges(...at(.35,.55),.1*d)||99,frEdges(...at(-.5,0),.12*d)||99)||1,chE=frEdges(chinP[0],chinP[1],.16*d),jwE=Math.max(frEdges(jawP[0],jawP[1],.12*d),frEdges(jawQ[0],jawQ[1],.12*d));
-  r.shape=len>2.4?'thin':len>2.2?'oval':len>2.0?'egg':len>1.85?'pill':'squircle';
-  const bald=!(hairTop&&(cdist(hairTop,fh||skin)>50||lum(hairTop)<lum(fh||skin)-40));
-  const hc=bald?(hairSide&&cdist(hairSide,skin)>55?hairSide:[110,104,98]):(hairTop||[58,42,30]);
+  const [Le,Re,C]=ED.pts,d=Math.max(8,Math.hypot(Re[0]-Le[0],Re[1]-Le[1])),M=[(Le[0]+Re[0])/2,(Le[1]+Re[1])/2];
+  let ux=C[0]-M[0],uy=C[1]-M[1];const ul=Math.hypot(ux,uy)||1;ux/=ul;uy/=ul;const vx=-uy,vy=ux,len=ul/d;
+  const D=ED.px.data,W=ED.cw,H=ED.ch;
+  const px=(a,b)=>{const x=Math.round(M[0]+ux*a*d+vx*b*d),y=Math.round(M[1]+uy*a*d+vy*b*d);if(x<1||y<1||x>=W-1||y>=H-1)return null;
+    const o=(y*W+x)*4,lm=(k)=>D[k]*.3+D[k+1]*.59+D[k+2]*.11;return {c:[D[o],D[o+1],D[o+2]],l:lm(o),e:Math.abs(lm(o+4)-lm(o-4))+Math.abs(lm(o+W*4)-lm(o-W*4))}};
+  const grid=(a0,a1,b0,b1,n=9)=>{const out=[];for(let i=0;i<n;i++)for(let k=0;k<n;k++){const p=px(a0+(a1-a0)*i/(n-1),b0+(b1-b0)*k/(n-1));if(p)out.push(p)}return out};
+  const med=a=>{const s=a.slice().sort((x,y)=>x-y);return s.length?s[s.length>>1]:0};
+  const medC=g=>[0,1,2].map(i=>med(g.map(p=>p.c[i])));
+  const ref=grid(.3,.45,.35,.75).concat(grid(.3,.45,-.75,-.35));
+  const skin=medC(ref),skl=med(ref.map(p=>p.l)),ske=med(ref.map(p=>p.e))+1;
+  const region=(g)=>{if(!g.length)return {dark:0,far:0,tex:0,g};return {dark:g.filter(p=>skl-p.l>30).length/g.length,far:g.filter(p=>cdist(p.c,skin)>55).length/g.length,tex:g.reduce((t,p)=>t+p.e,0)/g.length/ske,g}};
+  // above the eyes: hat or hair or bald
+  const band=(a)=>region(grid(a,a,-.45,.45,7).concat(grid(a+.06,a+.06,-.45,.45,7)));
+  const prof=[-.55,-.7,-.85,-1,-1.15,-1.3,-1.45,-1.6].map(a=>{const g=grid(a,a+.08,-.45,.45,5);return {a,g,dist:g.length?cdist(medC(g),skin):-1,tex:g.length?g.reduce((t,p)=>t+p.e,0)/g.length/ske:0}});
+  const P=a=>prof.find(p=>Math.abs(p.a-a)<.01);
+  const hatBand=[P(-.7),P(-.85),P(-1),P(-1.15)].filter(p=>p.dist>=0);
+  const hatDist=hatBand.reduce((t,p)=>t+p.dist,0)/Math.max(1,hatBand.length),hatTex=hatBand.reduce((t,p)=>t+p.tex,0)/Math.max(1,hatBand.length);
+  const r={};
+  r.shape=len>2.5?'thin':len>2.05?'oval':len>1.75?'egg':len>1.5?'pill':'squircle';
+  const hat=hatDist>105||(hatDist>80&&hatTex<.35);
+  r.hat=hat?'cap':'';r.hatc=hat?toHex(medC([].concat(...hatBand.map(p=>p.g)))):'#1d1d22';
+  const low=[P(-.85),P(-1),P(-1.15)].filter(p=>p.dist>=0),lowMean=low.reduce((t,p)=>t+p.dist,0)/Math.max(1,low.length);
+  const p145=P(-1.45),topBright=P(-1.3)&&P(-1.3).g.length?med(P(-1.3).g.map(p=>p.l))-skl:0;
+  const p160=P(-1.6),darkTop=p160&&p160.dist>150&&p160.g.length&&med(p160.g.map(p=>p.l))<skl-40;
+  const bald=!hat&&lowMean<45&&topBright>-10&&!darkTop;
+  let hc;
+  if(hat){const side=region(grid(-.15,.15,1.0,1.2,5).concat(grid(-.15,.15,-1.2,-1.0,5)));const hs=side.g.filter(p=>cdist(p.c,skin)>50&&p.l<skl);hc=hs.length>4?medC(hs):[58,42,30]}
+  else{const hl=prof.find(p=>p.dist>60);hc=hl?medC(hl.g):[110,104,98]}
+  if(bald){const side=grid(-.15,.15,1.05,1.25,5).concat(grid(-.15,.15,-1.25,-1.05,5)).filter(p=>cdist(p.c,skin)>45&&p.l<skl);hc=side.length>4?medC(side):[120,114,108]}
   r.hc=toHex(hc);
-  const longHair=!bald&&cdist(S(.95,1.35),hc)<45&&cdist(S(.95,1.35),skin)>40;
+  const longG=grid(.6,1.0,1.25,1.4,5).concat(grid(.6,1.0,-1.4,-1.25,5)),longHair=!bald&&longG.length&&longG.filter(p=>cdist(p.c,hc)<45&&cdist(p.c,skin)>45).length/longG.length>.55;
   r.hair=bald?'bald':longHair?'long':'short';
-  const chinB=cdist(low,skin)>50||chE>skE*1.7,jawB=cdist(jaw,skin)>50||jwE>skE*1.7,stB=cdist(stache,skin)>55&&lum(stache)<lum(skin);
-  const strong=cdist(low,skin)>90||chE>skE*2.6;
-  r.facial=chinB&&jawB?(strong&&len>0?'beard':'stubble'):chinB?'goatee':stB?'mustache':'';
-  if(r.facial==='stubble'&&cdist(low,skin)>70)r.facial='beard';
-  const bs=[low,jaw].filter(Boolean),bc=bs.length?bs[0].map((v,i)=>bs.reduce((t,c)=>t+c[i],0)/bs.length):null;r.fc=toHex(r.facial?(bc||hc):hc);
-  ED.dbg={len:+len.toFixed(2),skin:skin&&toHex(skin),hairTop:hairTop&&toHex(hairTop),low:low&&toHex(low),cd:Math.round(cdist(low,skin)),chE:Math.round(chE),skE:Math.round(skE),jwE:Math.round(jwE),jcd:Math.round(cdist(jaw,skin))};
-  const eyeE=(frEdges(L[0],L[1]-d*.05,d*.32)+frEdges(Rt[0],Rt[1]-d*.05,d*.32))/2,cheekE=skE;
-  r.glasses=eyeE>cheekE*2.3&&eyeE>22?'round':'';
-  let face=shirt&&cdist(shirt,skin)>35?vivid(shirt):[255,111,181];
-  if(lum(face)<35)face=[60,60,70];
+  // beard: darkness of chin, jaw, cheeks and lip area compared with the upper cheeks
+  const chin=region(grid(len*.82,len*1.0,-.3,.3)),jaw=region(grid(len*.6,len*.85,.45,.75).concat(grid(len*.6,len*.85,-.75,-.45)));
+  const st=region(grid(len*.38,len*.46,-.3,.3)),ch=region(grid(len*.5,len*.65,.4,.7).concat(grid(len*.5,len*.65,-.7,-.4)));
+  const score=(chin.dark+jaw.dark+st.dark+ch.dark)/4;
+  if(st.dark>.7&&chin.dark<.25)r.facial='mustache';
+  else if(chin.dark>.5&&ch.dark<.3&&st.dark<.35)r.facial='goatee';
+  else if(score>=.8&&jaw.dark>.85)r.facial='bigbeard';
+  else if(score>=.45)r.facial='beard';
+  else if(score>=.27)r.facial='stubble';
+  else r.facial='';
+  const bp=[].concat(chin.g,jaw.g,st.g).filter(p=>skl-p.l>30);
+  r.fc=toHex(bp.length>5?medC(bp):hc);
+  // glasses: strong horizontal edges along the lower rim under each eye and across the nose bridge
+  const gyAt=(x,y)=>{x=Math.round(x);y=Math.round(y);if(x<1||y<1||x>=W-1||y>=H-1)return null;const o=(y*W+x)*4,lm=k=>D[k]*.3+D[k+1]*.59+D[k+2]*.11;return Math.abs(lm(o+W*4)-lm(o-W*4))};
+  const ptAt=(cx,cy,a,b)=>[cx+ux*a*d+vx*b*d,cy+uy*a*d+vy*b*d];
+  const cheekRef=(()=>{const v=[];for(let i=0;i<5;i++)for(const b of [-.6,-.5,.5,.6]){const q=ptAt(M[0],M[1],.5+.05*i,b),g=gyAt(q[0],q[1]);if(g!=null)v.push(g)}return v.reduce((t,x)=>t+x,0)/Math.max(1,v.length)+1})();
+  let lom=0;for(const e of [Le,Re])for(const rr of [.28,.33,.38,.43]){let t=0,n=0;for(let k=0;k<9;k++){const ang=Math.PI*(.35+.3*k/8),q=[e[0]+(Math.cos(ang)*vx+Math.sin(ang)*ux)*rr*d,e[1]+(Math.cos(ang)*vy+Math.sin(ang)*uy)*rr*d],g=gyAt(q[0],q[1]);if(g!=null){t+=g;n++}}if(n)lom=Math.max(lom,t/n)}
+  let br=0;for(let i=0;i<11;i++){const a=-.15+.025*i;let t=0,n=0;for(let k=0;k<7;k++){const q=ptAt(M[0],M[1],a,-.1+k*.2/6),g=gyAt(q[0],q[1]);if(g!=null){t+=g;n++}}if(n)br=Math.max(br,t/n)}
+  const gscore=(lom+br)/cheekRef;
+  r.glasses=gscore>=10?(lum(region(grid(-.1,.1,.35,.65,5)).g.length?medC(region(grid(-.1,.1,.35,.65,5)).g):[255,255,255])<skl-110?'sun':'round'):'';
+  const shirt=region(grid(len+.9,len+1.4,-.6,.6,7)).g.filter(p=>cdist(p.c,skin)>40);
+  // face color: their shirt if it's a real color, otherwise a bright color nobody else is using yet
+  const sc=shirt.length>8?medC(shirt):null,chroma=sc?Math.max(...sc)-Math.min(...sc):0;
+  const PAL=[[255,111,181],[47,125,225],[63,179,79],[245,197,24],[255,138,31],[20,184,176],[138,92,240],[232,69,60],[143,211,255],[154,212,30]];
+  const used=TOONS.map(t=>{const n=parseInt((t.face||t.color).slice(1),16);return [n>>16,n>>8&255,n&255]});
+  const ranked=PAL.slice().sort((x,y)=>Math.min(...used.map(u=>cdist(u,y)))-Math.min(...used.map(u=>cdist(u,x)))),fresh=ranked[Math.round(skin[0]+skin[1]*3+len*97)%4];
+  let face=sc&&chroma>45&&lum(sc)>45?vivid(sc):fresh;
   r.face=toHex(face);r.accent=lum(face)>150?'#2b2b30':'#ffffff';
-  r.brow=bald?r.fc:r.hc;r.hat='';r.hatc='#1d1d22';r.mouth='grin';r.eyes='happy';r.name='';
+  r.brow=bald?r.fc:r.hc;r.mouth='grin';r.eyes='happy';r.name='';
+  ED.dbg={gscore:+gscore.toFixed(1),p145:p145&&Math.round(p145.dist),p160:P(-1.6)&&Math.round(P(-1.6).dist),p130:P(-1.3)&&Math.round(P(-1.3).dist),topBright:Math.round(topBright),t145:p145&&+p145.tex.toFixed(1),len:+len.toFixed(2),hatDist:Math.round(hatDist),hatTex:+hatTex.toFixed(2),lowMean:Math.round(lowMean),score:+score.toFixed(2)};
   return r;
 }
 function frFill(r){
@@ -849,6 +883,7 @@ $('ed-save').addEventListener('click',()=>{const f=frRead();const a=frLoad();a.p
 $('ed-back').addEventListener('click',()=>frStep('photo'));
 $('ed-close').addEventListener('click',frClose);
 document.querySelectorAll('.addfriend').forEach(b=>b.addEventListener('click',frOpen));
+window.__fr={open:frOpen,step:frStep,ED};
 
 renderLB();
 level=1;score=0;grid=null;loop();
