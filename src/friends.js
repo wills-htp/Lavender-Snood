@@ -10,7 +10,7 @@ function frClean(f){
   return {name:String(f.name||'Friend').slice(0,16),color:col(f.face,'#ff6fb5'),face:col(f.face,'#ff6fb5'),accent:col(f.accent,'#ffffff'),
     shape:pick(f.shape,['pill','octagon','egg','shield','squircle','bell','oval','thin','chisel','rect','blob'],'egg'),
     hair:pick(f.hair,['short','long','curly','bald','buzz','crop','side','wavy','medwavy','tousled'],'short'),hc:col(f.hc,'#3a2a1e'),
-    facial:pick(f.facial,['','stubble','mustache','goatee','beard','bigbeard'],''),fc:col(f.fc,'#3a2a1e'),
+    facial:pick(f.facial==='longbeard'?'bigbeard':f.facial,['','stubble','mustache','goatee','beard','bigbeard'],''),beardLen:f.facial==='longbeard'?80:f.facial==='bigbeard'?66:undefined,fc:col(f.fc,'#3a2a1e'),
     glasses:pick(f.glasses,['','round','rect','thick','sun'],''),hat:pick(f.hat,['','cap','knit','beret'],''),hatc:col(f.hatc,'#1d1d22'),
     mouth:pick(f.mouth,['grin','smile','toothy','flat','smirk','open'],'grin'),eyes:pick(f.eyes,['happy','normal','calm','wide','squint'],'happy'),
     browW:5,brow:col(f.brow,'#2a1f18'),custom:true}
@@ -66,6 +66,11 @@ const cdist=(a,b)=>a&&b?Math.hypot(a[0]-b[0],a[1]-b[1],a[2]-b[2]):999;
 const toHex=c=>'#'+c.map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join('');
 function vivid(c){const m=Math.max(...c),n=Math.min(...c);if(m-n<25)return c;const k=255/Math.max(1,m);return c.map(v=>n+(v-n)*1.25*Math.min(1.4,k))}
 
+const FAMS=[{k:'red',c:[232,69,60]},{k:'orange',c:[255,138,31]},{k:'pink',c:[255,111,181]},{k:'yellow',c:[245,197,24]},{k:'green',c:[63,179,79]},{k:'blue',c:[47,125,225]},{k:'purple',c:[138,92,240]}];
+const hexRGB=h=>{const n=parseInt(String(h).slice(1),16);return [n>>16,n>>8&255,n&255]};
+function famOf(c){const [r,g,b]=c.map(v=>v/255),mx=Math.max(r,g,b),mn=Math.min(r,g,b),dl=mx-mn;if(dl<.15)return 'neutral';
+  let h=mx===r?((g-b)/dl)%6:mx===g?(b-r)/dl+2:(r-g)/dl+4;h=(h*60+360)%360;
+  if(h<15||h>=345)return 'red';if(h<40)return 'orange';if(h<70)return 'yellow';if(h<160)return 'green';if(h<255)return 'blue';if(h<300)return 'purple';return 'pink'}
 function frMeasure(){
   const [Le,Re,C]=ED.pts,d=Math.max(8,Math.hypot(Re[0]-Le[0],Re[1]-Le[1])),M=[(Le[0]+Re[0])/2,(Le[1]+Re[1])/2];
   let ux=C[0]-M[0],uy=C[1]-M[1];const ul=Math.hypot(ux,uy)||1;ux/=ul;uy/=ul;const vx=-uy,vy=ux,len=ul/d;
@@ -105,7 +110,8 @@ function frMeasure(){
   const score=(chin.dark+jaw.dark+st.dark+ch.dark)/4;
   if(st.dark>.7&&chin.dark<.25)r.facial='mustache';
   else if(chin.dark>.5&&ch.dark<.3&&st.dark<.35)r.facial='goatee';
-  else if(score>=.8&&jaw.dark>.85)r.facial='bigbeard';
+  else if(score>=.8&&jaw.dark>.85)r.facial='longbeard';
+  else if(score>=.45&&jaw.dark>=.65&&chin.dark>=.4)r.facial='bigbeard';
   else if(score>=.45)r.facial='beard';
   else if(score>=.27)r.facial='stubble';
   else r.facial='';
@@ -120,12 +126,17 @@ function frMeasure(){
   const gscore=(lom+br)/cheekRef;
   r.glasses=gscore>=10?(lum(region(grid(-.1,.1,.35,.65,5)).g.length?medC(region(grid(-.1,.1,.35,.65,5)).g):[255,255,255])<skl-110?'sun':'round'):'';
   const shirt=region(grid(len+.9,len+1.4,-.6,.6,7)).g.filter(p=>cdist(p.c,skin)>40);
-  // face color: their shirt if it's a real color, otherwise a bright color nobody else is using yet
+  // face color: balance the roster. Count how many guys sit in each color family and pick from the emptiest ones.
+  // Their shirt color is only used when it falls in one of those under-used families.
+  const fam=famOf;
+  const counts={};FAMS.forEach(f=>counts[f.k]=0);
+  TOONS.forEach(t=>{const k=fam(hexRGB(t.face||t.color));if(k in counts)counts[k]++});
+  const minC=Math.min(...FAMS.map(f=>counts[f.k]));
+  const open=FAMS.filter(f=>counts[f.k]<=minC+1);
   const sc=shirt.length>8?medC(shirt):null,chroma=sc?Math.max(...sc)-Math.min(...sc):0;
-  const PAL=[[255,111,181],[47,125,225],[63,179,79],[245,197,24],[255,138,31],[20,184,176],[138,92,240],[232,69,60],[143,211,255],[154,212,30]];
-  const used=TOONS.map(t=>{const n=parseInt((t.face||t.color).slice(1),16);return [n>>16,n>>8&255,n&255]});
-  const ranked=PAL.slice().sort((x,y)=>Math.min(...used.map(u=>cdist(u,y)))-Math.min(...used.map(u=>cdist(u,x)))),fresh=ranked[Math.round(skin[0]+skin[1]*3+len*97)%4];
-  let face=sc&&chroma>45&&lum(sc)>45?vivid(sc):fresh;
+  let face;
+  if(sc&&chroma>45&&lum(sc)>45&&open.some(f=>f.k===fam(sc)))face=vivid(sc);
+  else{const pickF=open.filter(f=>counts[f.k]===minC);const f=pickF[Math.round(skin[0]+skin[1]*3+len*97)%pickF.length];face=f.c}
   r.face=toHex(face);r.accent=lum(face)>150?'#2b2b30':'#ffffff';
   r.brow=bald?r.fc:r.hc;r.mouth='grin';r.eyes='happy';r.name='';
   ED.dbg={gscore:+gscore.toFixed(1),p145:p145&&Math.round(p145.dist),p160:P(-1.6)&&Math.round(P(-1.6).dist),p130:P(-1.3)&&Math.round(P(-1.3).dist),topBright:Math.round(topBright),t145:p145&&+p145.tex.toFixed(1),len:+len.toFixed(2),hatDist:Math.round(hatDist),hatTex:+hatTex.toFixed(2),lowMean:Math.round(lowMean),score:+score.toFixed(2)};
