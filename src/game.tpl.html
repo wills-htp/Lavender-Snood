@@ -237,10 +237,10 @@ function newRow(r,allowSkull){return Array.from({length:rowLen(r)},()=>allowSkul
 
 function startLevel(){
   fitBoard();
-  numColors=Math.min(4+Math.floor((level-1)/2),8,COLORS.length);
+  numColors=Math.min(level<=2?4:level<=6?5:6+Math.floor((level-7)/2),8,COLORS.length);
   active=[...COLORS.keys()].sort(()=>Math.random()-.5).slice(0,numColors);
   par=0;topY=0;roofT=0;danger=0;roofMsg=Math.random()<.2?ROOF_MSGS[Math.floor(Math.random()*ROOF_MSGS.length)]:'';roofFor='';grid=[];falling=[];pops=[];shot=null;
-  const rows=Math.min(4+level,9)+Math.floor((H-600)/RH/3);
+  const rows=Math.min(4+Math.ceil(level/2),9)+Math.floor((H-600)/RH/3);
   for(let r=0;r<rows;r++){grid.push(null);grid[r]=newRow(r,level>=3)}
   shots=0;floats=[];placeRoof();startCount=Math.max(1,grid.reduce((a,row)=>a+row.filter(v=>v!=null).length,0));
   cur=pick();nxt=pick();state='play';hud();
@@ -262,6 +262,7 @@ function fire(){
 }
 function step(){
   if(topY<roofT)topY=Math.min(roofT,topY+Math.max(.4,(roofT-topY)*.12));
+  else if(topY>roofT)topY=Math.max(roofT,topY-Math.max(.4,(topY-roofT)*.08));
   if(!shot)return;
   for(let i=0;i<4;i++){
     shot.x+=shot.vx/4;shot.y+=shot.vy/4;
@@ -309,7 +310,7 @@ function land(){
     pts+=base+xb;
     const cx=drops.reduce((a,d)=>a+d.x,0)/dropped, cy=drops.reduce((a,d)=>a+d.y,0)/dropped;
     addFloat(cx,cy,'+'+(base+xb),dropped>=6?'#ff6fb5':'#5b2a9e',dropped>=6?26:20);
-    if(dropped>=6)addFloat(W/2,H*.48,dropped>=12?'MEGA DROP!':'BIG DROP!','#ff6fb5',34);
+    if(dropped>=6){addFloat(W/2,H*.48,dropped>=12?'MEGA DROP!':'BIG DROP!','#ff6fb5',34);roofT=Math.max(0,roofT-RH*(dropped>=12?1:.5))}
     if(other>=3)addFloat(W/2,H*.48+40,'Sneaky drop bonus +'+xb,'#2e9e4f',22);
   }
   if(cleared&&!dropped)addFloat(sx,sy,'+'+pts,'#5b2a9e',18);
@@ -334,7 +335,7 @@ function dropFloating(){
   return out;
 }
 function afterShot(gain){
-  roofT+=RH*(.17+.015*Math.min(level,10));
+  roofT+=RH*.185*(1+.04*(Math.min(level,12)-1));
   let lowest=0;grid.forEach((row,r)=>{if(row.some(v=>v!=null))lowest=Math.max(lowest,roofT+R+r*RH+R)});
   danger=Math.max(0,Math.min(DMAX,DMAX*(lowest-H*.35)/(DEAD-H*.35)));
   hud();

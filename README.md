@@ -43,8 +43,10 @@ Pops are 10 each. Drops score much more and grow with how many fall at once; dro
 
 ## How a level works
 
-Each level uses a random lineup of up to 8 friends. It starts with 4 and adds one every two levels. Specials (Wildcard, Stone) show up from level 2, and Skull blockers from level 3.
+Each level uses a random lineup of the crew. Difficulty ramps slowly:
 
-## Top scores
-
-Scores go to a shared arcade board in Supabase. The project URL and public key live in `src/config.js`. If Supabase can't be reached, scores save on the player's phone instead.
+- Starting rows: 5 on level 1, one more every 2 levels, up to 9 (level 9).
+- Faces in play: 4 on levels 1-2, 5 on levels 3-6, then one more every 2 levels, up to 8.
+- The roof drops a little after every shot; it gets about 4% faster each level, up to level 12.
+- A big drop (6 or more) pushes the roof back up half a row; a mega drop (12 or more), a full row.
+- Wildcards and Stones show up from level 2, and Skulls (never in the top row) from level 3.
