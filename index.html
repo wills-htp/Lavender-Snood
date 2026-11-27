@@ -45,6 +45,29 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 #hsForm label{font-weight:700;color:#ffe17a}
 .hsrow{display:flex;gap:8px;width:100%}
 #hsName{flex:1;font:inherit;font-size:16px;min-height:48px;padding:0 14px;border-radius:24px;border:3px solid #ffd96a;background:#fff;color:#2d1556}
+.ed{position:fixed;inset:0;z-index:50;background:rgba(30,10,60,.6);display:flex;justify-content:center;align-items:flex-start;overflow:auto;padding:12px}
+.ed[hidden],.ed [hidden]{display:none!important}
+.ed .panel{background:#fbf8ff;color:#2d1556;border-radius:20px;padding:16px;width:min(460px,100%);box-shadow:0 10px 30px rgba(0,0,0,.3)}
+.ed-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.ed h3{margin:0;font-family:Shrikhand,Fredoka,serif;font-weight:400;font-size:24px}
+.ed h4{margin:16px 0 6px;font-size:17px}
+.ed p{margin:8px 0 12px}
+.ed .ghost{background:#eee6ff;color:#2d1556}
+.ed canvas{position:static;inset:auto}
+.ed canvas#ed-pic{width:100%;height:auto;border-radius:12px;display:block;cursor:crosshair;touch-action:manipulation}
+.ed canvas#ed-prev{display:block;margin:0 auto 6px;width:180px;height:180px}
+.ed-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.ed-grid label{display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:600}
+.ed-grid .wide{grid-column:1/-1}
+.ed input[type=text],.ed select{font:inherit;font-size:16px;min-height:44px;border-radius:12px;border:2px solid #c9b6f2;padding:0 10px;background:#fff;color:#2d1556}
+.ed input[type=color]{width:100%;min-height:44px;border:2px solid #c9b6f2;border-radius:12px;padding:2px;background:#fff}
+.ed-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
+.ed .pick{display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;min-height:48px;padding:0 26px;border-radius:24px;background:var(--pink);color:#fff;cursor:pointer}
+.ed-row{display:flex;align-items:center;gap:10px;padding:4px 0}
+.ed-row canvas{width:48px;height:48px}.ed-row span{flex:1}
+.ed-row button{min-height:40px;font-size:14px;padding:0 14px}
+.addfriend{background:rgba(255,255,255,.25);color:#fff;font-size:16px}
+.cast .addfriend{background:var(--pink);margin-top:12px}
 #hsName:focus-visible{outline:3px solid #fff;outline-offset:2px}
 .ov h2{margin:0;font-family:Shrikhand,Fredoka,serif;font-weight:400;font-size:clamp(28px,8vw,40px);line-height:1.1;text-wrap:balance;color:#fff;-webkit-text-stroke:2px #5b2a9e;paint-order:stroke fill;text-shadow:3px 3px 0 var(--pink),6px 6px 0 #8fd9ff}
 body.playing .cast{display:none}
@@ -65,13 +88,34 @@ button:focus-visible{outline:3px solid #fff;outline-offset:3px}
 <div class="cab">
 <div class="danger"><span>Level <b id="lv">1</b></span><span>Score <b id="sc">0</b></span><div class="meter" aria-label="Danger"><i id="dm"></i></div></div>
 <div class="board" id="board"><canvas id="cv"></canvas>
-<div class="ov" id="ov"><h2 id="ovT">Lavender Boys and Friends Play Snood</h2><p id="ovP">Drag to aim, let go to launch. Match 3 or more of the same face to pop them. Anything left hanging falls off.</p><form id="hsForm" hidden><label for="hsName">New top score! Enter your name</label><div class="hsrow"><input id="hsName" maxlength="16" autocomplete="nickname" enterkeyhint="done"><button type="submit">Save</button></div></form><button id="go">Play</button><div class="lb"><h3>Top scores</h3><ol id="lbList"></ol><small id="lbNote"></small></div></div>
+<div class="ov" id="ov"><h2 id="ovT">Lavender Boys and Friends Play Snood</h2><p id="ovP">Drag to aim, let go to launch. Match 3 or more of the same face to pop them. Anything left hanging falls off.</p><form id="hsForm" hidden><label for="hsName">New top score! Enter your name</label><div class="hsrow"><input id="hsName" maxlength="16" autocomplete="nickname" enterkeyhint="done"><button type="submit">Save</button></div></form><button id="go">Play</button><button class="addfriend" type="button">Add a friend</button><div class="lb"><h3>Top scores</h3><ol id="lbList"></ol><small id="lbNote"></small></div></div>
 </div>
 <div class="row"><button class="ghost" id="swap">Swap</button><button class="ghost" id="mus" aria-pressed="true">Music on</button><button class="ghost" id="restart">Restart</button></div>
 </div>
-<section class="cast"><h3>The pieces</h3><div class="pieces" id="cast"></div>
+<section class="cast"><h3>The pieces</h3><div class="pieces" id="cast"></div><button class="addfriend" type="button">Add a friend</button>
 <p class="note">Each level picks a random lineup, up to 8 faces at once. Specials join from level 2.</p></section>
 </div>
+<div class="ed" id="ed" hidden><div class="panel">
+<div class="ed-head"><h3>Add a friend</h3><button type="button" class="ghost" id="ed-close">Close</button></div>
+<div id="ed-photo"><p>Pick a clear, front-facing photo of your friend. It's only used on this phone to make the cartoon, then thrown away.</p><label class="pick">Choose photo<input type="file" id="ed-file" accept="image/*" hidden></label></div>
+<div id="ed-tap" hidden><p id="ed-taphint" style="font-weight:700"></p><canvas id="ed-pic"></canvas><div class="ed-btns"><button type="button" class="ghost" id="ed-redo">Start taps over</button></div></div>
+<div id="ed-tune" hidden><canvas id="ed-prev" width="360" height="360"></canvas>
+<div class="ed-grid">
+<label class="wide">Name<input type="text" id="ed-name" maxlength="16" placeholder="Friend's name"></label>
+<label>Face color<input type="color" id="ed-face"></label>
+<label>Trim color<input type="color" id="ed-accent"></label>
+<label class="wide">Face shape<select id="ed-shape"><option value="oval">Long oval</option><option value="thin">Thin</option><option value="egg">Egg</option><option value="pill">Pill</option><option value="squircle">Wide square</option><option value="chisel">Chiseled</option><option value="octagon">Octagon</option><option value="shield">Shield</option><option value="bell">Bell</option><option value="blob">Round</option></select></label>
+<label>Hair<select id="ed-hair"><option value="short">Short</option><option value="crop">Buzz</option><option value="side">Side part</option><option value="curly">Curly</option><option value="wavy">Wavy</option><option value="medwavy">Medium wavy</option><option value="long">Long</option><option value="tousled">Messy</option><option value="bald">Bald</option></select></label>
+<label>Hair color<input type="color" id="ed-hc"></label>
+<label>Beard<select id="ed-facial"><option value="">None</option><option value="stubble">Stubble</option><option value="mustache">Mustache</option><option value="goatee">Goatee</option><option value="beard">Beard</option><option value="bigbeard">Big beard</option></select></label>
+<label>Beard color<input type="color" id="ed-fc"></label>
+<label class="wide">Glasses<select id="ed-glasses"><option value="">None</option><option value="round">Round</option><option value="rect">Rectangle</option><option value="thick">Thick frames</option><option value="sun">Sunglasses</option></select></label>
+<label>Hat<select id="ed-hat"><option value="">No hat</option><option value="cap">Baseball cap</option><option value="knit">Knit hat</option><option value="beret">Beret</option></select></label>
+<label id="ed-hatcrow">Hat color<input type="color" id="ed-hatc"></label>
+</div>
+<div class="ed-btns"><button type="button" class="ghost" id="ed-back">Different photo</button><button type="button" id="ed-save">Save friend</button></div></div>
+<div id="ed-listwrap" hidden><h4>Friends you've added</h4><div id="ed-list"></div></div>
+</div></div>
 <script>
 {
 const FACES=[];
@@ -176,6 +220,12 @@ function drawToon(g,x,y,size,t){
   if(t.hair==='bowl'){g.beginPath();g.moveTo(-42,-4);g.quadraticCurveTo(-48,-56,0,-54);g.quadraticCurveTo(48,-56,42,-4);g.lineTo(34,-6);g.quadraticCurveTo(28,-22,14,-22);g.lineTo(8,-16);g.lineTo(0,-23);g.lineTo(-10,-17);g.lineTo(-18,-23);g.quadraticCurveTo(-30,-22,-34,-6);g.closePath();g.fill();g.stroke()}
   g.restore();g.fillStyle=t.hc;g.strokeStyle=INK;g.lineWidth=3;
   if(t.hat==='beret'){g.save();g.fillStyle=t.hatc;g.beginPath();g.ellipse(4,-40,52,20,-.18,0,7);g.fill();g.stroke();g.fillStyle=shade(t.hatc,-.2);g.beginPath();g.ellipse(2,-30,38,6,-.18,0,Math.PI);g.fill();g.fillStyle=t.hatc;g.beginPath();g.moveTo(8,-58);g.quadraticCurveTo(12,-70,18,-66);g.lineTo(14,-58);g.closePath();g.fill();g.stroke();g.fillStyle='rgba(255,255,255,.3)';g.beginPath();g.ellipse(-14,-48,14,5,-.2,0,7);g.fill();g.restore()}
+  else if(t.hat==='knit'){g.save();if(t.shape==='thin')g.scale(.8,1);g.fillStyle=t.hatc;g.strokeStyle=INK;g.lineWidth=3;
+    g.beginPath();g.moveTo(-42,-20);g.bezierCurveTo(-44,-70,44,-70,42,-20);g.closePath();g.fill();g.stroke();
+    g.strokeStyle=shade(t.hatc,-.22);g.lineWidth=2.5;for(let x=-30;x<=30;x+=10){g.beginPath();g.moveTo(x*.9,-56+Math.abs(x)*.25);g.quadraticCurveTo(x,-40,x*1.05,-26);g.stroke()}
+    g.fillStyle=shade(t.hatc,-.12);g.strokeStyle=INK;g.lineWidth=3;g.beginPath();g.roundRect(-46,-30,92,16,7);g.fill();g.stroke();
+    g.strokeStyle=shade(t.hatc,-.3);g.lineWidth=2;for(let x=-40;x<=40;x+=6){g.beginPath();g.moveTo(x,-28);g.lineTo(x,-16);g.stroke()}
+    g.fillStyle=t.pomc||shade(t.hatc,.35);g.strokeStyle=INK;g.lineWidth=3;g.beginPath();g.arc(0,-66,9,0,7);g.fill();g.stroke();g.restore()}
   else if(t.hat){g.save();if(t.shape==='thin')g.scale(.8,1);g.fillStyle=t.hatc;g.beginPath();g.moveTo(-40,-22);g.quadraticCurveTo(-40,-60,0,-60);g.quadraticCurveTo(40,-60,40,-22);g.closePath();g.fill();g.stroke();
     g.fillStyle=t.brimc||shade(t.hatc,.15);g.beginPath();
     if(t.hat==='beret'){}
@@ -686,6 +736,120 @@ $('swap').addEventListener('click',swapPieces);
 $('mus').addEventListener('click',()=>{musicOn=!musicOn;lsSet('lbpop-music',musicOn);musLabel();if(musicOn)Music.start();else Music.stop()});
 document.addEventListener('pointerdown',()=>{if(musicOn&&document.body.classList.contains('playing')&&!Music.on)Music.start()},{passive:true});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)Music.stop();else if(musicOn&&document.body.classList.contains('playing'))Music.start()});
+// "Add a friend": build a cartoon from a photo with plain measurement code (no AI).
+// The player taps both eyes and the chin; we sample colors and proportions from there.
+const FR_KEY='lbpop-friends';
+const frLoad=()=>{try{const v=JSON.parse(localStorage.getItem(FR_KEY)||'[]');return Array.isArray(v)?v:[]}catch(e){return []}};
+const frSave=a=>{try{localStorage.setItem(FR_KEY,JSON.stringify(a))}catch(e){}};
+const HEX=/^#[0-9a-f]{6}$/i;
+function frClean(f){
+  // saved data is untrusted: keep only known fields and values
+  const pick=(v,ok,d)=>ok.includes(v)?v:d,col=(v,d)=>HEX.test(v||'')?v:d;
+  return {name:String(f.name||'Friend').slice(0,16),color:col(f.face,'#ff6fb5'),face:col(f.face,'#ff6fb5'),accent:col(f.accent,'#ffffff'),
+    shape:pick(f.shape,['pill','octagon','egg','shield','squircle','bell','oval','thin','chisel','rect','blob'],'egg'),
+    hair:pick(f.hair,['short','long','curly','bald','buzz','crop','side','wavy','medwavy','tousled'],'short'),hc:col(f.hc,'#3a2a1e'),
+    facial:pick(f.facial,['','stubble','mustache','goatee','beard','bigbeard'],''),fc:col(f.fc,'#3a2a1e'),
+    glasses:pick(f.glasses,['','round','rect','thick','sun'],''),hat:pick(f.hat,['','cap','knit','beret'],''),hatc:col(f.hatc,'#1d1d22'),
+    mouth:pick(f.mouth,['grin','smile','toothy','flat','smirk','open'],'grin'),eyes:pick(f.eyes,['happy','normal','calm','wide','squint'],'happy'),
+    browW:5,brow:col(f.brow,'#2a1f18'),custom:true}
+}
+function frAdd(f){const t=frClean(f);TOONS.push(t);COLORS.push(t.color);NAMES.push(t.name)}
+frLoad().forEach(frAdd);
+
+const ED={img:null,pts:[],px:null,cw:0,ch:0,rec:null};
+function frOpen(){$('ed').hidden=false;frStep('photo');frList()}
+function frClose(){$('ed').hidden=true}
+function frStep(s){['photo','tap','tune'].forEach(k=>$('ed-'+k).hidden=k!==s)}
+function frList(){
+  const box=$('ed-list');box.textContent='';
+  frLoad().forEach((f,i)=>{const row=document.createElement('div');row.className='ed-row';
+    const c=document.createElement('canvas');c.width=c.height=80;drawToon(c.getContext('2d'),40,42,62,frClean(f));
+    const n=document.createElement('span');n.textContent=f.name;
+    const b=document.createElement('button');b.type='button';b.className='ghost';b.textContent='Remove';
+    b.addEventListener('click',()=>{const a=frLoad();a.splice(i,1);frSave(a);location.reload()});
+    row.append(c,n,b);box.appendChild(row)});
+  $('ed-listwrap').hidden=!frLoad().length;
+}
+$('ed-file').addEventListener('change',e=>{
+  const f=e.target.files&&e.target.files[0];if(!f)return;
+  const url=URL.createObjectURL(f),im=new Image();
+  im.onload=()=>{const sc=Math.min(1,640/Math.max(im.width,im.height));ED.cw=Math.round(im.width*sc);ED.ch=Math.round(im.height*sc);
+    const c=$('ed-pic');c.width=ED.cw;c.height=ED.ch;const g=c.getContext('2d');g.drawImage(im,0,0,ED.cw,ED.ch);
+    ED.px=g.getImageData(0,0,ED.cw,ED.ch);ED.img=im;ED.pts=[];URL.revokeObjectURL(url);frStep('tap');frTapHint()};
+  im.src=url;e.target.value='';
+});
+const TAPS=['Tap their left eye','Tap their right eye','Tap the bottom of their chin'];
+function frTapHint(){$('ed-taphint').textContent=TAPS[ED.pts.length]||'';frDrawPhoto()}
+function frDrawPhoto(){const c=$('ed-pic'),g=c.getContext('2d');g.putImageData(ED.px,0,0);
+  ED.pts.forEach(p=>{g.beginPath();g.arc(p[0],p[1],Math.max(5,ED.cw/70),0,7);g.fillStyle='#ff6fb5';g.fill();g.lineWidth=2;g.strokeStyle='#fff';g.stroke()})}
+$('ed-pic').addEventListener('click',e=>{
+  if(ED.pts.length>=3)return;const b=e.target.getBoundingClientRect();
+  ED.pts.push([(e.clientX-b.left)*ED.cw/b.width,(e.clientY-b.top)*ED.ch/b.height]);frTapHint();
+  if(ED.pts.length===3){ED.rec=frMeasure();frFill(ED.rec);frStep('tune');frPreview()}
+});
+$('ed-redo').addEventListener('click',()=>{ED.pts=[];frTapHint()});
+
+function frSample(x,y,r){
+  const d=ED.px.data;let n=0,R=0,G=0,B=0;r=Math.max(2,Math.round(r));
+  for(let j=-r;j<=r;j+=2)for(let i=-r;i<=r;i+=2){const X=Math.round(x+i),Y=Math.round(y+j);if(X<0||Y<0||X>=ED.cw||Y>=ED.ch)continue;const o=(Y*ED.cw+X)*4;R+=d[o];G+=d[o+1];B+=d[o+2];n++}
+  return n?[R/n,G/n,B/n]:null;
+}
+function frEdges(x,y,r){
+  const d=ED.px.data,L=(X,Y)=>{const o=(Y*ED.cw+X)*4;return d[o]*.3+d[o+1]*.59+d[o+2]*.11};let s=0,n=0;r=Math.round(r);
+  for(let j=-r;j<=r;j+=2)for(let i=-r;i<=r;i+=2){const X=Math.round(x+i),Y=Math.round(y+j);if(X<1||Y<1||X>=ED.cw-1||Y>=ED.ch-1)continue;s+=Math.abs(L(X+1,Y)-L(X-1,Y))+Math.abs(L(X,Y+1)-L(X,Y-1));n++}
+  return n?s/n:0;
+}
+const lum=c=>c?c[0]*.3+c[1]*.59+c[2]*.11:128;
+const cdist=(a,b)=>a&&b?Math.hypot(a[0]-b[0],a[1]-b[1],a[2]-b[2]):999;
+const toHex=c=>'#'+c.map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join('');
+function vivid(c){const m=Math.max(...c),n=Math.min(...c);if(m-n<25)return c;const k=255/Math.max(1,m);return c.map(v=>n+(v-n)*1.25*Math.min(1.4,k))}
+
+function frMeasure(){
+  const [L,Rt,C]=ED.pts,d=Math.max(8,Math.hypot(Rt[0]-L[0],Rt[1]-L[1])),M=[(L[0]+Rt[0])/2,(L[1]+Rt[1])/2];
+  let ux=C[0]-M[0],uy=C[1]-M[1];const ul=Math.hypot(ux,uy)||1;ux/=ul;uy/=ul;const vx=-uy,vy=ux;
+  const at=(a,b)=>[M[0]+ux*a*d+vx*b*d,M[1]+uy*a*d+vy*b*d];
+  const S=(a,b,r=.15)=>{const p=at(a,b);return frSample(p[0],p[1],r*d)};
+  const len=ul/d,r={};
+  const fh=S(-.5,0,.12),cb=S(.35,.55,.1)||S(.35,-.55,.1),skin=fh&&cb?fh.map((v,i)=>(v+cb[i])/2):(fh||cb),hairTop=S(-1.3,0,.18),hairSide=S(-.6,1.2)||S(-.6,-1.2);
+  const chinP=at(len*.9,0),jawP=at(len*.78,.62),jawQ=at(len*.78,-.62),lipP=at(len*.5,0);
+  const low=frSample(chinP[0],chinP[1],.16*d),jaw=frSample(jawP[0],jawP[1],.12*d)||frSample(jawQ[0],jawQ[1],.12*d),stache=frSample(lipP[0],lipP[1],.08*d);
+  const shirt=S(len+1.5,0,.3)||S(len+1.1,0,.25);
+  const skE=Math.min(frEdges(...at(.35,.55),.1*d)||99,frEdges(...at(-.5,0),.12*d)||99)||1,chE=frEdges(chinP[0],chinP[1],.16*d),jwE=Math.max(frEdges(jawP[0],jawP[1],.12*d),frEdges(jawQ[0],jawQ[1],.12*d));
+  r.shape=len>2.4?'thin':len>2.2?'oval':len>2.0?'egg':len>1.85?'pill':'squircle';
+  const bald=!(hairTop&&(cdist(hairTop,fh||skin)>50||lum(hairTop)<lum(fh||skin)-40));
+  const hc=bald?(hairSide&&cdist(hairSide,skin)>55?hairSide:[110,104,98]):(hairTop||[58,42,30]);
+  r.hc=toHex(hc);
+  const longHair=!bald&&cdist(S(.95,1.35),hc)<45&&cdist(S(.95,1.35),skin)>40;
+  r.hair=bald?'bald':longHair?'long':'short';
+  const chinB=cdist(low,skin)>50||chE>skE*1.7,jawB=cdist(jaw,skin)>50||jwE>skE*1.7,stB=cdist(stache,skin)>55&&lum(stache)<lum(skin);
+  const strong=cdist(low,skin)>90||chE>skE*2.6;
+  r.facial=chinB&&jawB?(strong&&len>0?'beard':'stubble'):chinB?'goatee':stB?'mustache':'';
+  if(r.facial==='stubble'&&cdist(low,skin)>70)r.facial='beard';
+  const bs=[low,jaw].filter(Boolean),bc=bs.length?bs[0].map((v,i)=>bs.reduce((t,c)=>t+c[i],0)/bs.length):null;r.fc=toHex(r.facial?(bc||hc):hc);
+  ED.dbg={len:+len.toFixed(2),skin:skin&&toHex(skin),hairTop:hairTop&&toHex(hairTop),low:low&&toHex(low),cd:Math.round(cdist(low,skin)),chE:Math.round(chE),skE:Math.round(skE),jwE:Math.round(jwE),jcd:Math.round(cdist(jaw,skin))};
+  const eyeE=(frEdges(L[0],L[1]-d*.05,d*.32)+frEdges(Rt[0],Rt[1]-d*.05,d*.32))/2,cheekE=skE;
+  r.glasses=eyeE>cheekE*2.3&&eyeE>22?'round':'';
+  let face=shirt&&cdist(shirt,skin)>35?vivid(shirt):[255,111,181];
+  if(lum(face)<35)face=[60,60,70];
+  r.face=toHex(face);r.accent=lum(face)>150?'#2b2b30':'#ffffff';
+  r.brow=bald?r.fc:r.hc;r.hat='';r.hatc='#1d1d22';r.mouth='grin';r.eyes='happy';r.name='';
+  return r;
+}
+function frFill(r){
+  $('ed-name').value=r.name||'';$('ed-face').value=r.face;$('ed-accent').value=r.accent;$('ed-shape').value=r.shape;
+  $('ed-hair').value=r.hair;$('ed-hc').value=r.hc;$('ed-facial').value=r.facial;$('ed-fc').value=r.fc;$('ed-glasses').value=r.glasses;
+  $('ed-hat').value=r.hat;$('ed-hatc').value=r.hatc;$('ed-hatcrow').hidden=!r.hat;
+}
+function frRead(){return {name:$('ed-name').value.trim()||'Friend',face:$('ed-face').value,accent:$('ed-accent').value,shape:$('ed-shape').value,
+  hair:$('ed-hair').value,hc:$('ed-hc').value,facial:$('ed-facial').value,fc:$('ed-fc').value,glasses:$('ed-glasses').value,
+  hat:$('ed-hat').value,hatc:$('ed-hatc').value,mouth:'grin',eyes:'happy',brow:$('ed-hair').value==='bald'?$('ed-fc').value:$('ed-hc').value}}
+function frPreview(){const c=$('ed-prev'),g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);drawToon(g,c.width/2,c.height/2+6,c.width*.62,frClean(frRead()))}
+document.querySelectorAll('#ed-tune input,#ed-tune select').forEach(el=>el.addEventListener('input',()=>{$('ed-hatcrow').hidden=!$('ed-hat').value;frPreview()}));
+$('ed-save').addEventListener('click',()=>{const f=frRead();const a=frLoad();a.push(f);frSave(a);frAdd(f);for(const k in sprites)delete sprites[k];cast();frList();frStep('photo')});
+$('ed-back').addEventListener('click',()=>frStep('photo'));
+$('ed-close').addEventListener('click',frClose);
+document.querySelectorAll('.addfriend').forEach(b=>b.addEventListener('click',frOpen));
+
 renderLB();
 level=1;score=0;grid=null;loop();
 }

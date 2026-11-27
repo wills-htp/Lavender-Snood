@@ -45,6 +45,29 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 #hsForm label{font-weight:700;color:#ffe17a}
 .hsrow{display:flex;gap:8px;width:100%}
 #hsName{flex:1;font:inherit;font-size:16px;min-height:48px;padding:0 14px;border-radius:24px;border:3px solid #ffd96a;background:#fff;color:#2d1556}
+.ed{position:fixed;inset:0;z-index:50;background:rgba(30,10,60,.6);display:flex;justify-content:center;align-items:flex-start;overflow:auto;padding:12px}
+.ed[hidden],.ed [hidden]{display:none!important}
+.ed .panel{background:#fbf8ff;color:#2d1556;border-radius:20px;padding:16px;width:min(460px,100%);box-shadow:0 10px 30px rgba(0,0,0,.3)}
+.ed-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.ed h3{margin:0;font-family:Shrikhand,Fredoka,serif;font-weight:400;font-size:24px}
+.ed h4{margin:16px 0 6px;font-size:17px}
+.ed p{margin:8px 0 12px}
+.ed .ghost{background:#eee6ff;color:#2d1556}
+.ed canvas{position:static;inset:auto}
+.ed canvas#ed-pic{width:100%;height:auto;border-radius:12px;display:block;cursor:crosshair;touch-action:manipulation}
+.ed canvas#ed-prev{display:block;margin:0 auto 6px;width:180px;height:180px}
+.ed-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.ed-grid label{display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:600}
+.ed-grid .wide{grid-column:1/-1}
+.ed input[type=text],.ed select{font:inherit;font-size:16px;min-height:44px;border-radius:12px;border:2px solid #c9b6f2;padding:0 10px;background:#fff;color:#2d1556}
+.ed input[type=color]{width:100%;min-height:44px;border:2px solid #c9b6f2;border-radius:12px;padding:2px;background:#fff}
+.ed-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
+.ed .pick{display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;min-height:48px;padding:0 26px;border-radius:24px;background:var(--pink);color:#fff;cursor:pointer}
+.ed-row{display:flex;align-items:center;gap:10px;padding:4px 0}
+.ed-row canvas{width:48px;height:48px}.ed-row span{flex:1}
+.ed-row button{min-height:40px;font-size:14px;padding:0 14px}
+.addfriend{background:rgba(255,255,255,.25);color:#fff;font-size:16px}
+.cast .addfriend{background:var(--pink);margin-top:12px}
 #hsName:focus-visible{outline:3px solid #fff;outline-offset:2px}
 .ov h2{margin:0;font-family:Shrikhand,Fredoka,serif;font-weight:400;font-size:clamp(28px,8vw,40px);line-height:1.1;text-wrap:balance;color:#fff;-webkit-text-stroke:2px #5b2a9e;paint-order:stroke fill;text-shadow:3px 3px 0 var(--pink),6px 6px 0 #8fd9ff}
 body.playing .cast{display:none}
@@ -65,13 +88,34 @@ button:focus-visible{outline:3px solid #fff;outline-offset:3px}
 <div class="cab">
 <div class="danger"><span>Level <b id="lv">1</b></span><span>Score <b id="sc">0</b></span><div class="meter" aria-label="Danger"><i id="dm"></i></div></div>
 <div class="board" id="board"><canvas id="cv"></canvas>
-<div class="ov" id="ov"><h2 id="ovT">Lavender Boys and Friends Play Snood</h2><p id="ovP">Drag to aim, let go to launch. Match 3 or more of the same face to pop them. Anything left hanging falls off.</p><form id="hsForm" hidden><label for="hsName">New top score! Enter your name</label><div class="hsrow"><input id="hsName" maxlength="16" autocomplete="nickname" enterkeyhint="done"><button type="submit">Save</button></div></form><button id="go">Play</button><div class="lb"><h3>Top scores</h3><ol id="lbList"></ol><small id="lbNote"></small></div></div>
+<div class="ov" id="ov"><h2 id="ovT">Lavender Boys and Friends Play Snood</h2><p id="ovP">Drag to aim, let go to launch. Match 3 or more of the same face to pop them. Anything left hanging falls off.</p><form id="hsForm" hidden><label for="hsName">New top score! Enter your name</label><div class="hsrow"><input id="hsName" maxlength="16" autocomplete="nickname" enterkeyhint="done"><button type="submit">Save</button></div></form><button id="go">Play</button><button class="addfriend" type="button">Add a friend</button><div class="lb"><h3>Top scores</h3><ol id="lbList"></ol><small id="lbNote"></small></div></div>
 </div>
 <div class="row"><button class="ghost" id="swap">Swap</button><button class="ghost" id="mus" aria-pressed="true">Music on</button><button class="ghost" id="restart">Restart</button></div>
 </div>
-<section class="cast"><h3>The pieces</h3><div class="pieces" id="cast"></div>
+<section class="cast"><h3>The pieces</h3><div class="pieces" id="cast"></div><button class="addfriend" type="button">Add a friend</button>
 <p class="note">Each level picks a random lineup, up to 8 faces at once. Specials join from level 2.</p></section>
 </div>
+<div class="ed" id="ed" hidden><div class="panel">
+<div class="ed-head"><h3>Add a friend</h3><button type="button" class="ghost" id="ed-close">Close</button></div>
+<div id="ed-photo"><p>Pick a clear, front-facing photo of your friend. It's only used on this phone to make the cartoon, then thrown away.</p><label class="pick">Choose photo<input type="file" id="ed-file" accept="image/*" hidden></label></div>
+<div id="ed-tap" hidden><p id="ed-taphint" style="font-weight:700"></p><canvas id="ed-pic"></canvas><div class="ed-btns"><button type="button" class="ghost" id="ed-redo">Start taps over</button></div></div>
+<div id="ed-tune" hidden><canvas id="ed-prev" width="360" height="360"></canvas>
+<div class="ed-grid">
+<label class="wide">Name<input type="text" id="ed-name" maxlength="16" placeholder="Friend's name"></label>
+<label>Face color<input type="color" id="ed-face"></label>
+<label>Trim color<input type="color" id="ed-accent"></label>
+<label class="wide">Face shape<select id="ed-shape"><option value="oval">Long oval</option><option value="thin">Thin</option><option value="egg">Egg</option><option value="pill">Pill</option><option value="squircle">Wide square</option><option value="chisel">Chiseled</option><option value="octagon">Octagon</option><option value="shield">Shield</option><option value="bell">Bell</option><option value="blob">Round</option></select></label>
+<label>Hair<select id="ed-hair"><option value="short">Short</option><option value="crop">Buzz</option><option value="side">Side part</option><option value="curly">Curly</option><option value="wavy">Wavy</option><option value="medwavy">Medium wavy</option><option value="long">Long</option><option value="tousled">Messy</option><option value="bald">Bald</option></select></label>
+<label>Hair color<input type="color" id="ed-hc"></label>
+<label>Beard<select id="ed-facial"><option value="">None</option><option value="stubble">Stubble</option><option value="mustache">Mustache</option><option value="goatee">Goatee</option><option value="beard">Beard</option><option value="bigbeard">Big beard</option></select></label>
+<label>Beard color<input type="color" id="ed-fc"></label>
+<label class="wide">Glasses<select id="ed-glasses"><option value="">None</option><option value="round">Round</option><option value="rect">Rectangle</option><option value="thick">Thick frames</option><option value="sun">Sunglasses</option></select></label>
+<label>Hat<select id="ed-hat"><option value="">No hat</option><option value="cap">Baseball cap</option><option value="knit">Knit hat</option><option value="beret">Beret</option></select></label>
+<label id="ed-hatcrow">Hat color<input type="color" id="ed-hatc"></label>
+</div>
+<div class="ed-btns"><button type="button" class="ghost" id="ed-back">Different photo</button><button type="button" id="ed-save">Save friend</button></div></div>
+<div id="ed-listwrap" hidden><h4>Friends you've added</h4><div id="ed-list"></div></div>
+</div></div>
 <script>
 {
 const FACES=[];
@@ -435,6 +479,7 @@ $('swap').addEventListener('click',swapPieces);
 $('mus').addEventListener('click',()=>{musicOn=!musicOn;lsSet('lbpop-music',musicOn);musLabel();if(musicOn)Music.start();else Music.stop()});
 document.addEventListener('pointerdown',()=>{if(musicOn&&document.body.classList.contains('playing')&&!Music.on)Music.start()},{passive:true});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)Music.stop();else if(musicOn&&document.body.classList.contains('playing'))Music.start()});
+__FRIENDS__
 renderLB();
 level=1;score=0;grid=null;loop();
 }

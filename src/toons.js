@@ -99,6 +99,12 @@ function drawToon(g,x,y,size,t){
   if(t.hair==='bowl'){g.beginPath();g.moveTo(-42,-4);g.quadraticCurveTo(-48,-56,0,-54);g.quadraticCurveTo(48,-56,42,-4);g.lineTo(34,-6);g.quadraticCurveTo(28,-22,14,-22);g.lineTo(8,-16);g.lineTo(0,-23);g.lineTo(-10,-17);g.lineTo(-18,-23);g.quadraticCurveTo(-30,-22,-34,-6);g.closePath();g.fill();g.stroke()}
   g.restore();g.fillStyle=t.hc;g.strokeStyle=INK;g.lineWidth=3;
   if(t.hat==='beret'){g.save();g.fillStyle=t.hatc;g.beginPath();g.ellipse(4,-40,52,20,-.18,0,7);g.fill();g.stroke();g.fillStyle=shade(t.hatc,-.2);g.beginPath();g.ellipse(2,-30,38,6,-.18,0,Math.PI);g.fill();g.fillStyle=t.hatc;g.beginPath();g.moveTo(8,-58);g.quadraticCurveTo(12,-70,18,-66);g.lineTo(14,-58);g.closePath();g.fill();g.stroke();g.fillStyle='rgba(255,255,255,.3)';g.beginPath();g.ellipse(-14,-48,14,5,-.2,0,7);g.fill();g.restore()}
+  else if(t.hat==='knit'){g.save();if(t.shape==='thin')g.scale(.8,1);g.fillStyle=t.hatc;g.strokeStyle=INK;g.lineWidth=3;
+    g.beginPath();g.moveTo(-42,-20);g.bezierCurveTo(-44,-70,44,-70,42,-20);g.closePath();g.fill();g.stroke();
+    g.strokeStyle=shade(t.hatc,-.22);g.lineWidth=2.5;for(let x=-30;x<=30;x+=10){g.beginPath();g.moveTo(x*.9,-56+Math.abs(x)*.25);g.quadraticCurveTo(x,-40,x*1.05,-26);g.stroke()}
+    g.fillStyle=shade(t.hatc,-.12);g.strokeStyle=INK;g.lineWidth=3;g.beginPath();g.roundRect(-46,-30,92,16,7);g.fill();g.stroke();
+    g.strokeStyle=shade(t.hatc,-.3);g.lineWidth=2;for(let x=-40;x<=40;x+=6){g.beginPath();g.moveTo(x,-28);g.lineTo(x,-16);g.stroke()}
+    g.fillStyle=t.pomc||shade(t.hatc,.35);g.strokeStyle=INK;g.lineWidth=3;g.beginPath();g.arc(0,-66,9,0,7);g.fill();g.stroke();g.restore()}
   else if(t.hat){g.save();if(t.shape==='thin')g.scale(.8,1);g.fillStyle=t.hatc;g.beginPath();g.moveTo(-40,-22);g.quadraticCurveTo(-40,-60,0,-60);g.quadraticCurveTo(40,-60,40,-22);g.closePath();g.fill();g.stroke();
     g.fillStyle=t.brimc||shade(t.hatc,.15);g.beginPath();
     if(t.hat==='beret'){}

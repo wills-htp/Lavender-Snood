@@ -10,6 +10,7 @@ The game is a lavender, psychedelic bubble shooter where the pieces are cartoon 
 | `index.html` | The playable game. It's built, so don't edit it by hand. |
 | `src/toons.js` | The cartoon crew. Each friend is one line in the `TOONS` list. |
 | `src/game.tpl.html` | Game logic, layout and styling. |
+| `src/friends.js` | The "Add a friend" screen: makes a cartoon from a photo by measuring it (no AI). |
 | `src/music.js` | The soundtrack: original mellow minimal techno, synthesized live in the browser. |
 | `build.py` | Rebuilds `index.html` from the `src` files. |
 | `cast.html` | Preview sheet that shows every cartoon at a large size. |
@@ -28,7 +29,7 @@ Add a line to `TOONS` in `src/toons.js`:
 |---|---|
 | `shape` | pill, octagon, egg, shield, squircle, bell, scallop, oval, thin, chisel, rect, blob |
 | `hair` | curly, swept, crop, shag, wisps, tousled, blondtop, short, side, wavy, medwavy, longwavy, long, messy, bowl, buzz, bald, fringe |
-| `hat` | cap, flat, beret (with `hatc` for the hat color, `brimc` for a contrasting brim) |
+| `hat` | cap, flat, knit, beret (with `hatc` for the hat color, `brimc` for a contrasting brim) |
 | `glasses` | round, rect, thick, sun |
 | `facial` | stubble, mustache, goatee, beard, bigbeard (with `fc` for the color) |
 | `mouth` | flat, smile, grin, toothy, open, talk, oh, smirk, tongue |
