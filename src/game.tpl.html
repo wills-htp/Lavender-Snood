@@ -187,7 +187,6 @@ function blob(g,x,y,fill){
 function shine(g,x,y){g.beginPath();g.ellipse(x-6,y-9,6,3.5,-.5,0,7);g.fillStyle='rgba(255,255,255,.55)';g.fill()}
 function drawPiece(g,x,y,k){
   if(k==='G'){
-    const gl=g.createRadialGradient(x,y,R*.4,x,y,R*1.25);gl.addColorStop(0,'rgba(255,240,140,.95)');gl.addColorStop(1,'rgba(255,240,140,0)');g.fillStyle=gl;g.beginPath();g.arc(x,y,R*1.25,0,7);g.fill();
     drawToon(g,x,y,R*1.95,GILLES);
     return;
   }
@@ -464,7 +463,7 @@ function drawRoofMsg(){
 
 const ROOF_MSGS=['Deleuze would say\u2026','Let\u2019s Go Celtics','Will Rules','Techno','Tolstoy','Let\u2019s launch over it','I don\u2019t even have Facebook'];
 function swapPieces(){if(state==='play'&&!shot&&cur!=null&&nxt!=null){[cur,nxt]=[nxt,cur];curVer++}}
-function put(k,x,y,s=1){const sp=sprite(k);ctx.drawImage(sp,x-R*1.6*s,y-R*1.6*s,R*3.2*s,R*3.2*s)}
+function put(k,x,y,s=1){if(k==='G'){GILLES.phase=RM?null:(performance.now()/1600)%1;ctx.save();ctx.translate(x,y);ctx.scale(s,s);drawPiece(ctx,0,0,'G');ctx.restore();return}const sp=sprite(k);ctx.drawImage(sp,x-R*1.6*s,y-R*1.6*s,R*3.2*s,R*3.2*s)}
 function loop(){step();draw();requestAnimationFrame(loop)}
 
 const board=$('board');
