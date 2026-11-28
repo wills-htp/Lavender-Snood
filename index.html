@@ -160,7 +160,7 @@ const TOONS=[
  {name:'Mike',color:'#c3cad2',face:'#c3cad2',accent:'#e5b627',pattern:'metal',shape:'chisel',hair:'blondtop',hc:'#f4dc84',glasses:'thick',mouth:'smile',eyes:'normal',browW:5,brow:'#a8844a'},
  {name:'Matt',color:'#ffd34d',face:'#ffd34d',accent:'#ffffff',pattern:'rainbow',shape:'egg',hair:'short',hc:'#2a1d14',glasses:'sun',rainbow:true,facial:'beard',fc:'#2a1d14',mouth:'open',eyes:'normal',browW:5,brow:'#2a1d14'},
  {name:'Karthik',color:'#6a2fb0',face:'#6a2fb0',accent:'#fdb927',shape:'oval',hat:'cap',hatc:'#552583',brimc:'#fdb927',hatband:true,hair:'long',hc:'#1c1714',facial:'bigbeard',beardLen:84,streak:'rgba(70,58,50,.9)',fc:'#221c18',mouth:'oh',eyes:'wide',browW:6,brow:'#1c1714',nose:1.4},
- {name:'Holmes',color:'#f5d31f',face:'#f5d31f',earc:'#f5d31f',accent:'#2e9e4f',shape:'octagon',hat:'cap',hatc:'#a3214a',hair:'side',hc:'#3a3330',facial:'beard',fc:'#f4f2ec',streak:'rgba(160,155,150,.85)',mouth:'open',eyes:'squint',browW:5,brow:'#5a524c'},
+ {name:'Holmes',color:'#ff6fb5',face:'#ff6fb5',accent:'rainbow',shape:'octagon',hat:'cap',hatc:'#a3214a',hair:'side',hc:'#3a3330',facial:'beard',fc:'#f4f2ec',streak:'rgba(160,155,150,.85)',mouth:'open',eyes:'squint',browW:5,brow:'#5a524c'},
  {name:'Jon',color:'#c3cad2',face:'#c3cad2',accent:'#2f6fe0',pattern:'metal',shape:'squircle',hair:'longwavy',hc:'#2b211b',glasses:'rect',glassc:'#ff4fa3',lens:'rgba(255,214,70,.42)',facial:'beard',beardLen:68,fc:'#7d766f',mouth:'grin',eyes:'happy',browW:5,brow:'#2b211b'},
  {name:'Andy',color:'#e8453c',face:'#e8453c',accent:'#1a2a5e',shape:'shield',hair:'shag',hc:'#b0532e',facial:'stubble',fc:'#8a6a4a',mouth:'toothy',eyes:'happy',browW:5,brow:'#9a4a2a'},
  {name:'Garrett',color:'#e5b627',face:'#e5b627',accent:'#2b2b30',shape:'squircle',hat:'cap',hatc:'#18181c',facial:'goatee',fc:'#9a948c',mouth:'toothy',cig:true,eyes:'happy',browW:5,brow:'#1a1614'},
@@ -190,7 +190,8 @@ function shade(hex,f){const n=parseInt(hex.slice(1),16),c=[n>>16,n>>8&255,n&255]
 function drawToon(g,x,y,size,t){
   const s=size/100;g.save();g.translate(x,y);g.scale(s,s);
   const INK='#14100c';g.lineJoin='round';g.lineCap='round';
-  const base=t.face||t.color,acc=t.accent;
+  const base=t.face||t.color;let acc=t.accent;
+  if(acc==='rainbow'){const rg=g.createLinearGradient(-50,-50,50,50);['#ff4d6d','#ff9f1c','#ffe14d','#4dd97a','#4db8ff','#9b6bff'].forEach((c,i)=>rg.addColorStop(i/5,c));acc=rg}
   if(t.face)g.scale(.9,.9);
   // long hair behind
   if(t.hair==='medwavy'){g.fillStyle=t.hc;g.strokeStyle=INK;g.lineWidth=3;for(const [a,b,r] of [[-44,-6,14],[-48,12,14],[-44,28,12],[44,-6,14],[48,12,14],[44,28,12]]){g.beginPath();g.arc(a,b,r,0,7);g.fill();g.stroke()}}
@@ -282,7 +283,7 @@ function drawToon(g,x,y,size,t){
     if(t.glasses==='round'){g.strokeStyle=t.glassc||INK;g.lineWidth=t.glassW||4;g.beginPath();g.arc(-ex,ey,14,0,7);g.moveTo(ex+14,ey);g.arc(ex,ey,14,0,7);g.moveTo(-1,ey-2);g.quadraticCurveTo(0,ey-5,1,ey-2);g.moveTo(-ex-14,ey-2);g.lineTo(-44,ey-6);g.moveTo(ex+14,ey-2);g.lineTo(44,ey-6);g.stroke()}
   }
   // nose
-  if(t.face){g.strokeStyle=acc?(acc==='#ffffff'?'#ffffff':shade(acc,-.1)):shade(base,-.4);g.lineWidth=3.5;g.beginPath();g.moveTo(-2,0);g.quadraticCurveTo(-7*(t.nose||1),12,0,13);g.quadraticCurveTo(5,13,7,10);g.stroke()}else{g.fillStyle=shade(t.color,-.25);g.beginPath();g.ellipse(0,9,5,4,0,0,7);g.fill()}
+  if(t.face){g.strokeStyle=acc?(typeof acc!=='string'?acc:acc==='#ffffff'?'#ffffff':shade(acc,-.1)):shade(base,-.4);g.lineWidth=3.5;g.beginPath();g.moveTo(-2,0);g.quadraticCurveTo(-7*(t.nose||1),12,0,13);g.quadraticCurveTo(5,13,7,10);g.stroke()}else{g.fillStyle=shade(t.color,-.25);g.beginPath();g.ellipse(0,9,5,4,0,0,7);g.fill()}
   // mustache
   if(t.stache||t.facial==='mustache'||t.facial==='beard'||t.facial==='bigbeard'||t.facial==='goatee'){g.fillStyle=t.sc||t.fc;g.save();if(t.facial==='mustache'){g.translate(0,17);g.scale(1.4,1.5);g.translate(0,-17)}g.beginPath();g.moveTo(-17,19);g.quadraticCurveTo(-8,10,0,15);g.quadraticCurveTo(8,10,17,19);g.quadraticCurveTo(8,17,0,19);g.quadraticCurveTo(-8,17,-17,19);g.fill();g.strokeStyle=INK;g.lineWidth=1.5;g.stroke();g.restore()}
   if(t.facial==='goatee'){g.fillStyle=t.fc;g.beginPath();g.moveTo(-9,32);g.quadraticCurveTo(0,48,9,32);g.closePath();g.fill()}
