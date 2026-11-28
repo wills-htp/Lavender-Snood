@@ -99,10 +99,10 @@ function drawToon(g,x,y,size,t){
   if(t.hair==='receding'){
     // high receding hairline: hair swept back off a tall forehead, longer and wispy over the ears
     g.lineJoin='round';
-    for(const sx of [-1,1]){g.beginPath();g.moveTo(sx*24,-50);g.bezierCurveTo(sx*44,-44,sx*46,-12,sx*44,16);g.quadraticCurveTo(sx*40,2,sx*35,-6);g.quadraticCurveTo(sx*36,-30,sx*20,-44);g.closePath();g.fill();g.stroke()}
-    g.beginPath();g.moveTo(-36,-38);g.bezierCurveTo(-30,-66,30,-66,36,-38);g.quadraticCurveTo(28,-40,18,-42);g.quadraticCurveTo(8,-46,0,-44);g.quadraticCurveTo(-8,-46,-18,-42);g.quadraticCurveTo(-28,-40,-36,-38);g.closePath();g.fill();g.stroke();
+    for(const sx of [-1,1]){g.beginPath();g.moveTo(sx*20,-52);g.bezierCurveTo(sx*40,-46,sx*41,-12,sx*39,16);g.quadraticCurveTo(sx*33,4,sx*27,-4);g.quadraticCurveTo(sx*19,-30,sx*8,-46);g.closePath();g.fill();g.beginPath();g.moveTo(sx*20,-52);g.bezierCurveTo(sx*40,-46,sx*41,-12,sx*39,16);g.stroke()}
+    g.beginPath();g.moveTo(-32,-36);g.bezierCurveTo(-28,-64,28,-64,32,-36);g.quadraticCurveTo(26,-40,18,-42);g.quadraticCurveTo(8,-46,0,-44);g.quadraticCurveTo(-8,-46,-18,-42);g.quadraticCurveTo(-26,-40,-32,-36);g.closePath();g.fill();g.beginPath();g.moveTo(-32,-36);g.bezierCurveTo(-28,-64,28,-64,32,-36);g.stroke();
     g.strokeStyle=shade(t.hc,-.25);g.lineWidth=1.6;for(const x of [-18,-6,6,18]){g.beginPath();g.moveTo(x*.9,-52);g.quadraticCurveTo(x,-58,x*1.15,-62);g.stroke()}
-    g.lineCap='round';for(const sx of [-1,1])for(const [a,b,c,d] of [[44,8,52,22],[45,-14,54,-8]]){g.strokeStyle=INK;g.lineWidth=5;g.beginPath();g.moveTo(sx*a,b);g.quadraticCurveTo(sx*(a+6),b+2,sx*c,d);g.stroke();g.strokeStyle=t.hc;g.lineWidth=2.5;g.stroke()}
+    g.lineCap='round';for(const sx of [-1,1])for(const [a,b,c,d] of [[39,8,47,22],[40,-14,49,-8]]){g.strokeStyle=INK;g.lineWidth=5;g.beginPath();g.moveTo(sx*a,b);g.quadraticCurveTo(sx*(a+6),b+2,sx*c,d);g.stroke();g.strokeStyle=t.hc;g.lineWidth=2.5;g.stroke()}
     g.strokeStyle=INK;g.lineWidth=3}
   if(t.hair==='combover'){
     // side hair low over the ears, a few long strands combed across the bald top
