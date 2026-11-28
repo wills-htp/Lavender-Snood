@@ -157,7 +157,7 @@ const COLORS=TOONS.map(t=>t.color);
 const NAMES=TOONS.map(t=>t.name);
 const SPECIAL={W:'Wildcard',T:'Stone',S:'Skull',G:'Gilles'};
 const SPECIAL_TIP={W:'Matches anything it touches',T:'Smashes its neighbors',S:'Can only be knocked loose',G:'Line of flight: tears a jagged path up through 5 to 10 guys'};
-const GILLES={name:'Gilles',color:'#b98cff',face:'#d9c4ff',accent:'#6a2fb0',shape:'egg',hair:'fringe',hc:'#c9c4bc',glasses:'rect',glassc:'#7a3f1e',lens:'rgba(214,150,110,.45)',mouth:'open',eyes:'normal',browW:4,brow:'#8a847c'};
+const GILLES={name:'Gilles',color:'#b98cff',face:'#d9c4ff',accent:'#6a2fb0',shape:'egg',hair:'fringe',hc:'#c9c4bc',glasses:'rect',glassc:'#7a3f1e',lens:'rgba(214,150,110,.45)',mouth:'talk',eyes:'normal',browW:4,brow:'#8a847c'};
 const COLS=10,R=20,W=400,RH=R*Math.sqrt(3),DMAX=8;
 let H=600,LY=H-34,DEAD=H-80,DAISIES=[];
 function fitBoard(){
@@ -243,6 +243,7 @@ function randColor(){return active[Math.floor(Math.random()*active.length)]}
 function newRow(r,allowSkull){return Array.from({length:rowLen(r)},()=>allowSkull&&r>0&&Math.random()<.06?'S':randColor())}
 
 function startLevel(){
+  curVer++;
   fitBoard();
   numColors=Math.min(level<=2?4:level<=6?5:6+Math.floor((level-7)/2),8,COLORS.length);
   active=[...COLORS.keys()].sort(()=>Math.random()-.5).slice(0,numColors);
@@ -263,7 +264,7 @@ function pick(){
 }
 function hud(){$('lv').textContent=level;$('sc').textContent=score;$('dm').style.width=(danger/DMAX*100)+'%'}
 
-let flight=null;
+let flight=null,curVer=0,annVer=-1;
 function lineOfFlight(){
   // Gilles: a jagged line of flight up through the board, clearing 5-10 connected guys, colors be damned
   const occ=[];grid.forEach((row,r)=>row.forEach((v,c)=>{if(v!=null)occ.push([r,c])}));
@@ -290,15 +291,15 @@ function lineOfFlight(){
   const drops=dropFloating(),dropped=drops.length;
   let pts2=path.length*15;if(dropped)pts2+=dropped*20+dropped*dropped*10;
   score+=pts2;
-  addFloat(W/2,H*.45,'Line of flight! +'+pts2,'#6a2fb0',28);
+  addFloat(W/2,H*.45,'+'+pts2,'#6a2fb0',28);
   afterShot(path.length+dropped);
 }
 window.__dbg={gilles(){cur='G'}};
 function fire(){
   if(state!=='play'||shot)return;
-  if(cur==='G'){cur=nxt;nxt=pick();lineOfFlight();return}
+  if(cur==='G'){cur=nxt;nxt=pick();curVer++;lineOfFlight();return}
   shot={x:W/2,y:LY,vx:Math.cos(aim)*11,vy:-Math.sin(aim)*11,k:cur,b:0};
-  cur=nxt;nxt=pick();
+  cur=nxt;nxt=pick();curVer++;
 }
 function step(){
   if(topY<roofT)topY=Math.min(roofT,topY+Math.max(.4,(roofT-topY)*.12));
@@ -407,7 +408,7 @@ function draw(){
     ctx.strokeStyle='#5b2a9e';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(0,topY);ctx.lineTo(W,topY);ctx.stroke()}
   if(danger/DMAX>.6){ctx.globalAlpha=Math.min(1,(danger/DMAX-.6)/.25)*(RM?1:.65+.35*Math.sin(performance.now()/180));ctx.strokeStyle='rgba(225,60,140,.85)';ctx.setLineDash([8,8]);ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,DEAD);ctx.lineTo(W,DEAD);ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=1}
   grid&&grid.forEach((row,r)=>row.forEach((v,c)=>{if(v!=null)put(v,px(r,c),py(r))}));
-  if(state==='play'){
+  if(state==='play'&&cur!=='G'){
     ctx.strokeStyle='#3a1470';ctx.lineWidth=4;ctx.setLineDash([2,10]);ctx.lineCap='round';
     ctx.beginPath();ctx.moveTo(W/2,LY);ctx.lineTo(W/2+Math.cos(aim)*150,LY-Math.sin(aim)*150);ctx.stroke();ctx.setLineDash([]);
   }
@@ -422,6 +423,7 @@ function draw(){
   if(flight){flight.t+=.03;const a=Math.max(0,1-flight.t);ctx.save();ctx.globalAlpha=a;ctx.lineJoin='miter';ctx.lineCap='round';
     for(const [w,c] of [[12,'rgba(255,230,120,.5)'],[6,'#ffd34d'],[2.5,'#fff']]){ctx.strokeStyle=c;ctx.lineWidth=w;ctx.beginPath();flight.pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.stroke()}
     ctx.restore();if(flight.t>=1)flight=null}
+  if(state==='play'&&!shot&&cur==='G'&&annVer!==curVer){annVer=curVer;addFloat(W/2,LY-70,'Ligne de fuite!','#6a2fb0',32)}
   drawFloats();
 }
 const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -462,7 +464,7 @@ function drawRoofMsg(){
 
 
 const ROOF_MSGS=['Deleuze would say\u2026','Let\u2019s Go Celtics','Will Rules','Techno','Tolstoy','Let\u2019s launch over it','I don\u2019t even have Facebook'];
-function swapPieces(){if(state==='play'&&!shot&&cur!=null&&nxt!=null){[cur,nxt]=[nxt,cur]}}
+function swapPieces(){if(state==='play'&&!shot&&cur!=null&&nxt!=null){[cur,nxt]=[nxt,cur];curVer++}}
 function put(k,x,y,s=1){const sp=sprite(k);ctx.drawImage(sp,x-R*1.6*s,y-R*1.6*s,R*3.2*s,R*3.2*s)}
 function loop(){step();draw();requestAnimationFrame(loop)}
 
