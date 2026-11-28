@@ -566,9 +566,9 @@ function startLevel(){
 function present(){const s=new Set();grid.forEach(row=>row.forEach(k=>{if(typeof k==='number')s.add(k)}));return[...s]}
 function pick(){
   const p=Math.random();
-  if(level>=2&&p<.02)return'G';
-  if(level>=2&&p<.06)return'W';
-  if(level>=2&&p<.092)return'T';
+  if(level>=2&&p<.01)return'G';
+  if(level>=2&&p<.05)return'W';
+  if(level>=2&&p<.082)return'T';
   const pr=grid?present():[];
   return pr.length?pr[Math.floor(Math.random()*pr.length)]:randColor();
 }
