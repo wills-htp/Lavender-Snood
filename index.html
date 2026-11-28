@@ -537,11 +537,26 @@ let active=[0,1,2,3];
 function randColor(){return active[Math.floor(Math.random()*active.length)]}
 function newRow(r,allowSkull){return Array.from({length:rowLen(r)},()=>allowSkull&&r>0&&Math.random()<.06?'S':randColor())}
 
+function grpOf(c){
+  // color group of a guy: metal and rainbow are their own groups, otherwise by face hue
+  if(c.pattern==='metal')return'metal';if(c.pattern==='rainbow')return'rainbow';
+  const h=(c.face||c.color||'#888').replace('#',''),[r,g,b]=[0,2,4].map(i=>parseInt(h.substr(i,2),16)/255);
+  const mx=Math.max(r,g,b),mn=Math.min(r,g,b),d=mx-mn;if(d<.12)return'metal';
+  let hu=mx===r?((g-b)/d)%6:mx===g?(b-r)/d+2:(r-g)/d+4;hu=(hu*60+360)%360;
+  return hu<15||hu>=345?'red':hu<40?'orange':hu<70?'yellow':hu<165?'green':hu<250?'blue':hu<290?'purple':'pink';
+}
+function pickSpread(n){
+  // one guy from each color group in random order, then a second from each, so a level's guys look different
+  const fams={};[...COLORS.keys()].sort(()=>Math.random()-.5).forEach(i=>{(fams[grpOf(TOONS[i])]??=[]).push(i)});
+  const groups=Object.values(fams).sort(()=>Math.random()-.5),out=[];
+  for(let round=0;out.length<n;round++){let any=false;for(const g of groups){if(out.length<n&&g[round]!=null){out.push(g[round]);any=true}}if(!any)break}
+  return out;
+}
 function startLevel(){
   curVer++;
   fitBoard();
   numColors=Math.min(level<=2?4:level<=6?5:6+Math.floor((level-7)/2),8,COLORS.length);
-  active=[...COLORS.keys()].sort(()=>Math.random()-.5).slice(0,numColors);
+  active=pickSpread(numColors);
   par=0;topY=0;roofT=0;danger=0;roofMsg=Math.random()<.5?ROOF_MSGS[Math.floor(Math.random()*ROOF_MSGS.length)]:'';roofFor='';grid=[];falling=[];pops=[];shot=null;
   const rows=Math.min(4+Math.ceil(level/2),9)+Math.floor((H-600)/RH/3);
   for(let r=0;r<rows;r++){grid.push(null);grid[r]=newRow(r,level>=3)}
@@ -600,7 +615,7 @@ function flightStep(){
   }
   if(f.done){f.fade+=1/30;if(f.fade>=1)flight=null}
 }
-window.__dbg={gilles(){cur='G'}};
+window.__dbg={gilles(){cur='G'},spread(n){return pickSpread(n).map(i=>TOONS[i].name+":"+grpOf(TOONS[i]))},fams(){const fs={};TOONS.forEach(c=>{(fs[grpOf(c)]??=[]).push(c.name)});return fs}};
 function fire(){
   if(state!=='play'||shot)return;
   if(flight&&!flight.done)return;
