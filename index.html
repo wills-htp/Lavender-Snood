@@ -170,7 +170,7 @@ const TOONS=[
  {name:'Gus',color:'#8fd3ff',face:'#8fd3ff',accent:'#c3cad2',shape:'egg',hair:'bald',facial:'beard',fc:'#f2c94c',streak:'rgba(190,140,30,.75)',mouth:'toothy',eyes:'happy',noBrow:true},
  {name:'Steve',color:'#2fb35a',face:'#2fb35a',accent:'#1a1a1d',shape:'egg',hat:'cap',hatc:'#1d1d22',hair:'side',hc:'#6e6660',facial:'beard',fc:'#7d766f',streak:'rgba(225,222,218,.85)',mouth:'grin',eyes:'happy',browW:5.5,brow:'#1a1614'},
  {name:'Sam',color:'#f5d31f',face:'#f5d31f',accent:'#1a1a1d',shape:'oval',hat:'cap',hatc:'#2e3236',hair:'side',hc:'#4a3a2e',facial:'mustache',fc:'#5a4636',mouth:'smile',eyes:'calm',browW:5,brow:'#3a2a20'},
- {name:'Andros',color:'#14b8b0',face:'#14b8b0',accent:'#ffffff',shape:'oval',hair:'tightcurl',hc:'#1a1412',facial:'beard',fc:'#1a1412',mouth:'smirk',eyes:'calm',browW:6,brow:'#1a1412'},
+ {name:'Andros',color:'#2f6fe0',face:'#2f6fe0',accent:'#ff8a1f',shape:'oval',hair:'tightcurl',hc:'#1a1412',facial:'beard',fc:'#1a1412',mouth:'smirk',eyes:'calm',browW:6,brow:'#1a1412'},
 ];
 function toonPath(g,shape){
   g.beginPath();
@@ -244,9 +244,10 @@ function drawToon(g,x,y,size,t){
     g.strokeStyle=t.hc;g.lineWidth=3;g.lineCap='round';for(const [x0,y0,x1,y1,x2,y2] of [[-30,-50,-40,-62,-50,-56],[-4,-60,2,-72,-10,-76],[22,-56,34,-66,44,-60],[40,-22,52,-24,56,-14],[-40,-18,-52,-14,-54,-4]]){g.beginPath();g.moveTo(x0,y0);g.quadraticCurveTo(x1,y1,x2,y2);g.stroke()}g.strokeStyle=INK;g.lineWidth=3}
   if(t.hair==='blondtop'){g.beginPath();g.moveTo(-41,-20);g.bezierCurveTo(-46,-50,-30,-64,0,-64);g.bezierCurveTo(30,-64,46,-50,41,-20);g.quadraticCurveTo(34,-34,18,-34);g.quadraticCurveTo(4,-42,-14,-34);g.quadraticCurveTo(-32,-32,-41,-20);g.closePath();g.fill();g.stroke();
     g.strokeStyle=shade(t.hc,-.2);g.lineWidth=2;for(const x of [-26,-12,2,16,28]){g.beginPath();g.moveTo(x,-38);g.quadraticCurveTo(x+6,-50,x+2,-58);g.stroke()}g.strokeStyle=INK;g.lineWidth=3}
-  if(t.hair==='tightcurl'){g.beginPath();g.moveTo(-36,-18);g.bezierCurveTo(-40,-50,-22,-56,0,-56);g.bezierCurveTo(22,-56,40,-50,36,-18);g.quadraticCurveTo(18,-32,0,-32);g.quadraticCurveTo(-18,-32,-36,-18);g.closePath();g.fill();
-    g.fillStyle=shade(t.hc,.22);for(let i=0;i<34;i++){const a=Math.PI*(1.05+.9*(i%17)/16),rr=i<17?44:36,x=Math.cos(a)*rr*.8,y=-22+Math.sin(a)*rr*.72;g.beginPath();g.arc(x,y,3.2,0,7);g.fill()}
-    g.fillStyle=t.hc;g.strokeStyle=INK;g.lineWidth=3;g.beginPath();g.moveTo(-36,-18);g.bezierCurveTo(-40,-50,-22,-56,0,-56);g.bezierCurveTo(22,-56,40,-50,36,-18);g.stroke()}
+  if(t.hair==='tightcurl'){const hw=27,top=-57,bot=-32;
+    g.beginPath();g.roundRect(-hw,top,hw*2,bot-top+6,7);g.fill();g.stroke();
+    g.fillStyle=shade(t.hc,.25);for(let y=top+5;y<bot;y+=6)for(let x=-hw+5+((y/6|0)%2)*3;x<hw-3;x+=6){g.beginPath();g.arc(x,y,2.4,0,7);g.fill()}
+    g.fillStyle=t.hc}
   if(t.hair==='curly')blobs([[-30,-36,11],[-16,-46,12],[0,-50,12],[16,-46,12],[30,-36,11],[-38,-22,9],[38,-22,9]]);
   if(t.hair==='short'&&!t.hat){g.beginPath();g.moveTo(-38,-22);g.quadraticCurveTo(-36,-54,0,-52);g.quadraticCurveTo(36,-54,38,-22);g.quadraticCurveTo(20,-36,0,-34);g.quadraticCurveTo(-20,-36,-38,-22);g.fill();g.stroke()}
   if(t.hair==='side'&&!t.hat){g.beginPath();g.moveTo(-40,-16);g.quadraticCurveTo(-42,-52,4,-50);g.quadraticCurveTo(40,-48,40,-20);g.quadraticCurveTo(14,-40,-14,-28);g.quadraticCurveTo(-30,-22,-40,-16);g.fill();g.stroke()}
