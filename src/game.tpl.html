@@ -418,7 +418,7 @@ function drawRoofMsg(){
 
 
 
-const ROOF_MSGS=['Deleuze would say','Let\u2019s Go Celtics','Will Rules','Techno','Tolstoy','Let\u2019s launch over it','I don\u2019t even have Facebook'];
+const ROOF_MSGS=['Deleuze would say\u2026','Let\u2019s Go Celtics','Will Rules','Techno','Tolstoy','Let\u2019s launch over it','I don\u2019t even have Facebook'];
 function swapPieces(){if(state==='play'&&!shot&&cur!=null&&nxt!=null){[cur,nxt]=[nxt,cur]}}
 function put(k,x,y,s=1){const sp=sprite(k);ctx.drawImage(sp,x-R*1.6*s,y-R*1.6*s,R*3.2*s,R*3.2*s)}
 function loop(){step();draw();requestAnimationFrame(loop)}
