@@ -49,4 +49,4 @@ Each level uses a random lineup of the crew. Difficulty ramps slowly:
 - Faces in play: 4 on levels 1-2, 5 on levels 3-6, then one more every 2 levels, up to 8.
 - The roof drops a little after every shot; it gets about 4% faster each level, up to level 12.
 - A big drop (6 or more) pushes the roof back up half a row; a mega drop (12 or more), a full row.
-- Wildcards and Stones show up from level 2, and Skulls (never in the top row) from level 3.
+- Wildcards and Stones show up from level 2, along with Gilles (half as often as a Wildcard): his line of flight tears a jagged path up through 5 to 10 guys, ignoring color, and Skulls (never in the top row) from level 3.

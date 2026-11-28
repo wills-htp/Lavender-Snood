@@ -155,8 +155,9 @@ __MUSIC__
 __CONFIG__
 const COLORS=TOONS.map(t=>t.color);
 const NAMES=TOONS.map(t=>t.name);
-const SPECIAL={W:'Wildcard',T:'Stone',S:'Skull'};
-const SPECIAL_TIP={W:'Matches anything it touches',T:'Smashes its neighbors',S:'Can only be knocked loose'};
+const SPECIAL={W:'Wildcard',T:'Stone',S:'Skull',G:'Gilles'};
+const SPECIAL_TIP={W:'Matches anything it touches',T:'Smashes its neighbors',S:'Can only be knocked loose',G:'Line of flight: tears a jagged path up through 5 to 10 guys'};
+const GILLES={name:'Gilles',color:'#b98cff',face:'#d9c4ff',accent:'#6a2fb0',shape:'egg',hair:'fringe',hc:'#c9c4bc',glasses:'rect',glassc:'#7a3f1e',lens:'rgba(214,150,110,.45)',mouth:'open',eyes:'normal',browW:4,brow:'#8a847c'};
 const COLS=10,R=20,W=400,RH=R*Math.sqrt(3),DMAX=8;
 let H=600,LY=H-34,DEAD=H-80,DAISIES=[];
 function fitBoard(){
@@ -185,6 +186,12 @@ function blob(g,x,y,fill){
 }
 function shine(g,x,y){g.beginPath();g.ellipse(x-6,y-9,6,3.5,-.5,0,7);g.fillStyle='rgba(255,255,255,.55)';g.fill()}
 function drawPiece(g,x,y,k){
+  if(k==='G'){
+    const gl=g.createRadialGradient(x,y,R*.4,x,y,R*1.25);gl.addColorStop(0,'rgba(255,240,140,.95)');gl.addColorStop(1,'rgba(255,240,140,0)');g.fillStyle=gl;g.beginPath();g.arc(x,y,R*1.25,0,7);g.fill();
+    drawToon(g,x,y,R*1.95,GILLES);
+    g.strokeStyle='#ffd34d';g.lineWidth=2.4;g.lineJoin='miter';g.beginPath();g.moveTo(x+R*.55,y-R*1.05);g.lineTo(x+R*.75,y-R*.75);g.lineTo(x+R*.62,y-R*.72);g.lineTo(x+R*.85,y-R*.42);g.stroke();
+    return;
+  }
   if(k==='W'){
     const gr=g.createConicGradient?g.createConicGradient(0,x,y):null;
     if(gr){['#e8453c','#ff8a1f','#f5c518','#3fb34f','#14b8b0','#2f7de1','#ec5fa8','#e8453c'].forEach((c,i)=>gr.addColorStop(i/7,c))}
@@ -248,15 +255,48 @@ function startLevel(){
 function present(){const s=new Set();grid.forEach(row=>row.forEach(k=>{if(typeof k==='number')s.add(k)}));return[...s]}
 function pick(){
   const p=Math.random();
-  if(level>=2&&p<.05)return'W';
-  if(level>=2&&p<.09)return'T';
+  if(level>=2&&p<.025)return'G';
+  if(level>=2&&p<.075)return'W';
+  if(level>=2&&p<.115)return'T';
   const pr=grid?present():[];
   return pr.length?pr[Math.floor(Math.random()*pr.length)]:randColor();
 }
 function hud(){$('lv').textContent=level;$('sc').textContent=score;$('dm').style.width=(danger/DMAX*100)+'%'}
 
+let flight=null;
+function lineOfFlight(){
+  // Gilles: a jagged line of flight up through the board, clearing 5-10 connected guys, colors be damned
+  const occ=[];grid.forEach((row,r)=>row.forEach((v,c)=>{if(v!=null)occ.push([r,c])}));
+  if(!occ.length)return;
+  const exposed=occ.filter(([r,c])=>r===grid.length-1||nbrs(r,c).some(([a,b])=>a>r&&get(a,b)==null)||nbrs(r,c).filter(([a])=>a>r).length<2);
+  const angOf=([r,c])=>Math.atan2(LY-py(r),px(r,c)-W/2);
+  const pool=(exposed.length?exposed:occ).slice().sort((A,B)=>Math.abs(angOf(A)-aim)-Math.abs(angOf(B)-aim));
+  let cur=pool[Math.floor(Math.random()*Math.min(3,pool.length))];
+  const N=5+Math.floor(Math.random()*6),path=[cur],seen=new Set([cur.join()]);
+  while(path.length<N&&cur[0]>0){
+    let opts=nbrs(cur[0],cur[1]).filter(([a,b])=>get(a,b)!=null&&!seen.has(a+','+b)&&a<=cur[0]);
+    if(!opts.length)opts=nbrs(cur[0],cur[1]).filter(([a,b])=>get(a,b)!=null&&!seen.has(a+','+b));
+    if(!opts.length)break;
+    const wts=opts.map(([a])=>a<cur[0]?2:1.6),tot=wts.reduce((s,x)=>s+x,0);let rr=Math.random()*tot,k=0;
+    while(rr>wts[k]){rr-=wts[k];k++}
+    cur=opts[k];seen.add(cur.join());path.push(cur);
+  }
+  const pts=[[W/2,LY]];
+  path.forEach(([r,c])=>{const x=px(r,c),y=py(r),lp=pts[pts.length-1];pts.push([(lp[0]+x)/2+(Math.random()-.5)*26,(lp[1]+y)/2+(Math.random()-.5)*16]);pts.push([x,y])});
+  const last=pts[pts.length-1];pts.push([last[0]+(Math.random()-.5)*40,Math.max(4,topY-30)]);
+  flight={pts,t:0};
+  path.forEach(([r,c])=>popAt(r,c));
+  shots++;
+  const drops=dropFloating(),dropped=drops.length;
+  let pts2=path.length*15;if(dropped)pts2+=dropped*20+dropped*dropped*10;
+  score+=pts2;
+  addFloat(W/2,H*.45,'Line of flight! +'+pts2,'#6a2fb0',28);
+  afterShot(path.length+dropped);
+}
+window.__dbg={gilles(){cur='G'}};
 function fire(){
   if(state!=='play'||shot)return;
+  if(cur==='G'){cur=nxt;nxt=pick();lineOfFlight();return}
   shot={x:W/2,y:LY,vx:Math.cos(aim)*11,vy:-Math.sin(aim)*11,k:cur,b:0};
   cur=nxt;nxt=pick();
 }
@@ -379,6 +419,9 @@ function draw(){
   pops=pops.filter(p=>p.t<1);
   falling.forEach(f=>{f.vy+=.45;f.x+=f.vx;f.y+=f.vy;put(f.k,f.x,f.y)});
   falling=falling.filter(f=>f.y<H+R*2);
+  if(flight){flight.t+=.03;const a=Math.max(0,1-flight.t);ctx.save();ctx.globalAlpha=a;ctx.lineJoin='miter';ctx.lineCap='round';
+    for(const [w,c] of [[12,'rgba(255,230,120,.5)'],[6,'#ffd34d'],[2.5,'#fff']]){ctx.strokeStyle=c;ctx.lineWidth=w;ctx.beginPath();flight.pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.stroke()}
+    ctx.restore();if(flight.t>=1)flight=null}
   drawFloats();
 }
 const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -453,7 +496,7 @@ $('restart').addEventListener('click',()=>{
 
 
 function cast(){
-  const items=COLORS.map((c,i)=>({k:i,n:NAMES[i]})).concat(['W','T','S'].map(k=>({k,n:SPECIAL[k],t:SPECIAL_TIP[k]})));
+  const items=COLORS.map((c,i)=>({k:i,n:NAMES[i]})).concat(['W','T','G','S'].map(k=>({k,n:SPECIAL[k],t:SPECIAL_TIP[k]})));
   $('cast').innerHTML=items.map((it,i)=>'<div class="pc" title="'+(it.t||'')+'"><canvas width="96" height="96" data-i="'+i+'"></canvas><span></span></div>').join('');
   $('cast').querySelectorAll('.pc').forEach((el,i)=>{
     el.querySelector('span').textContent=items[i].n;
