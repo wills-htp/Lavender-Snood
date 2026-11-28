@@ -11,7 +11,7 @@ const TOONS=[
  {name:'Holmes',color:'#ff6fb5',face:'#ff6fb5',accent:'rainbow',shape:'octagon',hat:'cap',hatc:'#a3214a',hair:'side',hc:'#3a3330',facial:'beard',fc:'#f4f2ec',streak:'rgba(160,155,150,.85)',mouth:'open',eyes:'squint',browW:5,brow:'#5a524c'},
  {name:'Jon',color:'#c3cad2',face:'#c3cad2',accent:'#2f6fe0',pattern:'metal',shape:'squircle',hair:'longwavy',hc:'#2b211b',glasses:'rect',glassc:'#ff4fa3',lens:'rgba(255,214,70,.42)',facial:'beard',beardLen:68,fc:'#7d766f',mouth:'grin',eyes:'happy',browW:5,brow:'#2b211b'},
  {name:'Andy',color:'#e8453c',face:'#e8453c',accent:'#1a2a5e',shape:'shield',hair:'shag',hc:'#b0532e',facial:'stubble',fc:'#8a6a4a',mouth:'toothy',eyes:'happy',browW:5,brow:'#9a4a2a'},
- {name:'Garrett',color:'#e5b627',face:'#e5b627',accent:'#2b2b30',shape:'squircle',hat:'cap',hatc:'#18181c',facial:'goatee',fc:'#9a948c',mouth:'toothy',cig:true,eyes:'happy',browW:5,brow:'#1a1614'},
+ {name:'Garrett',color:'#a77be0',face:'#a77be0',accent:'#2b2b30',shape:'squircle',hat:'cap',hatc:'#18181c',facial:'goatee',fc:'#9a948c',mouth:'toothy',cig:true,eyes:'happy',browW:5,brow:'#1a1614'},
  {name:'Jake',color:'#ff8a1f',face:'#ff8a1f',accent:'#ffffff',shape:'thin',hat:'cap',hatc:'#8fe3c2',hair:'side',hc:'#8a6a4a',glasses:'round',mouth:'flat',eyes:'calm',browW:5,brow:'#8a6a4a'},
  {name:'Tim',color:'#8fd3ff',face:'#8fd3ff',accent:'#e8453c',shape:'thin',hair:'tousled',hc:'#2a1f18',glasses:'round',glassc:'#5d6b7a',glassW:2.6,mouth:'tongue',eyes:'wide',browW:5,brow:'#2a1f18'},
  {name:'James',color:'#c3cad2',face:'#c3cad2',accent:'#2b2b30',pattern:'metal',shape:'blob',hat:'cap',hatc:'#141416',brimc:'#c9ced6',hatband:true,hair:'side',hc:'#1a1614',mouth:'flat',eyes:'squint',browW:5,brow:'#1a1614'},
