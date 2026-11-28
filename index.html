@@ -479,9 +479,15 @@ function drawPiece(g,x,y,k){
     g.closePath();g.fillStyle='#fff';g.fill();g.lineWidth=1.5;g.strokeStyle='rgba(0,0,0,.5)';g.stroke();shine(g,x,y);return;
   }
   if(k==='T'){
-    blob(g,x,y,'#8d8a84');g.fillStyle='#6b6862';
-    [[-7,4,4],[6,-5,3],[5,8,2.5],[-4,-8,2]].forEach(([a,b,r])=>{g.beginPath();g.arc(x+a,y+b,r,0,7);g.fill()});
-    shine(g,x,y);return;
+    // an irregular, faceted rock chunk
+    const P=[[-17,-6],[-8,-17],[4,-12],[14,-17],[19,-2],[12,6],[15,15],[1,13],[-10,18],[-14,7]].map(([a,b])=>[x+a,y+b]);
+    g.beginPath();P.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));g.closePath();
+    const rg=g.createLinearGradient(x-15,y-15,x+15,y+15);rg.addColorStop(0,'#b3afa8');rg.addColorStop(1,'#6f6b65');g.fillStyle=rg;g.fill();
+    g.lineJoin='round';g.lineWidth=2.5;g.strokeStyle='rgba(0,0,0,.65)';g.stroke();
+    g.fillStyle='rgba(255,255,255,.28)';g.beginPath();g.moveTo(P[0][0],P[0][1]);g.lineTo(P[1][0],P[1][1]);g.lineTo(P[2][0],P[2][1]);g.lineTo(x+1,y-3);g.closePath();g.fill();
+    g.fillStyle='rgba(0,0,0,.18)';g.beginPath();g.moveTo(P[5][0],P[5][1]);g.lineTo(P[6][0],P[6][1]);g.lineTo(P[7][0],P[7][1]);g.lineTo(P[8][0],P[8][1]);g.lineTo(x+1,y-3);g.closePath();g.fill();
+    g.strokeStyle='rgba(0,0,0,.35)';g.lineWidth=1.5;g.beginPath();g.moveTo(x+1,y-3);g.lineTo(P[2][0],P[2][1]);g.moveTo(x+1,y-3);g.lineTo(P[5][0],P[5][1]);g.moveTo(x+1,y-3);g.lineTo(P[9][0],P[9][1]);g.moveTo(x+1,y-3);g.lineTo(P[7][0],P[7][1]);g.stroke();
+    return;
   }
   if(k==='S'){
     blob(g,x,y,'#eee6d2');g.fillStyle='#2a2318';
