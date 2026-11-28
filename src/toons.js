@@ -161,6 +161,7 @@ function drawToon(g,x,y,size,t){
   if(t.mouth==='tongue'){g.fillStyle='#5a1414';g.beginPath();g.ellipse(0,my,7,6,0,0,7);g.fill();g.stroke();
     g.fillStyle='#ff7f94';g.beginPath();g.moveTo(-7,my+2);g.lineTo(-7,my+12);g.quadraticCurveTo(-7,my+21,0,my+21);g.quadraticCurveTo(7,my+21,7,my+12);g.lineTo(7,my+2);g.closePath();g.fill();g.lineWidth=2.5;g.stroke();
     g.strokeStyle='#d9506a';g.lineWidth=1.8;g.beginPath();g.moveTo(0,my+6);g.lineTo(0,my+15);g.stroke();g.strokeStyle=INK}
+  else if(t.mouth==='line'){g.lineWidth=3.5;g.beginPath();g.moveTo(-13,my+1);g.lineTo(13,my+1);g.stroke()}
   else if(t.mouth==='smirk'){g.beginPath();g.moveTo(-12,my+1);g.quadraticCurveTo(2,my+6,14,my-4);g.stroke();g.lineWidth=2.5;g.beginPath();g.moveTo(12,my-6);g.quadraticCurveTo(16,my-3,15,my);g.stroke()}
   else if(t.mouth==='flat'){g.beginPath();g.moveTo(-10,my);g.quadraticCurveTo(0,my+2,10,my);g.stroke()}
   else if(t.mouth==='smile'){g.beginPath();g.moveTo(-14,my-2);g.quadraticCurveTo(0,my+10,14,my-2);g.stroke()}

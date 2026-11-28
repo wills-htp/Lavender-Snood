@@ -32,7 +32,7 @@ Add a line to `TOONS` in `src/toons.js`:
 | `hat` | cap, flat, knit, beret (with `hatc` for the hat color, `brimc` for a contrasting brim) |
 | `glasses` | round, rect, thick, sun |
 | `facial` | stubble, mustache, goatee, beard, bigbeard (with `fc` for the color) |
-| `mouth` | flat, smile, grin, toothy, open, talk, oh, smirk, tongue |
+| `mouth` | flat, line, smile, grin, toothy, open, talk, oh, smirk, tongue |
 | `eyes` | normal, happy, calm, wide, squint |
 
 `hc` sets the hair color. `face` sets the main face color and `accent` the second color (ears, nose, inner rim). `pattern` can be wood, metal or rainbow. `brow` and `browW` set eyebrow color and thickness, and `nose` sets nose size (1 is normal). Each friend's `color` should be one that isn't already taken.

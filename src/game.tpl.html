@@ -157,7 +157,7 @@ const COLORS=TOONS.map(t=>t.color);
 const NAMES=TOONS.map(t=>t.name);
 const SPECIAL={W:'Wildcard',T:'Stone',S:'Skull',G:'Gilles'};
 const SPECIAL_TIP={W:'Matches anything it touches',T:'Smashes its neighbors',S:'Can only be knocked loose',G:'Line of flight: tears a jagged path up through 5 to 10 guys'};
-const GILLES={name:'Gilles',color:'#b98cff',face:'#d9c4ff',accent:'#6a2fb0',shape:'oval',hair:'receding',hc:'#f4f2ee',glasses:'rect',glassc:'#7a3f1e',lens:'rgba(214,150,110,.45)',mouth:'talk',eyes:'normal',browW:4,brow:'#d8d4ce'};
+const GILLES={name:'Gilles',color:'#b98cff',face:'#d9c4ff',accent:'#6a2fb0',shape:'oval',hair:'receding',hc:'#f4f2ee',glasses:'rect',glassc:'#7a3f1e',lens:'rgba(214,150,110,.45)',mouth:'line',eyes:'normal',browW:4,brow:'#d8d4ce'};
 const COLS=10,R=20,W=400,RH=R*Math.sqrt(3),DMAX=8;
 let H=600,LY=H-34,DEAD=H-80,DAISIES=[];
 function fitBoard(){
@@ -189,7 +189,6 @@ function drawPiece(g,x,y,k){
   if(k==='G'){
     const gl=g.createRadialGradient(x,y,R*.4,x,y,R*1.25);gl.addColorStop(0,'rgba(255,240,140,.95)');gl.addColorStop(1,'rgba(255,240,140,0)');g.fillStyle=gl;g.beginPath();g.arc(x,y,R*1.25,0,7);g.fill();
     drawToon(g,x,y,R*1.95,GILLES);
-    g.strokeStyle='#ffd34d';g.lineWidth=2.4;g.lineJoin='miter';g.beginPath();g.moveTo(x+R*.55,y-R*1.05);g.lineTo(x+R*.75,y-R*.75);g.lineTo(x+R*.62,y-R*.72);g.lineTo(x+R*.85,y-R*.42);g.stroke();
     return;
   }
   if(k==='W'){
